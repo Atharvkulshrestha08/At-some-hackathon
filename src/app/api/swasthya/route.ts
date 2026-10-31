@@ -8,6 +8,8 @@ import {
   decryptPhonePii,
   signAuthToken,
   verifyAuthToken,
+  hashPassword,
+  verifyPasswordHash,
 } from "../../../lib/db.ts";
 import type { SupportedLanguage } from "../../../lib/i18n.ts";
 import { MESSAGE_TEMPLATES_I18N } from "../../../lib/i18n.ts";
@@ -87,7 +89,7 @@ export async function POST(req: Request) {
         );
         return NextResponse.json(
           {
-            error: `403 Cross-Tenant Isolation — You are signed into ${effectiveOrgId}. Patient ${targetPt.pseudonym} belongs to a different organization (${targetPt.organizationId}) and is strictly isolated.`,
+            error: `403 Not your organization (Cross-Tenant Isolation) — You are signed into ${effectiveOrgId}. Patient ${targetPt.pseudonym} belongs to a different organization (${targetPt.organizationId}) and is strictly isolated.`,
             snapshot: snap(),
           },
           { status: 403 }
@@ -1323,36 +1325,151 @@ export async function POST(req: Request) {
     // =========================================================================
     if (action === "SIGN_IN_ORGANIZATION") {
       const { targetOrganizationId, targetUserId, accessPasscode } = body;
-      const org = state.organizations.find((o) => o.id === targetOrganizationId);
+      const org = state.organizations.find(
+        (o) =>
+          o.id.toUpperCase() === String(targetOrganizationId || "").trim().toUpperCase() ||
+          o.orgCode.toUpperCase() === String(targetOrganizationId || "").trim().toUpperCase()
+      );
       if (!org) {
         return NextResponse.json({ error: "Organization not found." }, { status: 404 });
       }
+
+      const orgUsers = state.users.filter((u) => u.organizationId === org.id);
+      const selectedUser =
+        orgUsers.find(
+          (u) => u.id.toLowerCase() === String(targetUserId || "").trim().toLowerCase()
+        ) ||
+        state.users.find(
+          (u) =>
+            u.id.toLowerCase() === String(targetUserId || "").trim().toLowerCase() &&
+            u.organizationId === org.id
+        ) ||
+        orgUsers[0] ||
+        state.users[0];
+
+      const attemptKey = `${org.id}::${selectedUser.id}`;
+      if (!state.loginAttempts) {
+        state.loginAttempts = {};
+      }
+      const attemptRecord = state.loginAttempts[attemptKey] || {
+        failedCount: 0,
+        lockedUntil: null,
+      };
+
+      // Check if locked after 5 failed attempts
       if (
-        accessPasscode &&
-        accessPasscode.trim().toUpperCase() !== org.accessPasscode.toUpperCase()
+        attemptRecord.failedCount >= 5 &&
+        attemptRecord.lockedUntil &&
+        new Date(attemptRecord.lockedUntil).getTime() > Date.now()
       ) {
         appendAuditEntry(
-          callerId,
-          callerName,
-          callerRole,
-          "ORGANIZATION_SIGN_IN_DENIED",
+          selectedUser.id,
+          selectedUser.name,
+          selectedUser.role,
+          "ORGANIZATION_SIGN_IN_LOCKED_423",
           null,
           org.id,
           "BLOCKED_403_RBAC",
-          `Invalid organization passcode attempted for ${org.name} (${org.id}).`
+          `Account ${selectedUser.id} in ${org.id} is locked after 5 failed password attempts until ${attemptRecord.lockedUntil}.`
         );
         return NextResponse.json(
           {
-            error: `403 Invalid Organization Passcode for ${org.name}. Demo passcode is ${org.accessPasscode}.`,
+            error: `423 Account locked after 5 failed attempts for ${selectedUser.id} (${org.shortName}). Try again in 15 minutes or reset demo state.`,
+            locked: true,
+            failedAttempts: attemptRecord.failedCount,
+          },
+          { status: 423 }
+        );
+      }
+
+      const providedSecret = String(accessPasscode || "").trim();
+      const matchesUserHash =
+        providedSecret.length > 0 &&
+        Boolean(selectedUser.passwordHash) &&
+        verifyPasswordHash(providedSecret, selectedUser.passwordHash || "");
+      const matchesOrgPasscode =
+        providedSecret.length > 0 &&
+        (providedSecret.toUpperCase() === org.accessPasscode.toUpperCase() ||
+          providedSecret.toUpperCase() === org.orgCode.toUpperCase());
+
+      if (providedSecret && !matchesUserHash && !matchesOrgPasscode) {
+        const nextFailed = attemptRecord.failedCount + 1;
+        const isNowLocked = nextFailed >= 5;
+        state.loginAttempts[attemptKey] = {
+          failedCount: nextFailed,
+          lockedUntil: isNowLocked
+            ? new Date(Date.now() + 15 * 60 * 1000).toISOString()
+            : null,
+          lastAttemptAt: new Date().toISOString(),
+        };
+
+        appendAuditEntry(
+          selectedUser.id,
+          selectedUser.name,
+          selectedUser.role,
+          isNowLocked ? "ORGANIZATION_SIGN_IN_LOCKED_5_ATTEMPTS" : "ORGANIZATION_SIGN_IN_DENIED",
+          null,
+          org.id,
+          "BLOCKED_403_RBAC",
+          `Invalid credentials for ${selectedUser.id} @ ${org.id} (Attempt ${nextFailed}/5).`
+        );
+
+        if (isNowLocked) {
+          return NextResponse.json(
+            {
+              error: `423 Account locked after 5 failed attempts for ${selectedUser.id} (${org.shortName}).`,
+              locked: true,
+              failedAttempts: nextFailed,
+            },
+            { status: 423 }
+          );
+        }
+
+        return NextResponse.json(
+          {
+            error: `401 Invalid password for ${selectedUser.id} in ${org.name}. (${
+              5 - nextFailed
+            } attempt${5 - nextFailed === 1 ? "" : "s"} remaining before lockout).`,
+            failedAttempts: nextFailed,
+            remainingAttempts: 5 - nextFailed,
           },
           { status: 403 }
         );
       }
 
-      const orgUsers = state.users.filter((u) => u.organizationId === org.id);
-      const selectedUser =
-        orgUsers.find((u) => u.id === targetUserId) || orgUsers[0] || state.users[0];
+      // Reset failed attempt counter on successful sign-in
+      state.loginAttempts[attemptKey] = {
+        failedCount: 0,
+        lockedUntil: null,
+        lastAttemptAt: new Date().toISOString(),
+      };
+
       const signedToken = signAuthToken(selectedUser.id, selectedUser.role, org.id);
+
+      // Update or add simultaneous session in state.activeSessions
+      if (!Array.isArray(state.activeSessions)) {
+        state.activeSessions = [];
+      }
+      const existingSessionIdx = state.activeSessions.findIndex(
+        (s) => s.userId === selectedUser.id && s.orgId === org.id
+      );
+      const nowIso = new Date().toISOString();
+      const sessionEntry = {
+        sessionId: `SES-${org.orgCode}-${selectedUser.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase()}`,
+        userId: selectedUser.id,
+        displayName: selectedUser.name,
+        orgId: org.id,
+        orgName: org.shortName,
+        role: selectedUser.role,
+        roleBadge: selectedUser.roleBadge || selectedUser.title,
+        issuedAt: nowIso,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      };
+      if (existingSessionIdx >= 0) {
+        state.activeSessions[existingSessionIdx] = sessionEntry;
+      } else {
+        state.activeSessions.unshift(sessionEntry);
+      }
 
       appendAuditEntry(
         selectedUser.id,
@@ -1366,8 +1483,9 @@ export async function POST(req: Request) {
       );
 
       return NextResponse.json({
-        message: `Signed into ${org.name} as ${selectedUser.name} (${selectedUser.role.toUpperCase()}). Strictly isolated to ${org.shortName} patient registry.`,
+        message: `Signed into ${org.name} as ${selectedUser.name} (${selectedUser.title}). Strictly isolated to ${org.shortName} patient registry.`,
         authToken: signedToken,
+        session: sessionEntry,
         snapshot: computeSystemSnapshot(
           selectedUser.role,
           selectedUser.id,
@@ -1415,6 +1533,7 @@ export async function POST(req: Request) {
       const newWorkerId = `USR-${cleanShort}-WRK-1`;
       const newDocId = `USR-${cleanShort}-DOC-1`;
       const newSupId = `USR-${cleanShort}-SUP-1`;
+      const newPassHash = hashPassword(String(accessPasscode).trim());
       state.users.push(
         {
           id: newWorkerId,
@@ -1424,6 +1543,7 @@ export async function POST(req: Request) {
           facilityId: "FAC-HEX-0",
           available: true,
           organizationId: newOrgId,
+          passwordHash: newPassHash,
         },
         {
           id: newDocId,
@@ -1433,6 +1553,7 @@ export async function POST(req: Request) {
           facilityId: "FAC-HEX-0",
           available: true,
           organizationId: newOrgId,
+          passwordHash: newPassHash,
         },
         {
           id: newSupId,
@@ -1442,6 +1563,7 @@ export async function POST(req: Request) {
           facilityId: "FAC-HEX-0",
           available: true,
           organizationId: newOrgId,
+          passwordHash: newPassHash,
         }
       );
 

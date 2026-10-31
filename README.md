@@ -51,18 +51,32 @@ Patients recovering from severe post-illness complications (including post-oncol
 
 ---
 
-## 4. Quick Start & Automated Testing
+## 4. Quick Start, Simultaneous Demo Accounts & Automated Testing
 
 ```bash
 # 1. Install dependencies
 npm install
 
-# 2. Run the automated engine & end-to-end API scenario test suites (13/13 checks)
+# 2. Run the automated engine & end-to-end API scenario test suites (16/16 checks)
 npm test
 
 # 3. Start the development server on http://localhost:3000
 npm run dev
 ```
+
+### Simultaneous Multi-Tenant Demo Login Accounts (`DEMO ONLY`)
+
+SwasthyaSense displays a dedicated **Product Landing Page** (with a Scroll-Driven 3D Patient Journey, 4-Step Interactive Pipeline, and 7-Language UI) before entering the clinical workspace. Three pre-seeded demo users can sign in **simultaneously** across separate tabs/browsers with independent HMAC-SHA256 session tokens and strict PostgreSQL Row-Level Security (RLS) tenant isolation:
+
+| Person | Organization ID | User ID | Password | Role & Facility Scope |
+| :--- | :--- | :--- | :--- | :--- |
+| **Clinic doctor** | `ORG-BOKO` | `doc.boko01` | `Boko@Demo#101` | Clinician, `HEX-0` Boko Central PHC |
+| **Frontline worker** | `ORG-SEVAK` | `asha.sevak07` | `Sevak@Demo#207` | ASHA worker, Sevak 15-worker team |
+| **Local clinic nurse** | `ORG-CHHAY` | `anm.chhay03` | `Chhay@Demo#303` | ANM nurse, `HEX-1` Chhaygaon North |
+
+- Passwords are stored as cryptographic `scrypt` hashes (`src/lib/demo-seed-accounts.ts`), never plaintext.
+- Entering 5 consecutive invalid passwords locks the account (`HTTP 423 Locked`).
+- Attempting to access or mutate a patient belonging to another organization returns `HTTP 403 Not your organization (Cross-Tenant Isolation)` and logs the blocked attempt in the SHA-256 hash-chained audit ledger.
 
 ---
 

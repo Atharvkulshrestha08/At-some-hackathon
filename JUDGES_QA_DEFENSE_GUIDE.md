@@ -195,3 +195,4 @@ This document contains **20 high-probability, tough questions** that clinical, t
   As a result, QuickSort partitioning of a clinic’s cohort takes **~250 microseconds**, and scaling from 5 clinics to 5,000 clinics scales **linearly ($O(N)$)** without global lock contention.
 - **USL (Unique Selling Lever & System Logic):**
   **Mathematically Bounded Contention ($\alpha$) and Coherency ($\beta$) via H3 Hexagonal Sharding & Multi-Tenant Isolation.** Our USL proves that **SWASTHYA SENSE** can scale from a 15-worker NGO block to a state-wide 30,000-ASHA deployment with near-linear throughput.
+

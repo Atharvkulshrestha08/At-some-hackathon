@@ -59,11 +59,15 @@ import type {
   SimulatedMessageRecord,
   AuditLogRecord,
   PendingRuleDraft,
+  ActiveSessionRecord,
 } from "@/lib/db";
 import type {
   ExternalIntegrationStatus,
   DangerSymptomDefinition,
 } from "@/lib/external-integrations";
+import SwasthyaLandingPage, {
+  LANDING_DEMO_PRESETS,
+} from "@/components/SwasthyaLandingPage";
 
 export interface SystemSnapshot {
   simulatedClockIso: string;
@@ -74,6 +78,7 @@ export interface SystemSnapshot {
   pendingRuleDraft: PendingRuleDraft | null;
   activeOrganization: OrganizationRecord;
   organizations: OrganizationRecord[];
+  activeSessions?: ActiveSessionRecord[];
   workerScope: "assigned" | "organization";
   signedInToken: string;
   facilities: FacilityRecord[];
@@ -192,6 +197,36 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [phoneDrawerOpen, setPhoneDrawerOpen] = useState<boolean>(false);
   const [selectedSimPatientId, setSelectedSimPatientId] = useState<string>("");
+
+  // Landing Page Gate & Simultaneous Multi-Tenant Session State
+  const [showLandingPage, setShowLandingPage] = useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  // Restore independent per-tab session from sessionStorage if present
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem("swasthya_session_v25");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.organizationId && parsed.userId) {
+          setActiveOrganizationId(parsed.organizationId);
+          setActiveUserId(parsed.userId);
+          if (parsed.userName) setActiveUserName(parsed.userName);
+          if (parsed.role) setActiveRole(parsed.role);
+          if (parsed.authToken) setAuthToken(parsed.authToken);
+          setIsAuthenticated(true);
+          if (parsed.enteredWorkspace) {
+            setShowLandingPage(false);
+          }
+        }
+      } else if (pathname && pathname !== "/") {
+        // Direct navigation to /simulator, /worklist, etc. enters workspace directly
+        setShowLandingPage(false);
+      }
+    } catch {
+      // Ignore sessionStorage errors in restricted frames
+    }
+  }, [pathname]);
 
   // Multi-Organization Sign-In & Landing Modal
   const [signInModalOpen, setSignInModalOpen] = useState<boolean>(false);
@@ -486,6 +521,178 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
     snapshot?.users.filter(
       (u) => u.organizationId === activeOrganizationId
     ) || [];
+  const currentStaffObj = snapshot?.users.find((u) => u.id === activeUserId);
+
+  const handleLandingSignIn = async (params: {
+    organizationId: string;
+    userId: string;
+    accessPasscode: string;
+  }) => {
+    const res = await executeAction({
+      action: "SIGN_IN_ORGANIZATION",
+      targetOrganizationId: params.organizationId,
+      targetUserId: params.userId,
+      accessPasscode: params.accessPasscode,
+    });
+    const payload = res.data as Record<string, unknown> | null;
+    if (!res.ok) {
+      return {
+        ok: false,
+        error:
+          (payload?.error as string) ||
+          "Invalid organization credentials or account locked.",
+        locked: Boolean(payload?.locked),
+        remainingAttempts: payload?.remainingAttempts as number | undefined,
+      };
+    }
+
+    const sessionInfo = payload?.session as
+      | {
+          userId: string;
+          displayName: string;
+          role: UserRole;
+          orgId: string;
+        }
+      | undefined;
+    const nextOrgId = sessionInfo?.orgId || params.organizationId;
+    const nextUserId = sessionInfo?.userId || params.userId;
+    const matchedUser = snapshot?.users.find((u) => u.id === nextUserId);
+    const nextRole = sessionInfo?.role || matchedUser?.role || "worker";
+    const nextUserName =
+      sessionInfo?.displayName || matchedUser?.name || params.userId;
+    const nextToken = (payload?.authToken as string) || authToken;
+
+    setActiveOrganizationId(nextOrgId);
+    setActiveUserId(nextUserId);
+    setActiveUserName(nextUserName);
+    setActiveRole(nextRole);
+    setIsAuthenticated(true);
+    setShowLandingPage(false);
+
+    try {
+      sessionStorage.setItem(
+        "swasthya_session_v25",
+        JSON.stringify({
+          organizationId: nextOrgId,
+          userId: nextUserId,
+          userName: nextUserName,
+          role: nextRole,
+          authToken: nextToken,
+          enteredWorkspace: true,
+        })
+      );
+    } catch {
+      // Ignore storage error
+    }
+
+    return { ok: true };
+  };
+
+  const handleLandingRegisterOrg = async (params: {
+    orgName: string;
+    orgShortName: string;
+    district: string;
+    accessPasscode: string;
+    teamSize: number;
+    leadWorkerName: string;
+  }) => {
+    const res = await executeAction({
+      action: "REGISTER_ORGANIZATION",
+      ...params,
+    });
+    const payload = res.data as Record<string, unknown> | null;
+    if (!res.ok) {
+      return {
+        ok: false,
+        error: (payload?.error as string) || "Could not create organization.",
+      };
+    }
+    const snapData = payload?.snapshot as SystemSnapshot | undefined;
+    if (snapData?.activeOrganization) {
+      setActiveOrganizationId(snapData.activeOrganization.id);
+      const firstWrk = snapData.users.find(
+        (u) => u.organizationId === snapData.activeOrganization.id
+      );
+      if (firstWrk) {
+        setActiveRole(firstWrk.role);
+        setActiveUserId(firstWrk.id);
+        setActiveUserName(firstWrk.name);
+      }
+    }
+    setIsAuthenticated(true);
+    setShowLandingPage(false);
+    return { ok: true };
+  };
+
+  const handleSignOutToLanding = () => {
+    setIsAuthenticated(false);
+    setShowLandingPage(true);
+    try {
+      sessionStorage.removeItem("swasthya_session_v25");
+    } catch {
+      // Ignore
+    }
+  };
+
+  if (showLandingPage) {
+    return (
+      <SwasthyaContext.Provider
+        value={{
+          snapshot,
+          loading,
+          busyAction,
+          activeRole,
+          activeUserId,
+          activeUserName,
+          activeOrganizationId,
+          workerScope,
+          setWorkerScope,
+          lang,
+          setLang,
+          handleUserSwitch,
+          executeAction,
+          openCheckinModal,
+          openRegisterPatientModal,
+          openSignInModal,
+          clearPatient,
+          restoreClearedPatient,
+          openPhoneDrawer,
+        }}
+      >
+        <SwasthyaLandingPage
+          organizations={snapshot?.organizations || []}
+          users={snapshot?.users || []}
+          activeSessions={snapshot?.activeSessions || []}
+          selectedLanguage={lang}
+          onSelectLanguage={setLang}
+          isAuthenticated={isAuthenticated}
+          currentOrganization={snapshot?.activeOrganization}
+          currentUser={currentStaffObj}
+          onSignInSuccess={handleLandingSignIn}
+          onRegisterOrganization={handleLandingRegisterOrg}
+          onEnterWorkspace={() => {
+            setShowLandingPage(false);
+            try {
+              sessionStorage.setItem(
+                "swasthya_session_v25",
+                JSON.stringify({
+                  organizationId: activeOrganizationId,
+                  userId: activeUserId,
+                  userName: activeUserName,
+                  role: activeRole,
+                  authToken,
+                  enteredWorkspace: true,
+                })
+              );
+            } catch {
+              // Ignore
+            }
+          }}
+          onSignOut={handleSignOutToLanding}
+        />
+      </SwasthyaContext.Provider>
+    );
+  }
 
   return (
     <SwasthyaContext.Provider
@@ -518,7 +725,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200/80">
           <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2.5">
             {/* Left: Crisp Medical Brand + Active Multi-Tenant Organization Pill */}
-            <div className="flex items-center gap-2.5 shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               <Link
                 href="/"
                 className="min-h-[44px] flex items-center gap-2 shrink-0 whitespace-nowrap"
@@ -531,19 +738,30 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                 </span>
               </Link>
 
+              {/* Landing Page Toggle Button */}
+              <button
+                type="button"
+                onClick={() => setShowLandingPage(true)}
+                title="View Product Landing Page & 3D Patient Journey"
+                className="min-h-[38px] px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1 whitespace-nowrap transition-colors cursor-pointer"
+              >
+                <span>Landing Page</span>
+              </button>
+
               {/* Multi-Tenant Organization Sign-In Badge */}
               <button
                 type="button"
                 onClick={openSignInModal}
                 title="Switch Organization or Sign In with Organization Credentials"
-                className="min-h-[38px] px-2.5 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-1.5 whitespace-nowrap transition-colors"
+                className="min-h-[38px] px-2.5 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-1.5 whitespace-nowrap transition-colors cursor-pointer"
               >
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
                 <Building2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 <span className="max-w-[120px] sm:max-w-[160px] truncate">
                   {snapshot?.activeOrganization?.shortName ?? "Sevak Health"}
                 </span>
                 <span className="hidden md:inline-block px-1.5 py-0.5 rounded bg-emerald-600 text-white text-[10px] font-mono">
-                  {snapshot?.activeOrganization?.teamSize ?? 15} Staff
+                  {currentStaffObj?.title || `${snapshot?.activeOrganization?.teamSize ?? 15} Staff`}
                 </span>
               </button>
             </div>
@@ -887,17 +1105,27 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                 {snapshot?.stats.totalPatients ?? 0} Total)
               </span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 font-semibold flex items-center gap-1.5 text-xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                Live Sessions ({snapshot?.activeSessions?.length ?? 3} Active Tenants)
+              </span>
               <span className="text-emerald-700 font-medium flex items-center gap-1 text-xs sm:text-sm">
                 <ShieldCheck className="w-4 h-4" />
                 SHA-256 Chain Verified ({snapshot?.auditIntegrity.totalEntries ?? 0})
               </span>
               <button
                 onClick={() => executeAction({ action: "RESET_DEMO" })}
-                className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium flex items-center gap-1 text-xs"
+                className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium flex items-center gap-1 text-xs cursor-pointer"
               >
                 <RefreshCw className="w-3 h-3" />
                 Reset State
+              </button>
+              <button
+                onClick={handleSignOutToLanding}
+                className="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold flex items-center gap-1 text-xs cursor-pointer"
+              >
+                Sign Out
               </button>
             </div>
           </div>
@@ -975,6 +1203,47 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
 
               {signInTab === "signin" ? (
                 <div className="space-y-4">
+                  {/* 3 Simultaneous Demo Accounts Quick-Autofill Panel */}
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-extrabold uppercase tracking-wider text-slate-700">
+                        Simultaneous Demo Accounts (3 Active Tenants)
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-extrabold">
+                        DEMO ONLY
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      {LANDING_DEMO_PRESETS.map((preset) => (
+                        <button
+                          key={preset.userId}
+                          type="button"
+                          onClick={() => {
+                            setSelectedOrgForLogin(preset.organizationId);
+                            setSelectedUserForLogin(preset.userId);
+                            setPasscodeInput(preset.passwordPlain);
+                          }}
+                          className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
+                            selectedOrgForLogin === preset.organizationId &&
+                            selectedUserForLogin === preset.userId
+                              ? "bg-red-50 border-red-400 ring-2 ring-red-500/20"
+                              : "bg-white border-slate-200 hover:border-slate-300"
+                          }`}
+                        >
+                          <div className="font-mono font-bold text-red-600">
+                            {preset.userId}
+                          </div>
+                          <div className="font-semibold text-slate-800 text-[11px] truncate">
+                            {preset.organizationId} • {preset.personRole}
+                          </div>
+                          <div className="text-[10px] text-emerald-700 font-medium truncate">
+                            {preset.roleBadge}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                       1. Select Healthcare Organization

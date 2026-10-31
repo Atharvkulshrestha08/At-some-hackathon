@@ -21,6 +21,12 @@ import {
   CLINICAL_SYMPTOM_CATALOG,
   syncRowToSupabaseCloud,
 } from "./external-integrations.ts";
+import {
+  DEMO_SEED_ACCOUNTS,
+  hashPassword,
+  verifyPasswordHash,
+} from "./demo-seed-accounts.ts";
+export { DEMO_SEED_ACCOUNTS, hashPassword, verifyPasswordHash };
 
 // ============================================================================
 // POSTGRESQL / SUPABASE DDL SCHEMA (15 Core Tables)
@@ -211,11 +217,32 @@ export interface UserRecord {
   id: string;
   organizationId?: string;
   role: UserRole;
+  subRole?: "doctor" | "asha" | "nurse" | "supervisor" | "admin";
+  roleBadge?: string;
+  passwordHash?: string;
   name: string;
   title: string;
   facilityId: string;
   available: boolean;
   assignedGroupIds?: string[];
+}
+
+export interface ActiveSessionRecord {
+  sessionId: string;
+  userId: string;
+  displayName: string;
+  orgId: string;
+  orgName: string;
+  role: UserRole;
+  roleBadge: string;
+  issuedAt: string;
+  expiresAt: string;
+}
+
+export interface LoginAttemptRecord {
+  failedCount: number;
+  lockedUntil: string | null;
+  lastAttemptAt: string;
 }
 
 export interface PatientRecord {
@@ -385,6 +412,8 @@ export interface SwasthyaDatabaseState {
   ambulanceDispatches: AmbulanceDispatchRecord[];
   messages: SimulatedMessageRecord[];
   auditLog: AuditLogRecord[];
+  activeSessions: ActiveSessionRecord[];
+  loginAttempts: Record<string, LoginAttemptRecord>;
 }
 
 // ============================================================================
@@ -532,7 +561,31 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       teamSize: 15,
       description:
         "15-Worker Frontline ASHA/ANM Team + 2 Clinicians + PHC Supervisor + Admin",
-      accessPasscode: "SEVAK-2026",
+      accessPasscode: "Sevak@Demo#207",
+    },
+    {
+      id: "ORG-BOKO",
+      name: "Boko Central PHC Medical Block",
+      shortName: "Boko Central PHC",
+      orgCode: "BOKO-PHC",
+      region: "HEX-0 Boko Central PHC & Referral Catchment",
+      district: "Boko, Kamrup Rural",
+      teamSize: 12,
+      description:
+        "Primary Health Centre Clinical Queue & Critical Escalation Hub (HEX-0 Boko Central)",
+      accessPasscode: "Boko@Demo#101",
+    },
+    {
+      id: "ORG-CHHAY",
+      name: "Chhaygaon North Sub-Centre Network",
+      shortName: "Chhaygaon Clinic",
+      orgCode: "CHHAY-SC",
+      region: "HEX-1 Chhaygaon North Sub-Centre Catchment",
+      district: "Chhaygaon, Kamrup Rural",
+      teamSize: 9,
+      description:
+        "ANM Nurse Sub-Centre 30-Slot Matrix & Maternal Follow-Up Hub (HEX-1 Chhaygaon North)",
+      accessPasscode: "Chhay@Demo#303",
     },
     {
       id: "ORG-NHM-KAMRUP",
@@ -691,9 +744,46 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       clinicianOnDuty: true,
       hexCoords: { q: 0, r: 0, x: 200, y: 150 },
     },
+    // Isolated Facilities for ORG-BOKO & ORG-CHHAY (Simultaneous Multi-Tenant Demo)
+    {
+      id: "FAC-BOKO-0",
+      organizationId: "ORG-BOKO",
+      name: "Boko Central PHC (Hex-0 Clinical Block)",
+      village: "Boko Central",
+      district: "Kamrup Rural",
+      hexagonId: "HEX-0",
+      adjacentHexagons: ["HEX-1", "HEX-2", "HEX-3", "HEX-4"],
+      tier: "PHC",
+      totalSlots: 30,
+      systemSlots: 15,
+      criticalSlots: 5,
+      walkInSlots: 10,
+      clinicianOnDuty: true,
+      hexCoords: { q: 0, r: 0, x: 200, y: 150 },
+    },
+    {
+      id: "FAC-CHHAY-1",
+      organizationId: "ORG-CHHAY",
+      name: "Chhaygaon North Sub-Centre (Hex-1 Nurse Matrix)",
+      village: "Chhaygaon North",
+      district: "Kamrup Rural",
+      hexagonId: "HEX-1",
+      adjacentHexagons: ["HEX-0", "HEX-2", "HEX-4"],
+      tier: "SUB_CENTRE",
+      totalSlots: 30,
+      systemSlots: 15,
+      criticalSlots: 5,
+      walkInSlots: 10,
+      clinicianOnDuty: true,
+      hexCoords: { q: 0, r: -1, x: 200, y: 55 },
+    },
   ];
 
-  // 2. Staff Users: 15-Person Frontline Team in ORG-SEVAK + Clinicians, Supervisor & Admin
+  // 2. Staff Users: 15-Person Frontline Team in ORG-SEVAK + 3 Simultaneous Demo Users + Clinicians, Supervisor & Admin
+  const defaultSevakHash = hashPassword("Sevak@Demo#207");
+  const bokoDocHash = hashPassword("Boko@Demo#101");
+  const chhayNurseHash = hashPassword("Chhay@Demo#303");
+
   const sevakWorkerNames = [
     { id: "USR-WRK-RINA", name: "Rina Devi (ASHA #1)", cluster: "Boko Central Ward 1–4", fac: "FAC-HEX-0" },
     { id: "USR-WRK-2", name: "Mina Kalita (ANM #2)", cluster: "Rani East Cluster", fac: "FAC-HEX-2" },
@@ -701,7 +791,7 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
     { id: "USR-WRK-4", name: "Anjali Boro (ASHA #4)", cluster: "Chhaygaon North", fac: "FAC-HEX-1" },
     { id: "USR-WRK-5", name: "Dipankar Roy (MPW #5)", cluster: "Mirza South Cluster", fac: "FAC-HEX-3" },
     { id: "USR-WRK-6", name: "Pratima Rabha (ASHA #6)", cluster: "Boko West Ward", fac: "FAC-HEX-0" },
-    { id: "USR-WRK-7", name: "Jonali Nath (ANM #7)", cluster: "Chhaygaon East", fac: "FAC-HEX-1" },
+    { id: "asha.sevak07", name: "Jonali Nath (asha.sevak07 • ASHA #7)", cluster: "Chhaygaon East", fac: "FAC-HEX-1" },
     { id: "USR-WRK-8", name: "Kabita Medhi (ASHA #8)", cluster: "Rani Tea Estate", fac: "FAC-HEX-2" },
     { id: "USR-WRK-9", name: "Hemanta Deka (CHW #9)", cluster: "Mirza Hill Ward", fac: "FAC-HEX-3" },
     { id: "USR-WRK-10", name: "Sunita Barman (ASHA #10)", cluster: "Boko South", fac: "FAC-HEX-0" },
@@ -717,6 +807,9 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       id: w.id,
       organizationId: "ORG-SEVAK",
       role: "worker" as UserRole,
+      subRole: "asha" as const,
+      roleBadge: "ASHA worker, Sevak 15-worker team",
+      passwordHash: defaultSevakHash,
       name: w.name,
       title: `Sevak Frontline Worker • ${w.cluster}`,
       facilityId: w.fac,
@@ -726,6 +819,9 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       id: "USR-SUP-1",
       organizationId: "ORG-SEVAK",
       role: "supervisor",
+      subRole: "supervisor",
+      roleBadge: "Block Supervisor, Sevak 15-worker team",
+      passwordHash: defaultSevakHash,
       name: "Pranab Hazarika (PHC Supervisor)",
       title: "Sevak Block Coordinator • 15-Worker Team Lead",
       facilityId: "FAC-HEX-0",
@@ -736,6 +832,9 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       id: "USR-CLIN-1",
       organizationId: "ORG-SEVAK",
       role: "clinician",
+      subRole: "doctor",
+      roleBadge: "Clinician, HEX-0 Boko Central PHC",
+      passwordHash: defaultSevakHash,
       name: "Dr. Ananya Baruah (Senior MO)",
       title: "Medical Officer • Boko Central PHC (HEX-0)",
       facilityId: "FAC-HEX-0",
@@ -745,6 +844,9 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       id: "USR-CLIN-2",
       organizationId: "ORG-SEVAK",
       role: "clinician",
+      subRole: "doctor",
+      roleBadge: "Senior Specialist, HEX-4 GMCH & BBCI",
+      passwordHash: defaultSevakHash,
       name: "Dr. Rajesh Sharma (Oncology & Maternal Specialist)",
       title: "Senior Specialist • GMCH & BBCI Referral Hub (HEX-4)",
       facilityId: "FAC-HEX-4",
@@ -754,9 +856,38 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       id: "USR-ADMIN-1",
       organizationId: "ORG-SEVAK",
       role: "admin",
+      subRole: "admin",
+      roleBadge: "System Administrator, Sevak Health",
+      passwordHash: defaultSevakHash,
       name: "Vikramjit Bora (System Admin)",
       title: "Sevak Digital Health Administrator",
       facilityId: "FAC-HEX-0",
+      available: true,
+    },
+    // Demo User 1: Clinic Doctor in ORG-BOKO (doc.boko01 / Boko@Demo#101)
+    {
+      id: "doc.boko01",
+      organizationId: "ORG-BOKO",
+      role: "clinician",
+      subRole: "doctor",
+      roleBadge: "Clinician, HEX-0 Boko Central PHC",
+      passwordHash: bokoDocHash,
+      name: "Dr. Ananya Baruah (doc.boko01)",
+      title: "Clinician, HEX-0 Boko Central PHC",
+      facilityId: "FAC-BOKO-0",
+      available: true,
+    },
+    // Demo User 3: Local Clinic Nurse in ORG-CHHAY (anm.chhay03 / Chhay@Demo#303)
+    {
+      id: "anm.chhay03",
+      organizationId: "ORG-CHHAY",
+      role: "worker",
+      subRole: "nurse",
+      roleBadge: "ANM nurse, HEX-1 Chhaygaon North",
+      passwordHash: chhayNurseHash,
+      name: "Anjali Boro (anm.chhay03)",
+      title: "ANM Nurse, HEX-1 Chhaygaon North",
+      facilityId: "FAC-CHHAY-1",
       available: true,
     },
     // Isolated Users for ORG-NHM-KAMRUP
@@ -764,6 +895,9 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       id: "USR-NHM-WRK-1",
       organizationId: "ORG-NHM-KAMRUP",
       role: "worker",
+      subRole: "asha",
+      roleBadge: "ASHA worker, Kamrup NHM Block",
+      passwordHash: hashPassword("NHM-2026"),
       name: "Karabi Das (NHM ASHA Worker)",
       title: "NHM Hajo Cluster ASHA",
       facilityId: "FAC-NHM-0",
@@ -773,6 +907,9 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       id: "USR-NHM-CLIN-1",
       organizationId: "ORG-NHM-KAMRUP",
       role: "clinician",
+      subRole: "doctor",
+      roleBadge: "Clinician, Hajo Block PHC",
+      passwordHash: hashPassword("NHM-2026"),
       name: "Dr. Bhaskarjyoti Kalita (NHM MO)",
       title: "Medical Officer • Hajo Block PHC",
       facilityId: "FAC-NHM-0",
@@ -783,6 +920,9 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       id: "USR-ARO-WRK-1",
       organizationId: "ORG-AROGYA",
       role: "worker",
+      subRole: "asha",
+      roleBadge: "Care Worker, Arogya Trust",
+      passwordHash: hashPassword("AROGYA-2026"),
       name: "Pompi Gogoi (Arogya Care Worker)",
       title: "Arogya Field Coordinator • Jorhat",
       facilityId: "FAC-ARO-0",
@@ -792,6 +932,9 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       id: "USR-ARO-CLIN-1",
       organizationId: "ORG-AROGYA",
       role: "clinician",
+      subRole: "doctor",
+      roleBadge: "Clinician, Arogya Community Care",
+      passwordHash: hashPassword("AROGYA-2026"),
       name: "Dr. Nilakshi Saikia (Arogya MO)",
       title: "Clinical Lead • Arogya Trust",
       facilityId: "FAC-ARO-0",
@@ -1198,16 +1341,26 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
 
   for (let i = showcasePatients.length + 1; i <= 300; i++) {
     const padId = String(i).padStart(3, "0");
-    // Assign patients 281..290 to ORG-NHM-KAMRUP and 291..300 to ORG-AROGYA to prove strict multi-org isolation
+    // Assign patients across isolated tenants while preserving USR-WRK-RINA's exact 58 patients in ORG-SEVAK (multiples of 15 like 270 stay in ORG-SEVAK)
+    const isBokoOrg = i >= 261 && i <= 269;
+    const isChhayOrg = i >= 271 && i <= 279;
     const isNhmOrg = i >= 281 && i <= 290;
     const isArogyaOrg = i >= 291;
-    const orgId = isNhmOrg
+    const orgId = isBokoOrg
+      ? "ORG-BOKO"
+      : isChhayOrg
+      ? "ORG-CHHAY"
+      : isNhmOrg
       ? "ORG-NHM-KAMRUP"
       : isArogyaOrg
       ? "ORG-AROGYA"
       : "ORG-SEVAK";
 
-    const fac = isNhmOrg
+    const fac = isBokoOrg
+      ? facilities.find((f) => f.id === "FAC-BOKO-0")!
+      : isChhayOrg
+      ? facilities.find((f) => f.id === "FAC-CHHAY-1")!
+      : isNhmOrg
       ? facilities.find((f) => f.id === (i % 2 === 0 ? "FAC-NHM-0" : "FAC-NHM-1"))!
       : isArogyaOrg
       ? facilities.find((f) => f.id === "FAC-ARO-0")!
@@ -1215,7 +1368,11 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
 
     const cohort = cohorts[i % cohorts.length];
     const lang = languages[i % languages.length];
-    const workerId = isNhmOrg
+    const workerId = isBokoOrg
+      ? "doc.boko01"
+      : isChhayOrg
+      ? "anm.chhay03"
+      : isNhmOrg
       ? "USR-NHM-WRK-1"
       : isArogyaOrg
       ? "USR-ARO-WRK-1"
@@ -1236,7 +1393,15 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
     const symptoms: string[] = [];
     let consentActive = true;
 
-    if (i <= 28 || isNhmOrg || isArogyaOrg) {
+    if (isBokoOrg && i <= 263) {
+      // Critical cases for ORG-BOKO doctor queue
+      daysOverdue = 4;
+      consecutiveMissed = 2;
+      sysBp = 168;
+      diaBp = 106;
+      hr = 114;
+      symptoms.push("chest_pain");
+    } else if (i <= 28 || isBokoOrg || isChhayOrg || isNhmOrg || isArogyaOrg) {
       // Overdue cases
       daysOverdue = (i % 6) + 2;
       consecutiveMissed = 1;
@@ -1373,6 +1538,32 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       referralDestination: null,
       createdAt: "2026-10-31T04:00:00Z",
       updatedAt: "2026-10-31T08:30:00Z",
+    },
+    {
+      id: "ESC-1003",
+      patientId: "PT-SYN-261",
+      pseudonym: "PT-DIA-261",
+      ageBand: "50–59",
+      cohort: "diabetes",
+      facilityId: "FAC-BOKO-0",
+      hexagonId: "HEX-0",
+      ruleId: "CLIN-BP-01",
+      ruleVersion: 1,
+      priorityScore: 178,
+      whyFlagged:
+        "Needs clinician review: BP dangerously elevated (168/106 mmHg) with tachycardia (114 bpm) and chest pain in Boko Central PHC catchment. Prototype rule. Not a diagnosis. Clinician review required.",
+      latestVitalsSummary: "BP 168/106 mmHg ↑ | HR 114 bpm ↑ | Glu 125 mg/dL | SpO₂ 98%",
+      symptoms: ["chest_pain"],
+      requestedBy: "doc.boko01",
+      clinicianId: "doc.boko01",
+      status: "requested",
+      slaHours: 4,
+      slaElapsedHours: 1,
+      slaBreached: false,
+      outcomeNote: null,
+      referralDestination: "Boko Central PHC (Hex-0 Clinical Block)",
+      createdAt: "2026-10-31T07:30:00Z",
+      updatedAt: "2026-10-31T07:30:00Z",
     },
   ];
 
@@ -1539,6 +1730,18 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
     "Clinic FAC-HEX-1 at 100% critical capacity; broadcasted PT-MAT-204 to adjacent hexagons HEX-0, HEX-2, HEX-4."
   );
 
+  const activeSessions: ActiveSessionRecord[] = DEMO_SEED_ACCOUNTS.map((acc, idx) => ({
+    sessionId: `SES-LIVE-${101 + idx}`,
+    userId: acc.userId,
+    displayName: acc.displayName,
+    orgId: acc.orgId,
+    orgName: acc.orgName,
+    role: acc.role,
+    roleBadge: acc.roleBadge,
+    issuedAt: nowIso,
+    expiresAt: "2026-11-01T20:30:00Z",
+  }));
+
   return {
     initialized: true,
     postgresEngineStatus: "PostgreSQL 16 (PGlite SQL Active + Multi-Tenant RLS)",
@@ -1554,6 +1757,8 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
     ambulanceDispatches,
     messages,
     auditLog,
+    activeSessions,
+    loginAttempts: {},
   };
 }
 
@@ -1634,7 +1839,8 @@ export function getDbState(): SwasthyaDatabaseState {
   if (
     !globalForDb.swasthyaState ||
     !Array.isArray(globalForDb.swasthyaState.organizations) ||
-    !globalForDb.swasthyaState.organizations[0]?.shortName
+    !globalForDb.swasthyaState.organizations[0]?.shortName ||
+    !Array.isArray(globalForDb.swasthyaState.activeSessions)
   ) {
     globalForDb.swasthyaState = buildSeededDatabaseState();
     void ensurePostgresEngineSynced(globalForDb.swasthyaState);
@@ -1851,6 +2057,8 @@ export function computeSystemSnapshot(
     activeOrganization,
     workerScope,
     signedInToken: signAuthToken(callerId, callerRole, effectiveOrgId),
+    activeSessions: state.activeSessions,
+    demoAccounts: DEMO_SEED_ACCOUNTS,
     facilities: orgFacilities,
     users: orgUsers,
     quickSortResult,

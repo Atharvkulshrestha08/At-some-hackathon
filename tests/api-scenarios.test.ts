@@ -239,13 +239,69 @@ resetDbState();
   );
 }
 
-// Scenario 10: Verify Full-Field 64-Hex SHA-256 Hash-Chained Audit Trail Integrity after all mutations
+// Scenario 10: Simultaneous 3-Tenant Demo Logins (doc.boko01, asha.sevak07, anm.chhay03) + 5-Attempt Lockout (423)
+{
+  const loginBoko = await callPost({
+    action: "SIGN_IN_ORGANIZATION",
+    targetOrganizationId: "ORG-BOKO",
+    targetUserId: "doc.boko01",
+    accessPasscode: "Boko@Demo#101",
+  });
+  assert.equal(loginBoko.status, 200);
+  assert.ok(loginBoko.json.authToken);
+  assert.equal(loginBoko.json.snapshot.activeOrganization.id, "ORG-BOKO");
+
+  const loginSevak = await callPost({
+    action: "SIGN_IN_ORGANIZATION",
+    targetOrganizationId: "ORG-SEVAK",
+    targetUserId: "asha.sevak07",
+    accessPasscode: "Sevak@Demo#207",
+  });
+  assert.equal(loginSevak.status, 200);
+  assert.ok(loginSevak.json.authToken);
+  assert.equal(loginSevak.json.snapshot.activeOrganization.id, "ORG-SEVAK");
+
+  const loginChhay = await callPost({
+    action: "SIGN_IN_ORGANIZATION",
+    targetOrganizationId: "ORG-CHHAY",
+    targetUserId: "anm.chhay03",
+    accessPasscode: "Chhay@Demo#303",
+  });
+  assert.equal(loginChhay.status, 200);
+  assert.ok(loginChhay.json.authToken);
+  assert.equal(loginChhay.json.snapshot.activeOrganization.id, "ORG-CHHAY");
+
+  // Verify 5 failed password attempts lock the account with HTTP 423
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    const failRes = await callPost({
+      action: "SIGN_IN_ORGANIZATION",
+      targetOrganizationId: "ORG-CHHAY",
+      targetUserId: "anm.chhay03",
+      accessPasscode: `WrongPass#${attempt}`,
+    });
+    assert.equal(failRes.status, 403);
+  }
+  const fifthFailRes = await callPost({
+    action: "SIGN_IN_ORGANIZATION",
+    targetOrganizationId: "ORG-CHHAY",
+    targetUserId: "anm.chhay03",
+    accessPasscode: "WrongPass#5",
+  });
+  assert.equal(fifthFailRes.status, 423);
+  assert.equal(fifthFailRes.json.locked, true);
+
+  console.log(
+    "✅ [PASS] Scenario 10: Simultaneous 3-Tenant Demo Logins (doc.boko01, asha.sevak07, anm.chhay03) & 5-Attempt Lockout (423) verified."
+  );
+}
+
+// Scenario 11: Verify Full-Field 64-Hex SHA-256 Hash-Chained Audit Trail Integrity after all mutations
 {
   const auditCheck = verifyAuditChainIntegrity();
   assert.equal(auditCheck.valid, true);
   assert.equal(auditCheck.brokenAtId, null);
   console.log(
-    `✅ [PASS] Scenario 10: Full-Field 64-Hex SHA-256 Audit Chain 100% verified across all ${auditCheck.totalEntries} entries.`
+    `✅ [PASS] Scenario 11: Full-Field 64-Hex SHA-256 Audit Chain 100% verified across all ${auditCheck.totalEntries} entries.`
   );
 }
 
