@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { SwasthyaShell } from "@/components/SwasthyaShell";
+
+const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: "SWASTHYA SENSE — Clinical Early Warning & Follow-Up Platform",
@@ -15,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-[#F8FAFC] text-slate-900 antialiased selection:bg-emerald-600/15 selection:text-emerald-900">
+      <body className={`min-h-screen bg-[#F8FAFC] text-slate-900 antialiased selection:bg-emerald-600/15 selection:text-emerald-900 ${inter.className}`}>
         <SwasthyaShell>{children}</SwasthyaShell>
       </body>
     </html>

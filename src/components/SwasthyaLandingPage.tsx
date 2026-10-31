@@ -533,7 +533,7 @@ export default function SwasthyaLandingPage({
   return (
     <div
       className={`min-h-screen selection:bg-emerald-500/20 selection:text-emerald-800 font-sans transition-colors duration-300 ${
-        darkMode ? "bg-[#0A0E1A] text-slate-100" : "bg-[#F8FAFC] text-slate-900"
+        darkMode ? "dark bg-[#0A0E1A] text-slate-100" : "bg-[#F8FAFC] text-slate-900"
       }`}
     >
       {/* ===================================================================
