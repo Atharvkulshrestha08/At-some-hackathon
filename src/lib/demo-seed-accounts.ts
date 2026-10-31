@@ -6,8 +6,8 @@ export interface DemoAccountChip {
   orgName: string;
   userId: string;
   password: string;
-  role: "clinician" | "worker" | "supervisor" | "admin";
-  subRole: "doctor" | "asha" | "nurse";
+  role: "clinician" | "worker" | "supervisor" | "admin" | "super_admin";
+  subRole: "doctor" | "asha" | "nurse" | "admin" | "super_admin";
   roleBadge: string;
   displayName: string;
   facilityId: string;
@@ -51,6 +51,19 @@ export function verifyPasswordHash(plainPassword: string, storedHash: string): b
  * Supports env overrides while providing deterministic defaults for hackathon judges.
  */
 export const DEMO_SEED_ACCOUNTS: DemoAccountChip[] = [
+  {
+    personLabel: "Super Admin (Global Master)",
+    orgId: process.env.DEMO_ORG_GLOBAL_ID || "ORG-GLOBAL",
+    orgName: "Global Health Operations Command",
+    userId: process.env.DEMO_USER_ATHARV_ID || "super.atharv",
+    password: process.env.DEMO_USER_ATHARV_PASS || "Super@Admin#2026",
+    role: "super_admin",
+    subRole: "super_admin",
+    roleBadge: "Super Admin & Platform Director (Global Clearance)",
+    displayName: "Atharv (Super Admin)",
+    facilityId: "FAC-HEX-0",
+    hexagonId: "HEX-0",
+  },
   {
     personLabel: "Clinic doctor",
     orgId: process.env.DEMO_ORG_BOKO_ID || "ORG-BOKO",

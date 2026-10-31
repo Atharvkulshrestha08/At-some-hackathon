@@ -305,6 +305,114 @@ resetDbState();
   );
 }
 
+// Scenario 12: Super Admin Authentication & Global Master Oversight
+{
+  const loginRes = await callPost({
+    action: "SIGN_IN_ORGANIZATION",
+    targetOrganizationId: "ORG-GLOBAL",
+    targetUserId: "super.atharv",
+    accessPasscode: "Super@Admin#2026",
+  });
+  assert.equal(loginRes.status, 200);
+  assert.equal(loginRes.json.session.role, "super_admin");
+  assert.equal(loginRes.json.session.orgId, "ORG-GLOBAL");
+
+  // Verify Super Admin can access patients in any tenant without 403 block
+  const globalCheckinRes = await callPost({
+    action: "LOG_CHECKIN",
+    callerRole: "super_admin",
+    callerId: "super.atharv",
+    callerName: "Atharv (Super Admin)",
+    organizationId: "ORG-GLOBAL",
+    patientId: "PT-SYN-001", // Belongs to Sevak
+    systolicBp: 122,
+    diastolicBp: 78,
+    heartRate: 74,
+    bloodGlucose: 105,
+    temperature: 36.8,
+    spo2: 98,
+    symptoms: [],
+  });
+  assert.equal(globalCheckinRes.status, 200);
+  console.log(
+    "✅ [PASS] Scenario 12: Super Admin (super.atharv) authentication & cross-tenant master oversight verified."
+  );
+}
+
+// Scenario 13: Post-Operative Recovery Telemetry (Wired Bedside / Paper Register OCR) & Shock Index Routing
+{
+  const postOpRes = await callPost({
+    action: "SUBMIT_POST_OP_REPORT",
+    callerRole: "clinician",
+    callerId: "USR-CLIN-1",
+    callerName: "Dr. Ananya Baruah",
+    organizationId: "ORG-SEVAK",
+    patientId: "PT-SYN-004",
+    surgeryType: "Emergency Cesarean Section (LSCS)",
+    source: "HYBRID_FUSION",
+    vitals: {
+      systolicBp: 84, // Hypotension
+      diastolicBp: 52,
+      heartRate: 126, // Tachycardia -> Shock Index 126/84 = 1.50 (>0.9)
+      spo2: 94,
+      temperature: 37.6,
+      respRate: 24,
+    },
+    drainOutputMl: 380,
+    urineOutputMl: 30,
+    consciousness: "Voice",
+    woundStatus: "Active oozing noted on abdominal dressing",
+    clinicalNotes: "Acute internal hemorrhage suspicion. Emergency plasma expander started.",
+  });
+  assert.equal(postOpRes.status, 200);
+  assert.equal(postOpRes.json.report.riskLevel, "CRITICAL_HEMORRHAGE_SEPSIS");
+  assert.equal(postOpRes.json.report.quickSortRoutedPartition, "UPPER_IMMEDIATE");
+  assert.ok(postOpRes.json.report.shockIndex > 0.9);
+  console.log(
+    "✅ [PASS] Scenario 13: Post-Op Telemetry (Shock Index 1.50) successfully flagged Hemorrhagic Shock & routed to Upper Partition."
+  );
+}
+
+// Scenario 14: Super Admin / Org Admin Staff Provisioning & Patient Restriction Management
+{
+  // Provision Doctor
+  const provRes = await callPost({
+    action: "PROVISION_STAFF",
+    callerRole: "super_admin",
+    callerId: "super.atharv",
+    callerName: "Atharv (Super Admin)",
+    organizationId: "ORG-GLOBAL",
+    name: "Dr. Himanta Sarma",
+    role: "clinician",
+    subRole: "doctor",
+    targetOrganizationId: "ORG-BOKO",
+    facilityId: "FAC-BOKO-0",
+    title: "Senior Trauma Surgeon",
+    passcode: "Trauma@2026",
+  });
+  assert.equal(provRes.status, 200);
+  assert.equal(provRes.json.user.role, "clinician");
+
+  // Restrict patient with administrative reason
+  const restrictRes = await callPost({
+    action: "RESTRICT_PATIENT",
+    callerRole: "super_admin",
+    callerId: "super.atharv",
+    callerName: "Atharv (Super Admin)",
+    organizationId: "ORG-GLOBAL",
+    patientId: "PT-SYN-002",
+    restrictionReason: "Transferred to State Forensic Oncology Ward • Medico-Legal Hold",
+  });
+  assert.equal(restrictRes.status, 200);
+
+  // Verify audit chain remains 100% valid after all new operations
+  const finalAudit = verifyAuditChainIntegrity();
+  assert.equal(finalAudit.valid, true);
+  console.log(
+    `✅ [PASS] Scenario 14: Staff Provisioning & Patient Restriction verified (Audit Chain intact across ${finalAudit.totalEntries} entries).`
+  );
+}
+
 resetDbState();
 console.log("==================================================================");
 console.log("ALL END-TO-END API & SCENARIO TESTS PASSED (100%)");

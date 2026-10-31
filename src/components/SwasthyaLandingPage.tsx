@@ -59,6 +59,19 @@ export interface DemoAccountPreset {
 
 export const LANDING_DEMO_PRESETS: DemoAccountPreset[] = [
   {
+    personRole: "Super Admin (Global Master)",
+    organizationId: "ORG-GLOBAL",
+    organizationName: "Global Health Operations Command",
+    userId: "super.atharv",
+    userName: "Atharv (Super Admin)",
+    passwordPlain: "Super@Admin#2026",
+    roleBadge: "Super Admin • Platform Director",
+    facilityHex: "GLOBAL",
+    avatarText: "SA",
+    avatarBg: "bg-purple-600 text-white",
+    badgeBg: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
+  },
+  {
     personRole: "Clinic Doctor",
     organizationId: "ORG-BOKO",
     organizationName: "Boko Central PHC Medical Block",
@@ -816,7 +829,7 @@ export default function SwasthyaLandingPage({
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                   {LANDING_DEMO_PRESETS.map((preset) => (
                     <button
                       key={preset.userId}
@@ -1814,7 +1827,7 @@ export default function SwasthyaLandingPage({
                   <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
                     Quick-Autofill Demo Personas:
                   </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {LANDING_DEMO_PRESETS.map((p) => (
                       <button
                         key={p.userId}

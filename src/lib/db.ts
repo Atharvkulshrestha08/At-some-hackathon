@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS audit_log (
 // ============================================================================
 
 export type { CohortType, MobilityStatus };
-export type UserRole = "worker" | "supervisor" | "clinician" | "admin";
+export type UserRole = "worker" | "supervisor" | "clinician" | "admin" | "super_admin";
 
 export interface OrganizationRecord {
   id: string;
@@ -217,7 +217,7 @@ export interface UserRecord {
   id: string;
   organizationId?: string;
   role: UserRole;
-  subRole?: "doctor" | "asha" | "nurse" | "supervisor" | "admin";
+  subRole?: "doctor" | "asha" | "nurse" | "supervisor" | "admin" | "super_admin";
   roleBadge?: string;
   passwordHash?: string;
   name: string;
@@ -243,6 +243,38 @@ export interface LoginAttemptRecord {
   failedCount: number;
   lockedUntil: string | null;
   lastAttemptAt: string;
+}
+
+export interface PostOpReportRecord {
+  id: string;
+  patientId: string;
+  patientPseudonym: string;
+  surgeryType: string;
+  operationDate: string;
+  surgeonName: string;
+  anesthetistName: string;
+  source: "WIRED_BEDSIDE_MONITOR" | "PAPER_OCR_REGISTER" | "HYBRID_FUSION";
+  vitals: {
+    systolicBp: number;
+    diastolicBp: number;
+    heartRate: number;
+    spo2: number;
+    temperature: number;
+    respRate: number;
+  };
+  shockIndex: number;
+  drainOutputMl: number;
+  urineOutputMl: number;
+  consciousness: "Alert" | "Voice" | "Pain" | "Unresponsive";
+  woundStatus: string;
+  clinicalNotes: string;
+  riskLevel: "CRITICAL_HEMORRHAGE_SEPSIS" | "ELEVATED_WATCH" | "STABLE_RECOVERY";
+  quickSortRoutedPartition: "UPPER_IMMEDIATE" | "LOWER_ROUTINE";
+  createdById: string;
+  createdByName: string;
+  createdByRole: UserRole;
+  createdAt: string;
+  sha256VerificationHash: string;
 }
 
 export interface PatientRecord {
@@ -278,6 +310,10 @@ export interface PatientRecord {
   clearedBy?: string | null;
   clearedNotes?: string | null;
   clearedReason?: string | null;
+  isRestricted?: boolean;
+  restrictionReason?: string;
+  restrictedBy?: string;
+  restrictedAt?: string | null;
 }
 
 export type EscalationStatus =
@@ -414,6 +450,16 @@ export interface SwasthyaDatabaseState {
   auditLog: AuditLogRecord[];
   activeSessions: ActiveSessionRecord[];
   loginAttempts: Record<string, LoginAttemptRecord>;
+  postOpReports: PostOpReportRecord[];
+  openSourceServices?: {
+    id: string;
+    name: string;
+    category: string;
+    endpointUrl: string;
+    status: "ONLINE" | "STANDBY";
+    latencyMs: number;
+    description: string;
+  }[];
 }
 
 // ============================================================================
@@ -610,6 +656,18 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       description:
         "Independent Maternal & Post-Illness NGO Network (Strictly isolated tenant)",
       accessPasscode: "AROGYA-2026",
+    },
+    {
+      id: "ORG-GLOBAL",
+      name: "Global Health Operations Command",
+      shortName: "Global Command",
+      orgCode: "GLOBAL-ADMIN",
+      region: "Global Master Health Operations (All Hexagons & Catchments)",
+      district: "Assam State Directorate / Pan-India Mesh",
+      teamSize: 50,
+      description:
+        "Super Admin Platform Governance, Cross-Tenant Oversight, Staff Provisioning & Hospital Orchestration",
+      accessPasscode: "Super@Admin#2026",
     },
   ];
 
@@ -939,6 +997,20 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
       title: "Clinical Lead • Arogya Trust",
       facilityId: "FAC-ARO-0",
       available: true,
+    },
+    // Global Super Admin (Atharv - Full Platform Governance)
+    {
+      id: "super.atharv",
+      organizationId: "ORG-GLOBAL",
+      role: "super_admin",
+      subRole: "super_admin",
+      roleBadge: "Super Admin & Platform Director (Global Master)",
+      passwordHash: hashPassword("Super@Admin#2026"),
+      name: "Atharv (Super Admin)",
+      title: "Master Platform Director & System Architect",
+      facilityId: "FAC-HEX-0",
+      available: true,
+      assignedGroupIds: ["*"],
     },
   ];
 
@@ -1742,6 +1814,153 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
     expiresAt: "2026-11-01T20:30:00Z",
   }));
 
+  const postOpReports: PostOpReportRecord[] = [
+    {
+      id: "PO-REP-101",
+      patientId: "PT-SYN-004",
+      patientPseudonym: "PT-MAT-204",
+      surgeryType: "Emergency Lower Segment Cesarean Section (LSCS)",
+      operationDate: "2026-10-31",
+      surgeonName: "Dr. Ananya Baruah (Senior MO)",
+      anesthetistName: "Dr. R. Goswami",
+      source: "HYBRID_FUSION",
+      vitals: {
+        systolicBp: 88,
+        diastolicBp: 56,
+        heartRate: 118,
+        spo2: 95,
+        temperature: 37.4,
+        respRate: 22,
+      },
+      shockIndex: 1.34,
+      drainOutputMl: 420,
+      urineOutputMl: 45,
+      consciousness: "Voice",
+      woundStatus: "Abdominal dressing intact; serosanguinous drain soakage noted",
+      clinicalNotes:
+        "Patient post-LSCS day 0. BP dropped from 120/80 to 88/56, pulse rising to 118 bpm. Shock index 1.34 indicative of concealed post-partum hemorrhage. Placed on high-flow oxygen, IV fluid bolus administered, routed to Upper Immediate clinical review.",
+      riskLevel: "CRITICAL_HEMORRHAGE_SEPSIS",
+      quickSortRoutedPartition: "UPPER_IMMEDIATE",
+      createdById: "doc.boko01",
+      createdByName: "Dr. Ananya Baruah",
+      createdByRole: "clinician",
+      createdAt: "2026-10-31T07:15:00Z",
+      sha256VerificationHash: crypto
+        .createHash("sha256")
+        .update("PO-REP-101-PT-MAT-204-LSCS-CRITICAL")
+        .digest("hex"),
+    },
+    {
+      id: "PO-REP-102",
+      patientId: "PT-SYN-001",
+      patientPseudonym: "PT-ONC-401",
+      surgeryType: "Modified Radical Mastectomy + Axillary Lymph Node Clearance",
+      operationDate: "2026-10-30",
+      surgeonName: "Dr. Rajesh Sharma (Oncology Lead)",
+      anesthetistName: "Dr. Nilakshi Saikia",
+      source: "WIRED_BEDSIDE_MONITOR",
+      vitals: {
+        systolicBp: 116,
+        diastolicBp: 74,
+        heartRate: 78,
+        spo2: 98,
+        temperature: 36.8,
+        respRate: 16,
+      },
+      shockIndex: 0.67,
+      drainOutputMl: 85,
+      urineOutputMl: 120,
+      consciousness: "Alert",
+      woundStatus: "Surgical wound clean and dry; negative suction drain functioning normally",
+      clinicalNotes:
+        "Post-op Day 1 recovery room continuous monitor telemetry. Stable hemodynamics throughout observation window. Normal urine output, minimal serous drain output. Routine analgesia continuation.",
+      riskLevel: "STABLE_RECOVERY",
+      quickSortRoutedPartition: "LOWER_ROUTINE",
+      createdById: "USR-CLIN-2",
+      createdByName: "Dr. Rajesh Sharma",
+      createdByRole: "clinician",
+      createdAt: "2026-10-31T06:30:00Z",
+      sha256VerificationHash: crypto
+        .createHash("sha256")
+        .update("PO-REP-102-PT-ONC-401-MASTECTOMY-STABLE")
+        .digest("hex"),
+    },
+    {
+      id: "PO-REP-103",
+      patientId: "PT-SYN-002",
+      patientPseudonym: "PT-HYP-102",
+      surgeryType: "Laparoscopic Cholecystectomy (Converted to Open)",
+      operationDate: "2026-10-31",
+      surgeonName: "Dr. Bhaskarjyoti Kalita",
+      anesthetistName: "Dr. P. Barman",
+      source: "PAPER_OCR_REGISTER",
+      vitals: {
+        systolicBp: 142,
+        diastolicBp: 92,
+        heartRate: 104,
+        spo2: 92,
+        temperature: 38.6,
+        respRate: 24,
+      },
+      shockIndex: 0.73,
+      drainOutputMl: 150,
+      urineOutputMl: 60,
+      consciousness: "Alert",
+      woundStatus: "Subcostal incision, mild erythema, bile-tinged drain",
+      clinicalNotes:
+        "Paper register OCR capture from Ward 3 clipboard. SpO2 desaturation (92%) with spiked temperature (38.6°C) and tachycardia (104 bpm). System flagged early post-op pulmonary atelectasis / systemic inflammatory response. Doctor SLA set to 4 hours.",
+      riskLevel: "CRITICAL_HEMORRHAGE_SEPSIS",
+      quickSortRoutedPartition: "UPPER_IMMEDIATE",
+      createdById: "USR-NHM-CLIN-1",
+      createdByName: "Dr. Bhaskarjyoti Kalita",
+      createdByRole: "clinician",
+      createdAt: "2026-10-31T08:00:00Z",
+      sha256VerificationHash: crypto
+        .createHash("sha256")
+        .update("PO-REP-103-PT-HYP-102-CHOLECYSTECTOMY-SEPSIS")
+        .digest("hex"),
+    },
+  ];
+
+  const openSourceServices = [
+    {
+      id: "SVC-PGLITE",
+      name: "ElectricSQL PGlite (Embedded Postgres 16 Wasm)",
+      category: "Database & RLS Engine",
+      endpointUrl: "pglite://internal/swasthya_v16",
+      status: "ONLINE" as const,
+      latencyMs: 1.2,
+      description: "Zero-dependency in-process PostgreSQL 16 database with Row-Level Security",
+    },
+    {
+      id: "SVC-WEBSERIAL-IOT",
+      name: "WebSerial Bedside Monitor Stream Gateway (HL7 / NIBP)",
+      category: "IoT Hardware Ingestion",
+      endpointUrl: "serial://tty.usbserial-mindray-vitalmon0",
+      status: "ONLINE" as const,
+      latencyMs: 4.8,
+      description: "Direct RS-232/USB Web Serial API parser for continuous patient bedside telemetry",
+    },
+    {
+      id: "SVC-OCR-TESSERACT",
+      name: "Tesseract.js Wasm Optical Character Recognition",
+      category: "Vision & OCR Digitizer",
+      endpointUrl: "worker://tesseract-ocr/v5-medical-pad",
+      status: "ONLINE" as const,
+      latencyMs: 18.5,
+      description: "Client-side neural OCR engine for digitizing physical ward clipboard registers",
+    },
+    {
+      id: "SVC-H3-MESH",
+      name: "Uber H3 Spatial Hexagonal Indexer",
+      category: "Geospatial Routing",
+      endpointUrl: "h3://geo.assam.hexmesh-l7",
+      status: "ONLINE" as const,
+      latencyMs: 0.8,
+      description: "Discrete global grid indexing for clinic catchment & neighbor overflow ring",
+    },
+  ];
+
   return {
     initialized: true,
     postgresEngineStatus: "PostgreSQL 16 (PGlite SQL Active + Multi-Tenant RLS)",
@@ -1759,6 +1978,8 @@ export function buildSeededDatabaseState(): SwasthyaDatabaseState {
     auditLog,
     activeSessions,
     loginAttempts: {},
+    postOpReports,
+    openSourceServices,
   };
 }
 
@@ -1956,22 +2177,31 @@ export function computeSystemSnapshot(
 
   // Determine the caller's organization strictly from the user record or explicit org parameter
   const callerUser = state.users.find((u) => u.id === callerId);
+  const isSuperAdmin = callerRole === "super_admin" || callerUser?.role === "super_admin";
   const effectiveOrgId =
-    organizationId || callerUser?.organizationId || "ORG-SEVAK";
+    organizationId || (isSuperAdmin ? "ORG-GLOBAL" : (callerUser?.organizationId || "ORG-SEVAK"));
   const activeOrganization =
     state.organizations.find((o) => o.id === effectiveOrgId) ||
     state.organizations[0];
 
-  // Strictly isolate Facilities, Users, and Patients to `effectiveOrgId` (Zero Cross-Org Leakage!)
-  const orgFacilities = state.facilities.filter(
-    (f) => (f.organizationId || "ORG-SEVAK") === effectiveOrgId
-  );
-  const orgUsers = state.users.filter(
-    (u) => (u.organizationId || "ORG-SEVAK") === effectiveOrgId
-  );
-  const orgPatients = state.patients.filter(
-    (p) => (p.organizationId || "ORG-SEVAK") === effectiveOrgId
-  );
+  // If Super Admin viewing Global Command, show full cross-tenant mesh;
+  // otherwise strictly isolate Facilities, Users, and Patients to `effectiveOrgId` (Zero Cross-Org Leakage!)
+  const isGlobalScope = isSuperAdmin && (effectiveOrgId === "ORG-GLOBAL" || !organizationId);
+  const orgFacilities = isGlobalScope
+    ? state.facilities
+    : state.facilities.filter(
+        (f) => (f.organizationId || "ORG-SEVAK") === effectiveOrgId
+      );
+  const orgUsers = isGlobalScope
+    ? state.users
+    : state.users.filter(
+        (u) => (u.organizationId || "ORG-SEVAK") === effectiveOrgId
+      );
+  const orgPatients = isGlobalScope
+    ? state.patients
+    : state.patients.filter(
+        (p) => (p.organizationId || "ORG-SEVAK") === effectiveOrgId
+      );
   const orgFacilityIds = new Set(orgFacilities.map((f) => f.id));
   const orgPatientIds = new Set(orgPatients.map((p) => p.id));
 
@@ -2060,7 +2290,9 @@ export function computeSystemSnapshot(
     activeSessions: state.activeSessions,
     demoAccounts: DEMO_SEED_ACCOUNTS,
     facilities: orgFacilities,
+    allFacilities: state.facilities,
     users: orgUsers,
+    allUsers: state.users,
     quickSortResult,
     clinicAllocations,
     escalations: orgEscalations,
@@ -2068,7 +2300,16 @@ export function computeSystemSnapshot(
     ambulanceDispatches: orgAmbulances,
     messages: orgMessages,
     auditIntegrity: verifyAuditChainIntegrity(),
-    auditLog: state.auditLog.slice(-40).reverse(),
+    auditLog: isSuperAdmin
+      ? state.auditLog.slice(-100).reverse()
+      : state.auditLog.slice(-40).reverse(),
+    postOpReports: isSuperAdmin || isGlobalScope
+      ? (state.postOpReports || [])
+      : (state.postOpReports || []).filter(
+          (rep) => orgPatientIds.has(rep.patientId) || rep.createdById === callerId
+        ),
+    openSourceServices: state.openSourceServices || [],
+    isSuperAdmin,
     withdrawnPatients: orgPatients
       .filter((p) => !p.consentActive)
       .map((p) => ({
@@ -2112,6 +2353,10 @@ export function computeSystemSnapshot(
       activeAmbulances: orgAmbulances.filter(
         (a) => a.status !== "HANDED_OVER_TERTIARY"
       ).length,
+      restrictedPatients: state.patients.filter((p) => p.isRestricted).length,
+      totalPostOpReports: (state.postOpReports || []).length,
+      totalStaff: state.users.length,
+      totalFacilities: state.facilities.length,
     },
   };
 }

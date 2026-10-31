@@ -1,4 +1,12 @@
-import type { UserRole, CohortType, MobilityStatus } from "../../../lib/db.ts";
+import crypto from "crypto";
+import type {
+  UserRole,
+  CohortType,
+  MobilityStatus,
+  PostOpReportRecord,
+  UserRecord,
+  FacilityRecord,
+} from "../../../lib/db.ts";
 import {
   getDbState,
   resetDbState,
@@ -68,9 +76,10 @@ export async function POST(req: Request) {
     // =========================================================================
     // 0. MULTI-TENANT ORGANIZATION ISOLATION GATE
     // Ensure a user signed into Organization A (e.g. Sevak) can NEVER access
-    // or mutate a patient belonging to Organization B (e.g. Kamrup / Arogya)
+    // or mutate a patient belonging to Organization B (e.g. Kamrup / Arogya).
+    // Super Admin (`super_admin`) has global oversight across all tenants.
     // =========================================================================
-    if (body.patientId && action !== "RESET_DEMO") {
+    if (body.patientId && action !== "RESET_DEMO" && callerRole !== "super_admin") {
       const targetPt = state.patients.find((p) => p.id === body.patientId);
       if (
         targetPt &&
@@ -174,7 +183,7 @@ export async function POST(req: Request) {
     // 2. LOG 5-VITAL CHECK-IN (Worker only + Consent Gate)
     // =========================================================================
     if (action === "LOG_CHECKIN") {
-      if (callerRole !== "worker") {
+      if (callerRole !== "worker" && callerRole !== "super_admin") {
         appendAuditEntry(
           callerId,
           callerName,
@@ -1854,6 +1863,460 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         message: `Restored ${pt.pseudonym} back into active QuickSort triage queue.`,
+        snapshot: snap(),
+      });
+    }
+
+    // =========================================================================
+    // 17. POST-OPERATIVE RECOVERY & TELEMETRY INGESTION (WIRED & OCR REGISTER)
+    // Ingests real-time continuous bedside serial stream and/or ward paper register
+    // OCR data. Detects post-op hemorrhage (Shock Index > 0.9) or sepsis and
+    // immediately routes to QuickSort Upper Partition.
+    // =========================================================================
+    if (action === "SUBMIT_POST_OP_REPORT") {
+      const {
+        patientId,
+        surgeryType,
+        operationDate,
+        surgeonName,
+        anesthetistName,
+        source = "HYBRID_FUSION",
+        vitals,
+        drainOutputMl = 0,
+        urineOutputMl = 0,
+        consciousness = "Alert",
+        woundStatus = "Clean and dry",
+        clinicalNotes = "",
+      } = body;
+
+      const pt = state.patients.find((p) => p.id === patientId);
+      if (!pt) {
+        return NextResponse.json({ error: "Patient not found." }, { status: 404 });
+      }
+
+      const vitalsObj = vitals || {
+        systolicBp: 110,
+        diastolicBp: 70,
+        heartRate: 85,
+        spo2: 97,
+        temperature: 37.0,
+        respRate: 18,
+      };
+
+      const shockIndex = Number(
+        (vitalsObj.heartRate / (vitalsObj.systolicBp || 1)).toFixed(2)
+      );
+
+      const isCritical =
+        shockIndex > 0.9 ||
+        vitalsObj.systolicBp < 90 ||
+        (vitalsObj.temperature >= 38.0 && vitalsObj.spo2 < 93) ||
+        vitalsObj.heartRate > 120 ||
+        consciousness !== "Alert";
+
+      const riskLevel = isCritical
+        ? "CRITICAL_HEMORRHAGE_SEPSIS"
+        : shockIndex > 0.8 || vitalsObj.temperature >= 37.8
+        ? "ELEVATED_WATCH"
+        : "STABLE_RECOVERY";
+
+      const quickSortRoutedPartition = isCritical
+        ? "UPPER_IMMEDIATE"
+        : "LOWER_ROUTINE";
+
+      // Append vital reading to patient history
+      pt.vitalsHistory.push({
+        recordedAt: new Date().toISOString().split("T")[0],
+        systolicBp: vitalsObj.systolicBp,
+        diastolicBp: vitalsObj.diastolicBp,
+        heartRate: vitalsObj.heartRate,
+        bloodGlucose:
+          pt.vitalsHistory[pt.vitalsHistory.length - 1]?.bloodGlucose || 110,
+        temperature: vitalsObj.temperature,
+        spo2: vitalsObj.spo2,
+      });
+
+      // If critical, trigger clinical escalation immediately
+      if (isCritical) {
+        state.escalations.push({
+          id: `ESC-PO-${2000 + state.escalations.length + 1}`,
+          patientId: pt.id,
+          pseudonym: pt.pseudonym,
+          ageBand: pt.ageBand,
+          cohort: pt.cohort,
+          facilityId: pt.facilityId,
+          hexagonId: pt.hexagonId,
+          ruleId: "POST-OP-CRITICAL-ALERT",
+          ruleVersion: 1,
+          priorityScore: 420,
+          whyFlagged: `Post-Surgical Critical Warning (${source}): Shock Index ${shockIndex}, BP ${vitalsObj.systolicBp}/${vitalsObj.diastolicBp}, HR ${vitalsObj.heartRate} bpm, SpO2 ${vitalsObj.spo2}%. Routed to QuickSort Upper Partition.`,
+          latestVitalsSummary: `${vitalsObj.systolicBp}/${vitalsObj.diastolicBp} mmHg, HR ${vitalsObj.heartRate}, SpO2 ${vitalsObj.spo2}%, Temp ${vitalsObj.temperature}°C`,
+          symptoms: pt.symptoms,
+          requestedBy: callerName,
+          clinicianId: "doc.boko01",
+          status: "requested",
+          slaHours: 4,
+          slaElapsedHours: 0,
+          slaBreached: false,
+          outcomeNote: null,
+          referralDestination: null,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+      }
+
+      const reportId = `PO-REP-${100 + (state.postOpReports?.length || 0) + 1}`;
+      const hash = crypto
+        .createHash("sha256")
+        .update(`${reportId}-${pt.id}-${surgeryType}-${riskLevel}-${Date.now()}`)
+        .digest("hex");
+
+      const postOpRecord: PostOpReportRecord = {
+        id: reportId,
+        patientId: pt.id,
+        patientPseudonym: pt.pseudonym,
+        surgeryType: surgeryType || "Post-Operative Recovery Evaluation",
+        operationDate: operationDate || new Date().toISOString().split("T")[0],
+        surgeonName: surgeonName || "Dr. Surgical Lead",
+        anesthetistName: anesthetistName || "Dr. Lead Anesthetist",
+        source: source as "WIRED_BEDSIDE_MONITOR" | "PAPER_OCR_REGISTER" | "HYBRID_FUSION",
+        vitals: vitalsObj,
+        shockIndex,
+        drainOutputMl: Number(drainOutputMl || 0),
+        urineOutputMl: Number(urineOutputMl || 0),
+        consciousness: consciousness as "Alert" | "Voice" | "Pain" | "Unresponsive",
+        woundStatus,
+        clinicalNotes:
+          clinicalNotes ||
+          `Post-surgical clinical evaluation. Ingested via ${source}.`,
+        riskLevel,
+        quickSortRoutedPartition,
+        createdById: callerId,
+        createdByName: callerName,
+        createdByRole: callerRole,
+        createdAt: new Date().toISOString(),
+        sha256VerificationHash: hash,
+      };
+
+      if (!state.postOpReports) state.postOpReports = [];
+      state.postOpReports.push(postOpRecord);
+
+      appendAuditEntry(
+        callerId,
+        callerName,
+        callerRole,
+        "SUBMIT_POST_OP_REPORT",
+        pt.pseudonym,
+        reportId,
+        "ALLOWED",
+        `Post-Op report filed via ${source}. Shock Index: ${shockIndex}. Risk: ${riskLevel}. Partition: ${quickSortRoutedPartition}. Verified with SHA-256 ${hash.slice(0, 16)}...`
+      );
+
+      return NextResponse.json({
+        message: `Post-Op surgical report recorded successfully (${riskLevel}). Routed to ${quickSortRoutedPartition}.`,
+        report: postOpRecord,
+        snapshot: snap(),
+      });
+    }
+
+    // =========================================================================
+    // 18. RBAC / SUPER ADMIN: PROVISION STAFF (DOCTOR / NURSE / ASHA)
+    // =========================================================================
+    if (action === "PROVISION_STAFF") {
+      const isSuperAdmin = callerRole === "super_admin";
+      const isAdmin = callerRole === "admin";
+      if (!isSuperAdmin && !isAdmin) {
+        return NextResponse.json(
+          { error: "403 Forbidden: Only Super Admin or Hospital Admin can provision staff." },
+          { status: 403 }
+        );
+      }
+
+      const {
+        name,
+        role,
+        subRole,
+        organizationId: targetOrgId,
+        facilityId: targetFacId,
+        title,
+        passcode,
+      } = body;
+
+      const effectiveTargetOrg = isSuperAdmin
+        ? (targetOrgId || effectiveOrgId)
+        : effectiveOrgId;
+
+      const newId = `USR-${(subRole || role || "WRK").toUpperCase()}-${Date.now().toString().slice(-4)}`;
+      const newUser: UserRecord = {
+        id: newId,
+        organizationId: effectiveTargetOrg,
+        role: (role as UserRole) || "worker",
+        subRole: subRole || "asha",
+        roleBadge: `${title || name} (${role})`,
+        name: name || "New Healthcare Professional",
+        title: title || `${role} • ${effectiveTargetOrg}`,
+        facilityId: targetFacId || "FAC-HEX-0",
+        available: true,
+        passwordHash: hashPassword(passcode || "Care@Staff#2026"),
+      };
+
+      state.users.push(newUser);
+
+      appendAuditEntry(
+        callerId,
+        callerName,
+        callerRole,
+        "PROVISION_STAFF_MEMBER",
+        null,
+        newUser.id,
+        "ALLOWED",
+        `Provisioned ${newUser.name} (${newUser.role}/${newUser.subRole}) in organization ${effectiveTargetOrg}.`
+      );
+
+      return NextResponse.json({
+        message: `Staff member ${newUser.name} provisioned successfully with ID ${newUser.id}.`,
+        user: newUser,
+        snapshot: snap(),
+      });
+    }
+
+    // =========================================================================
+    // 19. RBAC / SUPER ADMIN: REMOVE / DEACTIVATE STAFF
+    // =========================================================================
+    if (action === "REMOVE_STAFF") {
+      const isSuperAdmin = callerRole === "super_admin";
+      const isAdmin = callerRole === "admin";
+      if (!isSuperAdmin && !isAdmin) {
+        return NextResponse.json(
+          { error: "403 Forbidden: Only Super Admin or Hospital Admin can deactivate staff." },
+          { status: 403 }
+        );
+      }
+
+      const { staffId } = body;
+      const targetUser = state.users.find((u) => u.id === staffId);
+      if (!targetUser) {
+        return NextResponse.json({ error: "Staff user not found." }, { status: 404 });
+      }
+
+      if (!isSuperAdmin && targetUser.organizationId !== effectiveOrgId) {
+        return NextResponse.json(
+          { error: "403 Forbidden: Cannot remove staff from a different organization." },
+          { status: 403 }
+        );
+      }
+
+      targetUser.available = false;
+
+      appendAuditEntry(
+        callerId,
+        callerName,
+        callerRole,
+        "DEACTIVATE_STAFF_MEMBER",
+        null,
+        targetUser.id,
+        "ALLOWED",
+        `Deactivated staff credentials for ${targetUser.name} (${targetUser.id}).`
+      );
+
+      return NextResponse.json({
+        message: `Staff member ${targetUser.name} deactivated successfully.`,
+        snapshot: snap(),
+      });
+    }
+
+    // =========================================================================
+    // 20. RBAC / SUPER ADMIN: RESTRICT PATIENT (MEDICO-LEGAL / SUSPENSION HOLD)
+    // =========================================================================
+    if (action === "RESTRICT_PATIENT") {
+      const isAuthorized =
+        callerRole === "super_admin" ||
+        callerRole === "admin" ||
+        callerRole === "clinician";
+      if (!isAuthorized) {
+        return NextResponse.json(
+          { error: "403 Forbidden: Only Super Admin, Hospital Admin, or Doctor can flag/restrict patients." },
+          { status: 403 }
+        );
+      }
+
+      const { patientId, restrictionReason } = body;
+      const pt = state.patients.find((p) => p.id === patientId);
+      if (!pt) {
+        return NextResponse.json({ error: "Patient not found." }, { status: 404 });
+      }
+
+      pt.isRestricted = true;
+      pt.restrictionReason =
+        restrictionReason || "Clinical / Medico-legal hold requested by supervisory authority.";
+      pt.restrictedBy = callerName;
+      pt.restrictedAt = new Date().toISOString();
+
+      appendAuditEntry(
+        callerId,
+        callerName,
+        callerRole,
+        "RESTRICT_PATIENT_HOLD_PLACED",
+        pt.pseudonym,
+        pt.id,
+        "ALLOWED",
+        `Placed patient ${pt.pseudonym} on administrative/clinical restriction hold: ${pt.restrictionReason}`
+      );
+
+      return NextResponse.json({
+        message: `Patient ${pt.pseudonym} placed on restriction hold.`,
+        snapshot: snap(),
+      });
+    }
+
+    // =========================================================================
+    // 21. RBAC / SUPER ADMIN: UNRESTRICT PATIENT
+    // =========================================================================
+    if (action === "UNRESTRICT_PATIENT") {
+      const isAuthorized =
+        callerRole === "super_admin" ||
+        callerRole === "admin" ||
+        callerRole === "clinician";
+      if (!isAuthorized) {
+        return NextResponse.json(
+          { error: "403 Forbidden: Only Super Admin, Hospital Admin, or Doctor can remove restriction hold." },
+          { status: 403 }
+        );
+      }
+
+      const { patientId } = body;
+      const pt = state.patients.find((p) => p.id === patientId);
+      if (!pt) {
+        return NextResponse.json({ error: "Patient not found." }, { status: 404 });
+      }
+
+      pt.isRestricted = false;
+      pt.restrictionReason = undefined;
+      pt.restrictedBy = undefined;
+      pt.restrictedAt = null;
+
+      appendAuditEntry(
+        callerId,
+        callerName,
+        callerRole,
+        "RESTRICT_PATIENT_HOLD_RELEASED",
+        pt.pseudonym,
+        pt.id,
+        "ALLOWED",
+        `Released restriction hold on patient ${pt.pseudonym}. Returned to active clinical workflow.`
+      );
+
+      return NextResponse.json({
+        message: `Restriction hold lifted for ${pt.pseudonym}.`,
+        snapshot: snap(),
+      });
+    }
+
+    // =========================================================================
+    // 22. SUPER ADMIN: PROVISION NEW CLINIC / HEXAGON NODE
+    // =========================================================================
+    if (action === "ADD_FACILITY") {
+      if (callerRole !== "super_admin") {
+        return NextResponse.json(
+          { error: "403 Forbidden: Only Super Admin can provision new clinics and spatial hex nodes." },
+          { status: 403 }
+        );
+      }
+
+      const {
+        name,
+        village,
+        district,
+        hexagonId,
+        tier = "PHC",
+        organizationId: targetOrgId = "ORG-SEVAK",
+        totalSlots = 30,
+        systemSlots = 15,
+        criticalSlots = 5,
+        walkInSlots = 10,
+      } = body;
+
+      const newFacility: FacilityRecord = {
+        id: `FAC-HEX-${Date.now().toString().slice(-4)}`,
+        organizationId: targetOrgId,
+        name: name || "New Regional Community Clinic",
+        village: village || "Rural Catchment",
+        district: district || "Kamrup Rural",
+        hexagonId: hexagonId || `HEX-${state.facilities.length}`,
+        adjacentHexagons: ["HEX-0", "HEX-1"],
+        tier: tier as "SUB_CENTRE" | "PHC" | "TERTIARY_REFERRAL",
+        totalSlots: Number(totalSlots),
+        systemSlots: Number(systemSlots),
+        criticalSlots: Number(criticalSlots),
+        walkInSlots: Number(walkInSlots),
+        clinicianOnDuty: true,
+        hexCoords: {
+          q: state.facilities.length % 3,
+          r: Math.floor(state.facilities.length / 3),
+          x: 200 + (state.facilities.length * 40) % 300,
+          y: 150 + (state.facilities.length * 35) % 200,
+        },
+      };
+
+      state.facilities.push(newFacility);
+
+      appendAuditEntry(
+        callerId,
+        callerName,
+        callerRole,
+        "PROVISION_CLINIC_HEX_NODE",
+        null,
+        newFacility.id,
+        "ALLOWED",
+        `Super Admin provisioned clinic '${newFacility.name}' in hexagon '${newFacility.hexagonId}' for ${targetOrgId}.`
+      );
+
+      return NextResponse.json({
+        message: `Clinic ${newFacility.name} added to Hexagonal Mesh successfully.`,
+        facility: newFacility,
+        snapshot: snap(),
+      });
+    }
+
+    // =========================================================================
+    // 23. SUPER ADMIN: REGISTER OPEN-SOURCE SERVICE / GATEWAY
+    // =========================================================================
+    if (action === "ADD_OPEN_SERVICE") {
+      if (callerRole !== "super_admin") {
+        return NextResponse.json(
+          { error: "403 Forbidden: Only Super Admin can register open-source services." },
+          { status: 403 }
+        );
+      }
+
+      const { name, category, endpointUrl, description } = body;
+      const newSvc = {
+        id: `SVC-${Date.now().toString().slice(-4)}`,
+        name: name || "New Open Source Microservice",
+        category: category || "Clinical Utility",
+        endpointUrl: endpointUrl || "https://api.swasthya.internal/v1",
+        status: "ONLINE" as const,
+        latencyMs: Math.floor(Math.random() * 8) + 2,
+        description: description || "Integrated open source healthcare component",
+      };
+
+      if (!state.openSourceServices) state.openSourceServices = [];
+      state.openSourceServices.push(newSvc);
+
+      appendAuditEntry(
+        callerId,
+        callerName,
+        callerRole,
+        "REGISTER_OPEN_SOURCE_SERVICE",
+        null,
+        newSvc.id,
+        "ALLOWED",
+        `Super Admin registered open service '${newSvc.name}' (${newSvc.category}) at ${newSvc.endpointUrl}.`
+      );
+
+      return NextResponse.json({
+        message: `Open source service '${newSvc.name}' registered successfully.`,
+        service: newSvc,
         snapshot: snap(),
       });
     }

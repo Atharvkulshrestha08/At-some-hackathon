@@ -33,6 +33,7 @@ import {
   UserCheck,
   UserPlus,
   Users,
+  Waves,
   X,
   Zap,
 } from "lucide-react";
@@ -60,6 +61,7 @@ import type {
   AuditLogRecord,
   PendingRuleDraft,
   ActiveSessionRecord,
+  PostOpReportRecord,
 } from "@/lib/db";
 import type {
   ExternalIntegrationStatus,
@@ -82,7 +84,20 @@ export interface SystemSnapshot {
   workerScope: "assigned" | "organization";
   signedInToken: string;
   facilities: FacilityRecord[];
+  allFacilities?: FacilityRecord[];
   users: UserRecord[];
+  allUsers?: UserRecord[];
+  postOpReports?: PostOpReportRecord[];
+  openSourceServices?: Array<{
+    id: string;
+    name: string;
+    category: string;
+    endpointUrl: string;
+    status: "ONLINE" | "STANDBY";
+    latencyMs: number;
+    description: string;
+  }>;
+  isSuperAdmin?: boolean;
   quickSortResult: {
     immediatePartition: EvaluatedPatientFlag[];
     flexiblePartition: EvaluatedPatientFlag[];
@@ -138,6 +153,10 @@ export interface SystemSnapshot {
     slaBreachedCount: number;
     activeHexBroadcasts: number;
     activeAmbulances: number;
+    restrictedPatients?: number;
+    totalPostOpReports?: number;
+    totalStaff?: number;
+    totalFacilities?: number;
   };
 }
 
@@ -305,22 +324,32 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         if (s) query.set("workerScope", s);
 
         const res = await fetch(`/api/swasthya?${query.toString()}`);
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          setToast({
+            type: "error",
+            text: errData?.error || `Failed to load clinical registry (HTTP ${res.status}).`,
+          });
+          return;
+        }
         const data: SystemSnapshot = await res.json();
-        setSnapshot(data);
+        if (data && data.quickSortResult) {
+          setSnapshot(data);
 
-        if (data.signedInToken && !authToken) {
-          setAuthToken(data.signedInToken);
-        }
-        if (data.activeOrganization) {
-          setActiveOrganizationId(data.activeOrganization.id);
-        }
-        if (
-          data.quickSortResult.combinedRanked.length > 0 &&
-          !selectedSimPatientId
-        ) {
-          setSelectedSimPatientId(
-            data.quickSortResult.combinedRanked[0].patientId
-          );
+          if (data.signedInToken && !authToken) {
+            setAuthToken(data.signedInToken);
+          }
+          if (data.activeOrganization) {
+            setActiveOrganizationId(data.activeOrganization.id);
+          }
+          if (
+            data.quickSortResult.combinedRanked?.length > 0 &&
+            !selectedSimPatientId
+          ) {
+            setSelectedSimPatientId(
+              data.quickSortResult.combinedRanked[0].patientId
+            );
+          }
         }
       } catch {
         setToast({ type: "error", text: "Failed to load clinical registry." });
@@ -505,6 +534,18 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
       alertRed: false,
     },
     {
+      href: "/post-op",
+      label: "Post-Op Telemetry",
+      icon: Waves,
+      count: snapshot?.postOpReports?.length,
+      alertRed: true,
+    },
+    {
+      href: "/super-admin",
+      label: "Super Admin",
+      icon: ShieldAlert,
+    },
+    {
       href: "/governance",
       label: "Governance",
       icon: ShieldCheck,
@@ -661,7 +702,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
       >
         <SwasthyaLandingPage
           organizations={snapshot?.organizations || []}
-          users={snapshot?.users || []}
+          users={snapshot?.allUsers || snapshot?.users || []}
           activeSessions={snapshot?.activeSessions || []}
           selectedLanguage={lang}
           onSelectLanguage={setLang}
