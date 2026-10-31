@@ -1,9 +1,13 @@
-import type { UserRole } from "../../../lib/db.ts";
+import type { UserRole, CohortType, MobilityStatus } from "../../../lib/db.ts";
 import {
   getDbState,
   resetDbState,
   computeSystemSnapshot,
   appendAuditEntry,
+  encryptPhonePii,
+  decryptPhonePii,
+  signAuthToken,
+  verifyAuthToken,
 } from "../../../lib/db.ts";
 import type { SupportedLanguage } from "../../../lib/i18n.ts";
 import { MESSAGE_TEMPLATES_I18N } from "../../../lib/i18n.ts";
@@ -19,8 +23,11 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const role = (searchParams.get("role") as UserRole) || "worker";
   const userId = searchParams.get("userId") || "USR-WRK-RINA";
+  const organizationId = searchParams.get("organizationId") || undefined;
+  const workerScope =
+    (searchParams.get("workerScope") as "assigned" | "organization") || "assigned";
 
-  const snapshot = computeSystemSnapshot(role, userId);
+  const snapshot = computeSystemSnapshot(role, userId, organizationId, workerScope);
   return NextResponse.json(snapshot);
 }
 
@@ -32,9 +39,61 @@ export async function POST(req: Request) {
       callerRole = "worker",
       callerId = "USR-WRK-RINA",
       callerName = "Rina Devi (ASHA Worker)",
+      organizationId: bodyOrgId,
+      workerScope = "assigned",
+      authToken,
     } = body;
 
     const state = getDbState();
+
+    // Verify optional HMAC-SHA256 session token and resolve effective organization
+    const verifiedSession = authToken ? verifyAuthToken(authToken) : null;
+    const callerUser = state.users.find((u) => u.id === callerId);
+    const effectiveOrgId =
+      verifiedSession?.organizationId ||
+      bodyOrgId ||
+      callerUser?.organizationId ||
+      "ORG-SEVAK";
+
+    const snap = (overrideRole?: UserRole, overrideUserId?: string, overrideOrgId?: string) =>
+      computeSystemSnapshot(
+        overrideRole || callerRole,
+        overrideUserId || callerId,
+        overrideOrgId || effectiveOrgId,
+        workerScope
+      );
+
+    // =========================================================================
+    // 0. MULTI-TENANT ORGANIZATION ISOLATION GATE
+    // Ensure a user signed into Organization A (e.g. Sevak) can NEVER access
+    // or mutate a patient belonging to Organization B (e.g. Kamrup / Arogya)
+    // =========================================================================
+    if (body.patientId && action !== "RESET_DEMO") {
+      const targetPt = state.patients.find((p) => p.id === body.patientId);
+      if (
+        targetPt &&
+        targetPt.organizationId &&
+        targetPt.organizationId !== effectiveOrgId
+      ) {
+        appendAuditEntry(
+          callerId,
+          callerName,
+          callerRole,
+          `CROSS_TENANT_ISOLATION_BLOCKED_${action}`,
+          targetPt.pseudonym,
+          targetPt.id,
+          "BLOCKED_403_RBAC",
+          `Cross-tenant access blocked: Caller in organization '${effectiveOrgId}' attempted '${action}' on patient ${targetPt.pseudonym} belonging to '${targetPt.organizationId}'.`
+        );
+        return NextResponse.json(
+          {
+            error: `403 Cross-Tenant Isolation — You are signed into ${effectiveOrgId}. Patient ${targetPt.pseudonym} belongs to a different organization (${targetPt.organizationId}) and is strictly isolated.`,
+            snapshot: snap(),
+          },
+          { status: 403 }
+        );
+      }
+    }
 
     // =========================================================================
     // 1. RBAC PRIVACY TEST: VIEW PATIENT CONTACT DETAILS
@@ -62,7 +121,7 @@ export async function POST(req: Request) {
           {
             error:
               "403 Forbidden — Role-Based Access Control (RBAC) violation: Only the assigned Health Worker may access patient contact details. This attempt has been recorded in the immutable SHA-256 Audit Log.",
-            snapshot: computeSystemSnapshot(callerRole, callerId),
+            snapshot: snap(),
           },
           { status: 403 }
         );
@@ -82,11 +141,15 @@ export async function POST(req: Request) {
         return NextResponse.json(
           {
             error: "403 Consent Gate: Patient has withdrawn consent. Record is locked to a minimal stub.",
-            snapshot: computeSystemSnapshot(callerRole, callerId),
+            snapshot: snap(),
           },
           { status: 403 }
         );
       }
+
+      const decryptedPhone = decryptPhonePii(
+        pt.phoneCiphertext || pt.phoneEncrypted
+      );
 
       appendAuditEntry(
         callerId,
@@ -96,12 +159,12 @@ export async function POST(req: Request) {
         pt.pseudonym,
         pt.id,
         "ALLOWED",
-        `Assigned worker verified masked contact channel (${pt.preferredChannel}: ${pt.phoneMasked}).`
+        `Assigned worker verified AES-256-GCM contact channel (${pt.preferredChannel}: ${pt.phoneMasked}).`
       );
 
       return NextResponse.json({
-        message: `Authorized Contact View (${pt.pseudonym}): ${pt.phoneMasked} via ${pt.preferredChannel.toUpperCase()}`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        message: `Authorized Contact View (${pt.pseudonym}): ${decryptedPhone} (Masked: ${pt.phoneMasked}) via ${pt.preferredChannel.toUpperCase()}`,
+        snapshot: snap(),
       });
     }
 
@@ -123,7 +186,7 @@ export async function POST(req: Request) {
         return NextResponse.json(
           {
             error: "403 RBAC: Only Health Workers can log patient check-ins.",
-            snapshot: computeSystemSnapshot(callerRole, callerId),
+            snapshot: snap(),
           },
           { status: 403 }
         );
@@ -160,7 +223,7 @@ export async function POST(req: Request) {
         return NextResponse.json(
           {
             error: "Consent Gate Blocked: Cannot log check-in for a patient who has withdrawn consent.",
-            snapshot: computeSystemSnapshot(callerRole, callerId),
+            snapshot: snap(),
           },
           { status: 403 }
         );
@@ -268,7 +331,7 @@ export async function POST(req: Request) {
             : "< Threshold → Flexible Clinic Window / Completed"
         }).`,
         evaluated,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 
@@ -290,7 +353,7 @@ export async function POST(req: Request) {
         return NextResponse.json(
           {
             error: "403 RBAC: Only Workers and Supervisors can send follow-up reminders.",
-            snapshot: computeSystemSnapshot(callerRole, callerId),
+            snapshot: snap(),
           },
           { status: 403 }
         );
@@ -322,7 +385,7 @@ export async function POST(req: Request) {
         return NextResponse.json(
           {
             error: `Consent Gate Blocked: ${pt.pseudonym} has withdrawn consent. Outbound messaging is strictly prohibited.`,
-            snapshot: computeSystemSnapshot(callerRole, callerId),
+            snapshot: snap(),
           },
           { status: 403 }
         );
@@ -365,7 +428,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         message: `Delivered ${pt.preferredChannel.toUpperCase()} reminder to ${pt.pseudonym} in ${lang.toUpperCase()}.`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 
@@ -427,7 +490,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({
           message: `STOP received from ${pt.pseudonym}: Consent immediately withdrawn, messaging halted, and record locked to a minimal stub.`,
-          snapshot: computeSystemSnapshot(callerRole, callerId),
+          snapshot: snap(),
         });
       }
 
@@ -447,7 +510,7 @@ export async function POST(req: Request) {
         );
         return NextResponse.json({
           message: `Reply '1' parsed from ${pt.pseudonym}: Check-in confirmed and overdue reminder cleared!`,
-          snapshot: computeSystemSnapshot(callerRole, callerId),
+          snapshot: snap(),
         });
       }
 
@@ -469,7 +532,7 @@ export async function POST(req: Request) {
         );
         return NextResponse.json({
           message: `Reply '2' parsed from ${pt.pseudonym}: Symptom/visit problem flagged — priority score elevated for immediate review!`,
-          snapshot: computeSystemSnapshot(callerRole, callerId),
+          snapshot: snap(),
         });
       }
 
@@ -486,7 +549,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         message: `Unparsed reply '${normalized}' logged — created worker task to call ${pt.pseudonym}.`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 
@@ -565,9 +628,9 @@ export async function POST(req: Request) {
         slaBreached: false,
         outcomeNote: null,
         referralDestination: evaluated.exceedsLocalClinicCapability
-          ? "Palashbari Tertiary & Oncology Referral Hospital (HEX-4 — Bypassing Local Clinic)"
+          ? "GMCH & BBCI Regional Tertiary Referral Hub (Hex-4 — Bypassing Local Sub-Centre)"
           : fac && !fac.clinicianOnDuty
-          ? "Remote Specialist Review (Local Doctor Away at Camp)"
+          ? "eSanjeevani Telemedicine Hub & District Hospital Specialist Review (Local Doctor Away at Camp)"
           : fac?.name || null,
         createdAt: now,
         updatedAt: now,
@@ -586,7 +649,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         message: `Escalation ${newEscId} routed to clinician with 4-hour SLA deadline.`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 
@@ -629,7 +692,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({
           message: `Escalation ${esc.id} reassigned to ${reassignToClinicianId} and SLA reset.`,
-          snapshot: computeSystemSnapshot(callerRole, callerId),
+          snapshot: snap(),
         });
       }
 
@@ -647,7 +710,7 @@ export async function POST(req: Request) {
         return NextResponse.json(
           {
             error: "403 RBAC: Only a qualified Clinician can acknowledge or record clinical review outcomes.",
-            snapshot: computeSystemSnapshot(callerRole, callerId),
+            snapshot: snap(),
           },
           { status: 403 }
         );
@@ -681,7 +744,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         message: `Escalation ${esc.id} updated to '${newStatus.toUpperCase()}'.`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 
@@ -765,7 +828,7 @@ export async function POST(req: Request) {
         message: `Broadcast ${bcId} transmitted simultaneously to adjacent Hexagon clinics: ${originFac.adjacentHexagons.join(
           ", "
         )}!`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 
@@ -814,7 +877,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         message: `${acceptingFac.name} (${acceptingFac.hexagonId}) accepted ${bc.pseudonym}! Case locked and full clinical details routed immediately.`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 
@@ -848,7 +911,7 @@ export async function POST(req: Request) {
         }
         return NextResponse.json({
           message: `Ambulance status updated to ${nextStatus}.`,
-          snapshot: computeSystemSnapshot(callerRole, callerId),
+          snapshot: snap(),
         });
       }
 
@@ -894,7 +957,7 @@ export async function POST(req: Request) {
         cohort: pt.cohort,
         mobility: pt.mobility,
         originHexagonId: pt.hexagonId,
-        destinationFacility: "Palashbari Tertiary & Oncology Referral Hospital (HEX-4)",
+        destinationFacility: "GMCH & BBCI Regional Tertiary Referral Hub (Hex-4)",
         paramedicSummary: `RAPID RESPONSE DISPATCH • Mobility: ${pt.mobility.toUpperCase()} • Rule ${
           evaluated.primaryRuleId
         } (Score ${evaluated.totalScore}). Bypassing local sub-centre directly to Tertiary Care.`,
@@ -918,7 +981,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         message: `Rapid Ambulance ${ambId} dispatched (ETA 9 mins) with Paramedic Handover Sheet for ${pt.pseudonym}!`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 
@@ -942,16 +1005,18 @@ export async function POST(req: Request) {
         village: fac.village,
         facilityId: fac.id,
         hexagonId: fac.hexagonId,
+        organizationId: effectiveOrgId,
         cohort: "post_illness" as const,
         mobility: "homebound" as const,
         language: "as" as const,
-        assignedWorkerId: "USR-WRK-RINA",
+        assignedWorkerId: callerRole === "worker" ? callerId : "USR-WRK-RINA",
         consentActive: true,
         consentChannel: "in_person_signed",
         consentGrantedAt: now,
         consentWithdrawnAt: null,
         phoneMasked: "+91 ••••• •3131",
-        phoneEncrypted: "ENC_AES256_9000003131",
+        phoneEncrypted: encryptPhonePii("+919000003131"),
+        phoneCiphertext: encryptPhonePii("+919000003131"),
         preferredChannel: "whatsapp" as const,
         daysOverdue: 5,
         consecutiveMissed: 2,
@@ -970,6 +1035,10 @@ export async function POST(req: Request) {
         lastCheckinAt: now,
         scheduleIntervalDays: 7,
         graceDays: 1,
+        cleared: false,
+        clearedAt: null,
+        clearedBy: null,
+        clearedNotes: null,
       };
 
       state.patients.unshift(criticalPatient);
@@ -1033,7 +1102,7 @@ export async function POST(req: Request) {
         message: `31st-Patient Protocol Executed! ${criticalPatient.pseudonym} scored ${evaluated.totalScore} (≥ Threshold ${state.activeThresholds.pivotThreshold}) → Injected into Immediate Slot #1, 10 Walk-In slots kept 100% untouched, and broadcasted to adjacent Hexagons [${fac.adjacentHexagons.join(
           ", "
         )}]!`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 
@@ -1102,7 +1171,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         message: `Rule Version v${nextVersion} staged. Per governance guardrail, it remains INACTIVE until signed off by a Clinician.`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 
@@ -1142,7 +1211,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         message: `Clinician sign-off recorded! Rule Set v${state.activeThresholds.version} is now active and QuickSort partitions updated.`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 
@@ -1189,7 +1258,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         message: `Clock advanced +${hours}h → Idempotent jobs completed (${newlyBreached} SLA escalations routed to Supervisor).`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 
@@ -1216,7 +1285,7 @@ export async function POST(req: Request) {
       }
       return NextResponse.json({
         message: `Updated doctor availability for ${fac?.name}.`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 
@@ -1245,7 +1314,425 @@ export async function POST(req: Request) {
       }
       return NextResponse.json({
         message: `Updated consent status for ${pt?.pseudonym}.`,
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
+      });
+    }
+
+    // =========================================================================
+    // 14. MULTI-TENANT ORGANIZATION SIGN-IN & NEW ORGANIZATION ONBOARDING
+    // =========================================================================
+    if (action === "SIGN_IN_ORGANIZATION") {
+      const { targetOrganizationId, targetUserId, accessPasscode } = body;
+      const org = state.organizations.find((o) => o.id === targetOrganizationId);
+      if (!org) {
+        return NextResponse.json({ error: "Organization not found." }, { status: 404 });
+      }
+      if (
+        accessPasscode &&
+        accessPasscode.trim().toUpperCase() !== org.accessPasscode.toUpperCase()
+      ) {
+        appendAuditEntry(
+          callerId,
+          callerName,
+          callerRole,
+          "ORGANIZATION_SIGN_IN_DENIED",
+          null,
+          org.id,
+          "BLOCKED_403_RBAC",
+          `Invalid organization passcode attempted for ${org.name} (${org.id}).`
+        );
+        return NextResponse.json(
+          {
+            error: `403 Invalid Organization Passcode for ${org.name}. Demo passcode is ${org.accessPasscode}.`,
+          },
+          { status: 403 }
+        );
+      }
+
+      const orgUsers = state.users.filter((u) => u.organizationId === org.id);
+      const selectedUser =
+        orgUsers.find((u) => u.id === targetUserId) || orgUsers[0] || state.users[0];
+      const signedToken = signAuthToken(selectedUser.id, selectedUser.role, org.id);
+
+      appendAuditEntry(
+        selectedUser.id,
+        selectedUser.name,
+        selectedUser.role,
+        "ORGANIZATION_USER_SIGN_IN",
+        null,
+        org.id,
+        "ALLOWED",
+        `${selectedUser.name} (${selectedUser.role}) signed into ${org.name} (${org.id}) with strict multi-tenant data isolation.`
+      );
+
+      return NextResponse.json({
+        message: `Signed into ${org.name} as ${selectedUser.name} (${selectedUser.role.toUpperCase()}). Strictly isolated to ${org.shortName} patient registry.`,
+        authToken: signedToken,
+        snapshot: computeSystemSnapshot(
+          selectedUser.role,
+          selectedUser.id,
+          org.id,
+          workerScope
+        ),
+      });
+    }
+
+    if (action === "REGISTER_ORGANIZATION") {
+      const {
+        orgName,
+        orgShortName,
+        district = "Kamrup Rural, Assam",
+        accessPasscode = "ORG-2026",
+        teamSize = 15,
+        leadWorkerName = "Asha Lead Worker",
+      } = body;
+
+      if (!orgName || String(orgName).trim().length < 2) {
+        return NextResponse.json(
+          { error: "Please provide a valid Organization Name." },
+          { status: 400 }
+        );
+      }
+
+      const cleanShort =
+        (orgShortName ? String(orgShortName).trim() : String(orgName).trim().split(" ")[0])
+          .toUpperCase()
+          .replace(/[^A-Z0-9]/g, "") || "NEWORG";
+      const newOrgId = `ORG-${cleanShort}-${state.organizations.length + 1}`;
+      const newOrg = {
+        id: newOrgId,
+        name: String(orgName).trim(),
+        shortName: String(orgShortName || cleanShort).trim(),
+        orgCode: cleanShort,
+        region: String(district).trim(),
+        district: String(district).trim(),
+        accessPasscode: String(accessPasscode).trim().toUpperCase(),
+        teamSize: Number(teamSize) || 15,
+        description: `Dedicated ${teamSize || 15}-worker frontline care organization operating in ${district} with isolated tenant patient records.`,
+      };
+      state.organizations.push(newOrg);
+
+      const newWorkerId = `USR-${cleanShort}-WRK-1`;
+      const newDocId = `USR-${cleanShort}-DOC-1`;
+      const newSupId = `USR-${cleanShort}-SUP-1`;
+      state.users.push(
+        {
+          id: newWorkerId,
+          name: `${leadWorkerName} (${newOrg.shortName} Team Lead #1)`,
+          title: `${newOrg.shortName} ASHA Team Lead`,
+          role: "worker",
+          facilityId: "FAC-HEX-0",
+          available: true,
+          organizationId: newOrgId,
+        },
+        {
+          id: newDocId,
+          name: `Dr. Medical Officer (${newOrg.shortName} MO)`,
+          title: `${newOrg.shortName} Medical Officer`,
+          role: "clinician",
+          facilityId: "FAC-HEX-0",
+          available: true,
+          organizationId: newOrgId,
+        },
+        {
+          id: newSupId,
+          name: `Block Supervisor (${newOrg.shortName} Ops)`,
+          title: `${newOrg.shortName} Block Supervisor`,
+          role: "supervisor",
+          facilityId: "FAC-HEX-0",
+          available: true,
+          organizationId: newOrgId,
+        }
+      );
+
+      appendAuditEntry(
+        newWorkerId,
+        leadWorkerName,
+        "worker",
+        "ORGANIZATION_REGISTERED",
+        null,
+        newOrgId,
+        "ALLOWED",
+        `Registered new multi-tenant organization '${newOrg.name}' (${newOrgId}) with ${newOrg.teamSize}-person frontline team.`
+      );
+
+      return NextResponse.json({
+        message: `Organization '${newOrg.name}' created and isolated! Signed in as ${leadWorkerName}.`,
+        authToken: signAuthToken(newWorkerId, "worker", newOrgId),
+        snapshot: computeSystemSnapshot("worker", newWorkerId, newOrgId, "organization"),
+      });
+    }
+
+    // =========================================================================
+    // 15. REGISTER NEW PATIENT INTO ACTIVE ORGANIZATION REGISTRY
+    // =========================================================================
+    if (action === "REGISTER_PATIENT") {
+      if (callerRole !== "worker" && callerRole !== "clinician" && callerRole !== "admin") {
+        return NextResponse.json(
+          { error: "Only Frontline Workers, Clinicians, or Admins can register patients." },
+          { status: 403 }
+        );
+      }
+
+      const {
+        initials = "N.P.",
+        ageBand = "40–49",
+        cohort = "hypertension",
+        facilityId,
+        mobility = "independent",
+        language = "as",
+        preferredChannel = "sms",
+        phonePlain = "+919854011223",
+        systolicBp = 148,
+        diastolicBp = 94,
+        heartRate = 88,
+        bloodGlucose = 132,
+        temperature = 37.1,
+        spo2 = 97,
+        symptoms = [],
+        daysOverdue = 0,
+        consentActive = true,
+      } = body;
+
+      const orgFacilities = state.facilities.filter(
+        (f) => f.organizationId === effectiveOrgId
+      );
+      const selectedFac =
+        state.facilities.find((f) => f.id === facilityId) ||
+        orgFacilities[0] ||
+        state.facilities[0];
+
+      const cohortPrefix =
+        cohort === "pregnancy"
+          ? "MAT"
+          : cohort === "post_illness"
+          ? "ONC"
+          : cohort === "diabetes"
+          ? "DIA"
+          : "HYP";
+
+      const seqNum = 500 + state.patients.length + 1;
+      const newPtId = `PT-${seqNum}`;
+      const pseudonym = `PT-${cohortPrefix}-${seqNum}`;
+      const now = new Date().toISOString();
+      const cleanPhone = String(phonePlain || "+919854011223").replace(/\s+/g, "");
+      const last4 = cleanPhone.slice(-4).padStart(4, "0");
+
+      const assignedWorkerId =
+        callerRole === "worker"
+          ? callerId
+          : state.users.find(
+              (u) => u.organizationId === effectiveOrgId && u.role === "worker"
+            )?.id || "USR-WRK-RINA";
+
+      const normalizedMobility: MobilityStatus =
+        mobility === "homebound"
+          ? "homebound"
+          : mobility === "assisted"
+          ? "assisted"
+          : "independent";
+
+      const encryptedPhone = encryptPhonePii(cleanPhone);
+
+      const newPatient = {
+        id: newPtId,
+        pseudonym,
+        initials: String(initials).trim() || "N.P.",
+        ageBand: String(ageBand),
+        village: selectedFac.village,
+        facilityId: selectedFac.id,
+        hexagonId: selectedFac.hexagonId,
+        organizationId: effectiveOrgId,
+        cohort: cohort as CohortType,
+        mobility: normalizedMobility,
+        language: (language as SupportedLanguage) || "as",
+        assignedWorkerId,
+        consentActive: Boolean(consentActive),
+        consentChannel: "in_person_signed" as const,
+        consentGrantedAt: now,
+        consentWithdrawnAt: consentActive ? null : now,
+        phoneMasked: consentActive ? `+91 ••••• •${last4}` : "[LOCKED — CONSENT WITHDRAWN]",
+        phoneEncrypted: encryptedPhone,
+        phoneCiphertext: encryptedPhone,
+        preferredChannel: (preferredChannel === "whatsapp" ? "whatsapp" : "sms") as
+          | "sms"
+          | "whatsapp",
+        daysOverdue: Math.max(0, Number(daysOverdue) || 0),
+        consecutiveMissed: Number(daysOverdue) > 3 ? 1 : 0,
+        symptoms: Array.isArray(symptoms) ? symptoms.map(String) : [],
+        vitalsHistory: [
+          {
+            recordedAt: now,
+            systolicBp: Number(systolicBp) || 122,
+            diastolicBp: Number(diastolicBp) || 80,
+            heartRate: Number(heartRate) || 78,
+            bloodGlucose: Number(bloodGlucose) || 110,
+            temperature: Number(temperature) || 36.8,
+            spo2: Number(spo2) || 98,
+          },
+        ],
+        lastCheckinAt: now,
+        scheduleIntervalDays: 7,
+        graceDays: 2,
+        cleared: false,
+        clearedAt: null,
+        clearedBy: null,
+        clearedNotes: null,
+      };
+
+      state.patients.unshift(newPatient);
+
+      const evaluated = evaluatePatientFiveCategories(
+        {
+          patientId: newPatient.id,
+          pseudonym: newPatient.pseudonym,
+          ageBand: newPatient.ageBand,
+          village: newPatient.village,
+          facilityId: newPatient.facilityId,
+          hexagonId: newPatient.hexagonId,
+          cohort: newPatient.cohort,
+          mobility: newPatient.mobility,
+          consentActive: newPatient.consentActive,
+          daysOverdue: newPatient.daysOverdue,
+          consecutiveMissed: newPatient.consecutiveMissed,
+          symptoms: newPatient.symptoms,
+          vitalsHistory: newPatient.vitalsHistory,
+        },
+        state.activeThresholds
+      );
+
+      if (evaluated.abovePivotThreshold) {
+        const escId = `ESC-${1000 + state.escalations.length + 1}`;
+        state.escalations.unshift({
+          id: escId,
+          patientId: newPatient.id,
+          pseudonym: newPatient.pseudonym,
+          ageBand: newPatient.ageBand,
+          cohort: newPatient.cohort,
+          facilityId: newPatient.facilityId,
+          hexagonId: newPatient.hexagonId,
+          ruleId: evaluated.primaryRuleId,
+          ruleVersion: evaluated.ruleVersion,
+          priorityScore: evaluated.totalScore,
+          whyFlagged: evaluated.whyFlagged,
+          latestVitalsSummary: `BP ${newPatient.vitalsHistory[0].systolicBp}/${newPatient.vitalsHistory[0].diastolicBp} mmHg | HR ${newPatient.vitalsHistory[0].heartRate} bpm | Glu ${newPatient.vitalsHistory[0].bloodGlucose} mg/dL | Temp ${newPatient.vitalsHistory[0].temperature}°C | SpO₂ ${newPatient.vitalsHistory[0].spo2}%`,
+          symptoms: newPatient.symptoms,
+          requestedBy: callerId,
+          clinicianId: "USR-CLIN-1",
+          status: "requested",
+          slaHours: 4,
+          slaElapsedHours: 0,
+          slaBreached: false,
+          outcomeNote: null,
+          referralDestination: evaluated.exceedsLocalClinicCapability
+            ? "GMCH & BBCI Regional Tertiary Referral Hub (Hex-4 — Bypassing Local Sub-Centre)"
+            : selectedFac.name,
+          createdAt: now,
+          updatedAt: now,
+        });
+      }
+
+      appendAuditEntry(
+        callerId,
+        callerName,
+        callerRole,
+        "PATIENT_REGISTERED",
+        newPatient.pseudonym,
+        newPatient.id,
+        "ALLOWED",
+        `Registered new patient ${newPatient.pseudonym} (${newPatient.initials}, ${newPatient.ageBand}y, ${newPatient.cohort}) into organization ${effectiveOrgId} at ${selectedFac.name}. Initial 5-Category Score: ${evaluated.totalScore} (${
+          evaluated.abovePivotThreshold ? "IMMEDIATE_PRIORITY" : "FLEXIBLE_WINDOW"
+        }).`
+      );
+
+      return NextResponse.json({
+        message: `Registered ${newPatient.pseudonym} (${newPatient.initials}) in ${effectiveOrgId}! 5-Category Score: ${evaluated.totalScore} → ${
+          evaluated.abovePivotThreshold
+            ? "Routed to Immediate Priority Slot (≥ 100) & Doctor Queue"
+            : "Assigned Flexible Routine Window (< 100)"
+        }.`,
+        snapshot: snap(),
+      });
+    }
+
+    // =========================================================================
+    // 16. CLEAR / STABILIZE PATIENT FROM ACTIVE QUEUE (OR RESTORE)
+    // =========================================================================
+    if (action === "CLEAR_PATIENT") {
+      if (callerRole !== "worker" && callerRole !== "clinician" && callerRole !== "supervisor") {
+        return NextResponse.json(
+          { error: "Unauthorized role to clear patient." },
+          { status: 403 }
+        );
+      }
+
+      const { patientId, clearanceNote } = body;
+      const pt = state.patients.find((p) => p.id === patientId);
+      if (!pt) {
+        return NextResponse.json({ error: "Patient not found" }, { status: 404 });
+      }
+
+      const now = new Date().toISOString();
+      pt.cleared = true;
+      pt.clearedAt = now;
+      pt.clearedBy = callerName;
+      pt.clearedNotes =
+        clearanceNote ||
+        `Check-up completed & vitals stabilized. Cleared from active high-risk queue by ${callerName}; clinic slot freed.`;
+      pt.clearedReason = pt.clearedNotes;
+
+      // Also mark any open escalations for this patient as closed
+      for (const esc of state.escalations) {
+        if (esc.patientId === pt.id && esc.status !== "closed") {
+          esc.status = "closed";
+          esc.slaBreached = false;
+          esc.outcomeNote = pt.clearedNotes || null;
+          esc.updatedAt = now;
+        }
+      }
+
+      appendAuditEntry(
+        callerId,
+        callerName,
+        callerRole,
+        "PATIENT_CLEARED_FROM_QUEUE",
+        pt.pseudonym,
+        pt.id,
+        "ALLOWED",
+        `Cleared ${pt.pseudonym} from active triage queue (${pt.clearedNotes}). Assigned clinic slot in ${pt.hexagonId} freed immediately.`
+      );
+
+      return NextResponse.json({
+        message: `Cleared ${pt.pseudonym} (${pt.initials}) from active queue! Clinic slot in ${pt.hexagonId} freed immediately.`,
+        snapshot: snap(),
+      });
+    }
+
+    if (action === "RESTORE_CLEARED_PATIENT") {
+      const { patientId } = body;
+      const pt = state.patients.find((p) => p.id === patientId);
+      if (!pt) {
+        return NextResponse.json({ error: "Patient not found" }, { status: 404 });
+      }
+      pt.cleared = false;
+      pt.clearedAt = null;
+      pt.clearedBy = null;
+      pt.clearedNotes = null;
+
+      appendAuditEntry(
+        callerId,
+        callerName,
+        callerRole,
+        "PATIENT_RESTORED_TO_QUEUE",
+        pt.pseudonym,
+        pt.id,
+        "ALLOWED",
+        `Re-admitted ${pt.pseudonym} into active QuickSort monitoring queue.`
+      );
+
+      return NextResponse.json({
+        message: `Restored ${pt.pseudonym} back into active QuickSort triage queue.`,
+        snapshot: snap(),
       });
     }
 
@@ -1253,7 +1740,7 @@ export async function POST(req: Request) {
       resetDbState();
       return NextResponse.json({
         message: "Seeded 300 synthetic patients, 5 Hexagon Clinics, and hash-chained audit trail reset to clean initial state.",
-        snapshot: computeSystemSnapshot(callerRole, callerId),
+        snapshot: snap(),
       });
     }
 

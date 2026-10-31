@@ -100,6 +100,7 @@ export interface EvaluatedPatientFlag {
   ruleVersion: number;
   totalScore: number;
   abovePivotThreshold: boolean;
+  hardClinicalOverride: boolean;
   pivotThresholdUsed: number;
   exceedsLocalClinicCapability: boolean;
   requiresRapidAmbulance: boolean;
@@ -157,34 +158,60 @@ export function evaluatePatientFiveCategories(
 
   const categories: CategoryBreakdown[] = [];
   let clinicalTriggered = false;
+  let hardClinicalOverride = false;
   let stackedFlags = 0;
   let exceedsLocalClinic = false;
   const triggeredRuleIds: string[] = [];
   const reasons: string[] = [];
 
+  // Cohort-specific obstetric thresholds (MEOWS-aligned: >=140/90 in pregnancy is hypertensive; >=160/110 is severe preeclampsia)
+  const effectiveBpSysHigh =
+    input.cohort === "pregnancy"
+      ? Math.min(thresholds.bpSystolicHigh, 140)
+      : thresholds.bpSystolicHigh;
+  const effectiveBpDiaHigh =
+    input.cohort === "pregnancy"
+      ? Math.min(thresholds.bpDiastolicHigh, 90)
+      : thresholds.bpDiastolicHigh;
+  const effectiveHrHigh =
+    input.cohort === "pregnancy"
+      ? Math.max(thresholds.heartRateHigh, 115)
+      : thresholds.heartRateHigh;
+
   // =========================================================================
-  // CATEGORY 1: Blood Pressure (Going UP >= 160/100 or Rising 3x | Going DOWN < 90/60)
+  // CATEGORY 1: Blood Pressure (Going UP >= 160/100 [140/90 Pregnancy] or Rising 3x | Going DOWN < 90/60)
   // =========================================================================
   if (latest) {
     if (
-      latest.systolicBp >= thresholds.bpSystolicHigh ||
-      latest.diastolicBp >= thresholds.bpDiastolicHigh ||
+      latest.systolicBp >= effectiveBpSysHigh ||
+      latest.diastolicBp >= effectiveBpDiaHigh ||
       isBpRising3x
     ) {
-      const pts = latest.systolicBp >= 175 ? 55 : 42;
+      const isSevereObstetricOrCrisis =
+        (input.cohort === "pregnancy" &&
+          (latest.systolicBp >= 160 || latest.diastolicBp >= 110)) ||
+        latest.systolicBp >= 180 ||
+        latest.diastolicBp >= 115;
+      if (isSevereObstetricOrCrisis) {
+        hardClinicalOverride = true;
+        exceedsLocalClinic = true;
+      }
+      const pts = latest.systolicBp >= 175 || isSevereObstetricOrCrisis ? 55 : 42;
       clinicalTriggered = true;
       stackedFlags++;
       triggeredRuleIds.push("CLIN-BP-02");
       const trendStr =
         bpTrendValues.length >= 2 ? ` (3-visit trajectory: ${bpTrendValues.join(" → ")} mmHg)` : "";
-      const r = `BP elevated/rising: ${latest.systolicBp}/${latest.diastolicBp} mmHg${trendStr}; configured upper limit ${thresholds.bpSystolicHigh}/${thresholds.bpDiastolicHigh}. [Rule CLIN-BP-02 v${thresholds.version}]`;
+      const r = `BP elevated/rising: ${latest.systolicBp}/${latest.diastolicBp} mmHg${trendStr}; cohort upper limit ${effectiveBpSysHigh}/${effectiveBpDiaHigh}${
+        input.cohort === "pregnancy" ? " (MEOWS Obstetric Threshold)" : ""
+      }. [Rule CLIN-BP-02 v${thresholds.version}]`;
       reasons.push(r);
       categories.push({
         categoryId: "cat1_bp",
         label: "1. Blood Pressure (BP)",
         direction: "UP",
         currentValue: `${latest.systolicBp}/${latest.diastolicBp} mmHg`,
-        normalRange: `${thresholds.bpSystolicLow}–${thresholds.bpSystolicHigh} / ${thresholds.bpDiastolicLow}–${thresholds.bpDiastolicHigh}`,
+        normalRange: `${thresholds.bpSystolicLow}–${effectiveBpSysHigh} / ${thresholds.bpDiastolicLow}–${effectiveBpDiaHigh}`,
         points: pts,
         ruleId: "CLIN-BP-02",
         ruleVersion: thresholds.version,
@@ -197,6 +224,9 @@ export function evaluatePatientFiveCategories(
     ) {
       const pts = 48;
       clinicalTriggered = true;
+      if (latest.systolicBp <= 85 || latest.diastolicBp <= 55) {
+        hardClinicalOverride = true;
+      }
       stackedFlags++;
       if (input.cohort === "post_illness" || input.cohort === "pregnancy") {
         exceedsLocalClinic = true;
@@ -230,21 +260,22 @@ export function evaluatePatientFiveCategories(
     }
 
     // =========================================================================
-    // CATEGORY 2: Heart Rate (Going UP > 110 bpm | Going DOWN < 50 bpm)
+    // CATEGORY 2: Heart Rate (Going UP > effectiveHrHigh | Going DOWN < 50 bpm)
     // =========================================================================
-    if (latest.heartRate > thresholds.heartRateHigh) {
+    if (latest.heartRate > effectiveHrHigh) {
       const pts = 32;
       clinicalTriggered = true;
+      if (latest.heartRate >= 135) hardClinicalOverride = true;
       stackedFlags++;
       triggeredRuleIds.push("CLIN-PNC-04");
-      const r = `Heart rate elevated: ${latest.heartRate} bpm (above upper limit ${thresholds.heartRateHigh} bpm). [Rule CLIN-PNC-04 v${thresholds.version}]`;
+      const r = `Heart rate elevated: ${latest.heartRate} bpm (above upper limit ${effectiveHrHigh} bpm). [Rule CLIN-PNC-04 v${thresholds.version}]`;
       reasons.push(r);
       categories.push({
         categoryId: "cat2_hr",
         label: "2. Heart Rate (Pulse)",
         direction: "UP",
         currentValue: `${latest.heartRate} bpm`,
-        normalRange: `${thresholds.heartRateLow}–${thresholds.heartRateHigh} bpm`,
+        normalRange: `${thresholds.heartRateLow}–${effectiveHrHigh} bpm`,
         points: pts,
         ruleId: "CLIN-PNC-04",
         ruleVersion: thresholds.version,
@@ -253,6 +284,7 @@ export function evaluatePatientFiveCategories(
     } else if (latest.heartRate < thresholds.heartRateLow) {
       const pts = 38;
       clinicalTriggered = true;
+      if (latest.heartRate <= 42) hardClinicalOverride = true;
       stackedFlags++;
       triggeredRuleIds.push("CLIN-PNC-04");
       const r = `Heart rate dangerously low: ${latest.heartRate} bpm (below lower limit ${thresholds.heartRateLow} bpm). [Rule CLIN-PNC-04 v${thresholds.version}]`;
@@ -306,6 +338,7 @@ export function evaluatePatientFiveCategories(
     } else if (latest.bloodGlucose < thresholds.glucoseLow) {
       const pts = 46;
       clinicalTriggered = true;
+      if (latest.bloodGlucose <= 60) hardClinicalOverride = true;
       stackedFlags++;
       triggeredRuleIds.push("CLIN-GLU-03");
       const r = `Blood glucose critically low (hypoglycemia risk): ${latest.bloodGlucose} mg/dL (lower limit ${thresholds.glucoseLow} mg/dL). [Rule CLIN-GLU-03 v${thresholds.version}]`;
@@ -344,6 +377,7 @@ export function evaluatePatientFiveCategories(
       stackedFlags++;
       if (input.cohort === "post_illness") {
         exceedsLocalClinic = true; // Post-cancer / post-discharge fever needs higher-tier care
+        hardClinicalOverride = true;
       }
       triggeredRuleIds.push("CLIN-PNC-04");
       const r = `High fever recorded: ${latest.temperature.toFixed(1)}°C (limit ${thresholds.tempHigh.toFixed(1)}°C)${
@@ -369,6 +403,9 @@ export function evaluatePatientFiveCategories(
     ) {
       const pts = 52;
       clinicalTriggered = true;
+      if (latest.spo2 <= 90 || latest.temperature <= 35.0) {
+        hardClinicalOverride = true;
+      }
       stackedFlags++;
       exceedsLocalClinic = true;
       triggeredRuleIds.push("CLIN-PNC-04");
@@ -499,10 +536,14 @@ export function evaluatePatientFiveCategories(
   const stackedBonus = Math.max(0, stackedFlags - 1) * 15;
   const clinicalBonus = clinicalTriggered ? 60 : 0;
 
-  const totalScore = clinicalBonus + sumCategoryPoints + stackedBonus + cohortWeight;
+  // Hard Red-Flag Clinical Override (NEWS2/MEOWS): guarantees a single life-threatening sign never lands below pivotThreshold
+  const rawScore = clinicalBonus + sumCategoryPoints + stackedBonus + cohortWeight;
+  const totalScore = hardClinicalOverride
+    ? Math.max(rawScore, thresholds.pivotThreshold + 35)
+    : rawScore;
 
   let flagClass: FlagClass = "administrative_reminder";
-  if (clinicalTriggered || totalScore >= thresholds.pivotThreshold) {
+  if (clinicalTriggered || hardClinicalOverride || totalScore >= thresholds.pivotThreshold) {
     flagClass = "clinical_review";
   } else if (input.consecutiveMissed >= 2) {
     flagClass = "administrative_escalation";
@@ -513,7 +554,8 @@ export function evaluatePatientFiveCategories(
     triggeredRuleIds[0] ||
     "ADM-DUE-01";
 
-  const abovePivotThreshold = totalScore >= thresholds.pivotThreshold;
+  const abovePivotThreshold =
+    hardClinicalOverride || totalScore >= thresholds.pivotThreshold;
   const requiresRapidAmbulance =
     abovePivotThreshold &&
     (input.mobility === "homebound" || exceedsLocalClinic || totalScore >= 165);
@@ -548,6 +590,7 @@ export function evaluatePatientFiveCategories(
     ruleVersion: thresholds.version,
     totalScore,
     abovePivotThreshold,
+    hardClinicalOverride,
     pivotThresholdUsed: thresholds.pivotThreshold,
     exceedsLocalClinicCapability: exceedsLocalClinic,
     requiresRapidAmbulance,
@@ -622,8 +665,12 @@ export function quickSortPatientsByThreshold(
       } else if (current.totalScore < pivot.totalScore) {
         rightLower.push(current);
       } else {
-        // Tie-breaker: clinical_review first, then stackedFlagCount
-        if (
+        // Deterministic tie-breaker: hardClinicalOverride, clinical_review, stackedFlagCount, then patientId
+        if (current.hardClinicalOverride && !pivot.hardClinicalOverride) {
+          leftHigher.push(current);
+        } else if (!current.hardClinicalOverride && pivot.hardClinicalOverride) {
+          rightLower.push(current);
+        } else if (
           current.flagClass === "clinical_review" &&
           pivot.flagClass !== "clinical_review"
         ) {
@@ -632,6 +679,14 @@ export function quickSortPatientsByThreshold(
           current.flagClass !== "clinical_review" &&
           pivot.flagClass === "clinical_review"
         ) {
+          rightLower.push(current);
+        } else if (current.stackedFlagCount > pivot.stackedFlagCount) {
+          leftHigher.push(current);
+        } else if (current.stackedFlagCount < pivot.stackedFlagCount) {
+          rightLower.push(current);
+        } else if (current.patientId < pivot.patientId) {
+          leftHigher.push(current);
+        } else if (current.patientId > pivot.patientId) {
           rightLower.push(current);
         } else {
           middleEqual.push(current);
@@ -690,7 +745,9 @@ export interface ClinicCapacityAllocation {
   walkInProtectedCap: number; // Default 10
   occupiedCritical: number;
   occupiedSystemFollowup: number;
+  occupiedSystem: number;
   occupiedWalkIn: number; // Protected general walk-ins
+  preemptedLowScoreCount: number;
   preemptedToRemoteWorker: EvaluatedPatientFlag[]; // Bumped safely when 31st critical patient arrives
   overflowToAdjacentHexagons: EvaluatedPatientFlag[]; // Triggered when clinic is 100% full on critical+system capacity
   slots: ClinicSlotAssignment[];
@@ -809,7 +866,9 @@ export function allocateClinicSlots30(
     walkInProtectedCap,
     occupiedCritical: criticalDirect.length + criticalPreemptingSystem.length,
     occupiedSystemFollowup: flexibleSlotted.length,
+    occupiedSystem: flexibleSlotted.length,
     occupiedWalkIn: walkInProtectedCap,
+    preemptedLowScoreCount: flexibleBumped.length,
     preemptedToRemoteWorker,
     overflowToAdjacentHexagons,
     slots,

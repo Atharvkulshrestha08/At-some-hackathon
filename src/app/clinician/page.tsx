@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { Ambulance, Stethoscope } from "lucide-react";
+import { Ambulance, CheckCircle2, ExternalLink, PhoneCall, Stethoscope } from "lucide-react";
 import { useSwasthya } from "@/components/SwasthyaShell";
 
 export default function ClinicianPage() {
-  const { snapshot, busyAction, executeAction } = useSwasthya();
+  const { snapshot, busyAction, executeAction, clearPatient } = useSwasthya();
 
   if (!snapshot) return null;
 
@@ -81,22 +81,44 @@ export default function ClinicianPage() {
 
       {/* Section 1: 108 Rapid Ambulance Dispatches */}
       <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-red-50 border border-red-200 text-red-600 flex items-center justify-center shrink-0">
-            <Ambulance className="w-6 h-6" />
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-red-50 border border-red-200 text-red-600 flex items-center justify-center shrink-0">
+              <Ambulance className="w-6 h-6" />
+            </div>
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+                108 Rapid Ambulance &amp; Paramedic Handover Tracker
+              </h2>
+              <p className="text-base text-slate-600">
+                Webhook Mode:{" "}
+                <strong>
+                  {snapshot.integrations?.ambulance108Dispatch.mode ??
+                    "SIMULATED_108_DISPATCH"}
+                </strong>{" "}
+                • Bypasses under-equipped local sub-centres directly to{" "}
+                <strong>GMCH &amp; BBCI Regional Tertiary Referral Hub (Hex-4)</strong>
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-              108 Rapid Ambulance & Paramedic Handover Tracker
-            </h2>
-            <p className="text-base text-slate-600">
-              Webhook Mode:{" "}
-              <strong>
-                {snapshot.integrations?.ambulance108Dispatch.mode ??
-                  "SIMULATED_108_DISPATCH"}
-              </strong>{" "}
-              • Bypasses under-equipped local clinics for Homebound & Post-Cancer Recovery patients
-            </p>
+
+          <div className="flex flex-wrap items-center gap-2.5">
+            <a
+              href="tel:108"
+              className="min-h-[44px] px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-bold inline-flex items-center gap-2 shadow-xs"
+            >
+              <PhoneCall className="w-4 h-4" />
+              <span>Dial 108 Emergency Control Room</span>
+            </a>
+            <a
+              href="https://esanjeevani.mohfw.gov.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="min-h-[44px] px-4 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-sm font-bold inline-flex items-center gap-2"
+            >
+              <span>eSanjeevani Telemedicine Hub</span>
+              <ExternalLink className="w-4 h-4" />
+            </a>
           </div>
         </div>
 
@@ -318,6 +340,20 @@ export default function ClinicianPage() {
                     className="min-h-[44px] px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-base font-bold"
                   >
                     ✓ Confirm Outcome & Close
+                  </button>
+
+                  <button
+                    disabled={busyAction}
+                    onClick={() =>
+                      void clearPatient(
+                        esc.patientId,
+                        `Clinician reviewed & stabilized ${esc.pseudonym}. Cleared from active high-risk queue; clinic slot freed.`
+                      )
+                    }
+                    className="min-h-[44px] px-4 py-2.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 border border-emerald-400 text-emerald-950 text-base font-bold flex items-center gap-1.5"
+                  >
+                    <CheckCircle2 className="w-5 h-5 text-emerald-700" />
+                    <span>Clear / Discharge Patient</span>
                   </button>
 
                   {esc.slaBreached && primarySupervisor && backupClinician && (

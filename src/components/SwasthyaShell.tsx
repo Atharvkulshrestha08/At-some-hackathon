@@ -11,13 +11,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Activity,
+  Building2,
   CheckCircle2,
   Cross,
   Database,
   Globe,
   HeartPulse,
   Hexagon,
+  KeyRound,
   LayoutGrid,
+  Lock,
   Menu,
   MessageSquare,
   Plus,
@@ -27,6 +30,9 @@ import {
   Smartphone,
   Stethoscope,
   User,
+  UserCheck,
+  UserPlus,
+  Users,
   X,
   Zap,
 } from "lucide-react";
@@ -41,9 +47,12 @@ import type {
   ClinicCapacityAllocation,
 } from "@/lib/quicksort-engine";
 import type {
+  OrganizationRecord,
   FacilityRecord,
   UserRecord,
   UserRole,
+  CohortType,
+  MobilityStatus,
   EscalationRecord,
   HexBroadcastRecord,
   AmbulanceDispatchRecord,
@@ -63,6 +72,10 @@ export interface SystemSnapshot {
   symptomCatalog: DangerSymptomDefinition[];
   activeThresholds: RuleThresholds;
   pendingRuleDraft: PendingRuleDraft | null;
+  activeOrganization: OrganizationRecord;
+  organizations: OrganizationRecord[];
+  workerScope: "assigned" | "organization";
+  signedInToken: string;
   facilities: FacilityRecord[];
   users: UserRecord[];
   quickSortResult: {
@@ -96,10 +109,23 @@ export interface SystemSnapshot {
     village: string;
     withdrawnAt: string | null;
   }>;
+  clearedPatients: Array<{
+    id: string;
+    pseudonym: string;
+    initials: string;
+    ageBand: string;
+    cohort: string;
+    village: string;
+    clearedAt: string | null;
+    clearedBy: string | null;
+    clearedNotes: string | null;
+  }>;
   stats: {
     totalPatients: number;
+    organizationPatients: number;
     consentedPatients: number;
     withdrawnPatients: number;
+    clearedPatients: number;
     totalImmediateAboveThreshold: number;
     totalOverdue: number;
     totalMissedTwice: number;
@@ -117,6 +143,9 @@ interface SwasthyaContextValue {
   activeRole: UserRole;
   activeUserId: string;
   activeUserName: string;
+  activeOrganizationId: string;
+  workerScope: "assigned" | "organization";
+  setWorkerScope: (scope: "assigned" | "organization") => void;
   lang: SupportedLanguage;
   setLang: (l: SupportedLanguage) => void;
   handleUserSwitch: (userId: string) => void;
@@ -124,6 +153,10 @@ interface SwasthyaContextValue {
     payload: Record<string, unknown>
   ) => Promise<{ ok: boolean; data: unknown }>;
   openCheckinModal: (pt: EvaluatedPatientFlag) => void;
+  openRegisterPatientModal: () => void;
+  openSignInModal: () => void;
+  clearPatient: (patientId: string, clearanceNote?: string) => Promise<void>;
+  restoreClearedPatient: (patientId: string) => Promise<void>;
   openPhoneDrawer: (patientId?: string) => void;
 }
 
@@ -144,14 +177,62 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
   const [busyAction, setBusyAction] = useState<boolean>(false);
 
   const [activeRole, setActiveRole] = useState<UserRole>("worker");
-  const [activeUserId, setActiveUserId] = useState<string>("");
-  const [activeUserName, setActiveUserName] = useState<string>("");
+  const [activeUserId, setActiveUserId] = useState<string>("USR-WRK-RINA");
+  const [activeUserName, setActiveUserName] = useState<string>(
+    "Rina Devi (Sevak ASHA Lead #1)"
+  );
+  const [activeOrganizationId, setActiveOrganizationId] =
+    useState<string>("ORG-SEVAK");
+  const [workerScope, setWorkerScopeState] = useState<
+    "assigned" | "organization"
+  >("assigned");
+  const [authToken, setAuthToken] = useState<string>("");
   const [lang, setLang] = useState<SupportedLanguage>("en");
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [phoneDrawerOpen, setPhoneDrawerOpen] = useState<boolean>(false);
   const [selectedSimPatientId, setSelectedSimPatientId] = useState<string>("");
 
+  // Multi-Organization Sign-In & Landing Modal
+  const [signInModalOpen, setSignInModalOpen] = useState<boolean>(false);
+  const [signInTab, setSignInTab] = useState<"signin" | "create">("signin");
+  const [selectedOrgForLogin, setSelectedOrgForLogin] =
+    useState<string>("ORG-SEVAK");
+  const [selectedUserForLogin, setSelectedUserForLogin] =
+    useState<string>("USR-WRK-RINA");
+  const [passcodeInput, setPasscodeInput] = useState<string>("SEVAK-2026");
+  const [newOrgForm, setNewOrgForm] = useState({
+    orgName: "",
+    orgShortName: "",
+    district: "Kamrup Rural, Assam",
+    accessPasscode: "CARE-2026",
+    teamSize: 15,
+    leadWorkerName: "",
+  });
+
+  // Register New Patient Modal
+  const [registerModalOpen, setRegisterModalOpen] = useState<boolean>(false);
+  const [registerForm, setRegisterForm] = useState({
+    initials: "P.K.",
+    ageBand: "40–49",
+    cohort: "hypertension" as CohortType,
+    facilityId: "FAC-HEX-0",
+    mobility: "independent" as MobilityStatus,
+    language: "as" as SupportedLanguage,
+    preferredChannel: "whatsapp" as "sms" | "whatsapp",
+    phonePlain: "+919854088112",
+    systolicBp: 154,
+    diastolicBp: 96,
+    heartRate: 92,
+    bloodGlucose: 138,
+    temperature: 37.2,
+    spo2: 96,
+    symptoms: [] as string[],
+    daysOverdue: 2,
+    consentActive: true,
+  });
+
+  // 5-Vital Check-In Modal
   const [checkinModalPatient, setCheckinModalPatient] =
     useState<EvaluatedPatientFlag | null>(null);
   const [checkinForm, setCheckinForm] = useState({
@@ -171,24 +252,32 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
   } | null>(null);
 
   const fetchSnapshot = useCallback(
-    async (roleOverride?: UserRole, userOverride?: string) => {
+    async (
+      roleOverride?: UserRole,
+      userOverride?: string,
+      orgOverride?: string,
+      scopeOverride?: "assigned" | "organization"
+    ) => {
       try {
         const r = roleOverride || activeRole;
         const u = userOverride || activeUserId;
+        const o = orgOverride || activeOrganizationId;
+        const s = scopeOverride || workerScope;
         const query = new URLSearchParams();
         if (r) query.set("role", r);
         if (u) query.set("userId", u);
+        if (o) query.set("organizationId", o);
+        if (s) query.set("workerScope", s);
+
         const res = await fetch(`/api/swasthya?${query.toString()}`);
         const data: SystemSnapshot = await res.json();
         setSnapshot(data);
 
-        // Dynamically initialize active user & default simulated patient from API data
-        if (!u && data.users.length > 0) {
-          const defaultUser =
-            data.users.find((usr) => usr.role === r) || data.users[0];
-          setActiveRole(defaultUser.role);
-          setActiveUserId(defaultUser.id);
-          setActiveUserName(`${defaultUser.name} (${defaultUser.title})`);
+        if (data.signedInToken && !authToken) {
+          setAuthToken(data.signedInToken);
+        }
+        if (data.activeOrganization) {
+          setActiveOrganizationId(data.activeOrganization.id);
         }
         if (
           data.quickSortResult.combinedRanked.length > 0 &&
@@ -204,7 +293,14 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     },
-    [activeRole, activeUserId, selectedSimPatientId]
+    [
+      activeRole,
+      activeUserId,
+      activeOrganizationId,
+      workerScope,
+      authToken,
+      selectedSimPatientId,
+    ]
   );
 
   useEffect(() => {
@@ -225,12 +321,21 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
           callerRole: activeRole,
           callerId: activeUserId,
           callerName: activeUserName,
+          organizationId: activeOrganizationId,
+          workerScope,
+          authToken,
           ...payload,
         }),
       });
       const data = await res.json();
+      if (data.authToken) {
+        setAuthToken(data.authToken);
+      }
       if (data.snapshot) {
         setSnapshot(data.snapshot);
+        if (data.snapshot.activeOrganization) {
+          setActiveOrganizationId(data.snapshot.activeOrganization.id);
+        }
       }
       if (!res.ok) {
         setToast({
@@ -255,8 +360,19 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
     if (!selectedUser) return;
     setActiveRole(selectedUser.role);
     setActiveUserId(selectedUser.id);
-    setActiveUserName(`${selectedUser.name} (${selectedUser.title})`);
-    void fetchSnapshot(selectedUser.role, selectedUser.id);
+    setActiveUserName(selectedUser.name);
+    setActiveOrganizationId(selectedUser.organizationId || "ORG-SEVAK");
+    void fetchSnapshot(
+      selectedUser.role,
+      selectedUser.id,
+      selectedUser.organizationId || "ORG-SEVAK",
+      workerScope
+    );
+  };
+
+  const setWorkerScope = (scope: "assigned" | "organization") => {
+    setWorkerScopeState(scope);
+    void fetchSnapshot(activeRole, activeUserId, activeOrganizationId, scope);
   };
 
   const openCheckinModal = (pt: EvaluatedPatientFlag) => {
@@ -273,6 +389,47 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         doctorUnavailableAtClinic: false,
       });
     }
+  };
+
+  const openRegisterPatientModal = () => {
+    if (snapshot && snapshot.facilities.length > 0) {
+      const orgFac =
+        snapshot.facilities.find(
+          (f) => f.organizationId === activeOrganizationId
+        ) || snapshot.facilities[0];
+      setRegisterForm((prev) => ({
+        ...prev,
+        facilityId: orgFac.id,
+      }));
+    }
+    setRegisterModalOpen(true);
+  };
+
+  const openSignInModal = () => {
+    setSelectedOrgForLogin(activeOrganizationId);
+    setSelectedUserForLogin(activeUserId);
+    const org = snapshot?.organizations.find(
+      (o) => o.id === activeOrganizationId
+    );
+    if (org) {
+      setPasscodeInput(org.accessPasscode);
+    }
+    setSignInModalOpen(true);
+  };
+
+  const clearPatient = async (patientId: string, clearanceNote?: string) => {
+    await executeAction({
+      action: "CLEAR_PATIENT",
+      patientId,
+      clearanceNote,
+    });
+  };
+
+  const restoreClearedPatient = async (patientId: string) => {
+    await executeAction({
+      action: "RESTORE_CLEARED_PATIENT",
+      patientId,
+    });
   };
 
   const openPhoneDrawer = (patientId?: string) => {
@@ -325,6 +482,10 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
   ];
 
   const t = UI_TRANSLATIONS[lang] || UI_TRANSLATIONS.en;
+  const orgUsers =
+    snapshot?.users.filter(
+      (u) => u.organizationId === activeOrganizationId
+    ) || [];
 
   return (
     <SwasthyaContext.Provider
@@ -335,11 +496,18 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         activeRole,
         activeUserId,
         activeUserName,
+        activeOrganizationId,
+        workerScope,
+        setWorkerScope,
         lang,
         setLang,
         handleUserSwitch,
         executeAction,
         openCheckinModal,
+        openRegisterPatientModal,
+        openSignInModal,
+        clearPatient,
+        restoreClearedPatient,
         openPhoneDrawer,
       }}
     >
@@ -347,25 +515,38 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         {/* ================================================================= */}
         {/* SINGLE ULTRA-CLEAN 21ST.DEV FLOATING HEADER BAR                   */}
         {/* ================================================================= */}
-        <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80">
-          <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
-            {/* Left: Crisp Medical Brand */}
-            <Link
-              href="/"
-              className="min-h-[44px] flex items-center gap-2.5 shrink-0 whitespace-nowrap"
-            >
-              <div className="w-9 h-9 rounded-xl bg-red-600 text-white flex items-center justify-center shadow-xs">
-                <Cross className="w-4 h-4" />
-              </div>
-              <div className="flex items-center gap-2">
+        <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200/80">
+          <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2.5">
+            {/* Left: Crisp Medical Brand + Active Multi-Tenant Organization Pill */}
+            <div className="flex items-center gap-2.5 shrink-0">
+              <Link
+                href="/"
+                className="min-h-[44px] flex items-center gap-2 shrink-0 whitespace-nowrap"
+              >
+                <div className="w-9 h-9 rounded-xl bg-red-600 text-white flex items-center justify-center shadow-xs">
+                  <Cross className="w-4 h-4" />
+                </div>
                 <span className="text-base font-bold tracking-tight text-slate-900">
                   SwasthyaSense
                 </span>
-                <span className="hidden sm:inline-block px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
-                  v{snapshot?.activeThresholds.version ?? 1}.0
+              </Link>
+
+              {/* Multi-Tenant Organization Sign-In Badge */}
+              <button
+                type="button"
+                onClick={openSignInModal}
+                title="Switch Organization or Sign In with Organization Credentials"
+                className="min-h-[38px] px-2.5 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-1.5 whitespace-nowrap transition-colors"
+              >
+                <Building2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span className="max-w-[120px] sm:max-w-[160px] truncate">
+                  {snapshot?.activeOrganization?.shortName ?? "Sevak Health"}
                 </span>
-              </div>
-            </Link>
+                <span className="hidden md:inline-block px-1.5 py-0.5 rounded bg-emerald-600 text-white text-[10px] font-mono">
+                  {snapshot?.activeOrganization?.teamSize ?? 15} Staff
+                </span>
+              </button>
+            </div>
 
             {/* Center (xl+): 21st.dev Floating Segmented Pill Nav */}
             <nav
@@ -383,7 +564,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`min-h-[38px] px-3.5 py-1.5 rounded-full text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all ${
+                    className={`min-h-[38px] px-3 py-1.5 rounded-full text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all ${
                       isActive
                         ? "bg-white text-slate-900 shadow-xs border border-slate-200/60"
                         : "text-slate-600 hover:text-slate-900"
@@ -411,20 +592,32 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
               })}
             </nav>
 
-            {/* Right Controls: API-Driven User Selector, Language, Phone Sim & Mobile Menu */}
+            {/* Right Controls: + Register Patient, Org User Selector, Language, WhatsApp Sim */}
             <div className="flex items-center gap-2 shrink-0">
-              {snapshot && snapshot.users.length > 0 && (
+              {/* + Register Patient Button */}
+              <button
+                type="button"
+                onClick={openRegisterPatientModal}
+                className="min-h-[40px] px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 whitespace-nowrap shadow-xs transition-colors"
+              >
+                <UserPlus className="w-4 h-4 shrink-0" />
+                <span className="hidden sm:inline">+ Register Patient</span>
+                <span className="sm:hidden">+ Add</span>
+              </button>
+
+              {/* Active Organization Staff Switcher (15 Frontline Workers + Clinician + Supervisor) */}
+              {orgUsers.length > 0 && (
                 <div className="hidden lg:flex items-center bg-slate-100 rounded-xl px-2.5 min-h-[40px] border border-slate-200/70">
                   <User className="w-4 h-4 text-emerald-600 mr-1.5 shrink-0" />
                   <select
-                    aria-label="Select Active Clinical User"
+                    aria-label="Select Active Clinical User in Organization"
                     value={activeUserId}
                     onChange={(e) => handleUserSwitch(e.target.value)}
-                    className="bg-transparent text-sm font-semibold text-slate-800 focus:outline-none cursor-pointer pr-1 max-w-[170px] truncate"
+                    className="bg-transparent text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer pr-1 max-w-[155px] truncate"
                   >
-                    {snapshot.users.map((u) => (
+                    {orgUsers.map((u) => (
                       <option key={u.id} value={u.id}>
-                        {u.name} ({u.role.toUpperCase()})
+                        {u.name}
                       </option>
                     ))}
                   </select>
@@ -432,13 +625,13 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
               )}
 
               {/* Language Pill (md+) */}
-              <div className="hidden md:flex items-center bg-slate-100 rounded-xl px-2.5 min-h-[40px] border border-slate-200/70">
-                <Globe className="w-4 h-4 text-emerald-600 mr-1.5 shrink-0" />
+              <div className="hidden md:flex items-center bg-slate-100 rounded-xl px-2 min-h-[40px] border border-slate-200/70">
+                <Globe className="w-4 h-4 text-emerald-600 mr-1 shrink-0" />
                 <select
                   aria-label="Select Language"
                   value={lang}
                   onChange={(e) => setLang(e.target.value as SupportedLanguage)}
-                  className="bg-transparent text-sm font-semibold text-slate-800 focus:outline-none cursor-pointer"
+                  className="bg-transparent text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer"
                 >
                   {SUPPORTED_LANGUAGES.map((l) => (
                     <option key={l.code} value={l.code}>
@@ -452,10 +645,10 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={() => openPhoneDrawer()}
-                className="min-h-[40px] px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap shadow-xs transition-colors"
+                className="min-h-[40px] px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap shadow-xs transition-colors"
               >
                 <Smartphone className="w-4 h-4 shrink-0" />
-                <span className="hidden sm:inline">WhatsApp Sim</span>
+                <span className="hidden sm:inline">SMS/WA</span>
               </button>
 
               {/* Hamburger Menu Button for < xl screens (44x44px) */}
@@ -500,6 +693,32 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                   </button>
                 </div>
 
+                {/* Mobile Organization Sign-In & Register Patient Triggers */}
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openSignInModal();
+                    }}
+                    className="min-h-[44px] px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold flex items-center justify-center gap-1.5"
+                  >
+                    <Building2 className="w-4 h-4" />
+                    <span>Org Sign-In</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openRegisterPatientModal();
+                    }}
+                    className="min-h-[44px] px-3 py-2 rounded-xl bg-red-600 text-white text-sm font-bold flex items-center justify-center gap-1.5"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    <span>+ Register Pt</span>
+                  </button>
+                </div>
+
                 <nav className="space-y-1.5">
                   {navItems.map((item) => {
                     const Icon = item.icon;
@@ -540,19 +759,19 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                 </nav>
 
                 <div className="space-y-4 pt-4 border-t border-slate-200">
-                  {snapshot && snapshot.users.length > 0 && (
+                  {orgUsers.length > 0 && (
                     <div>
                       <label className="block text-sm font-semibold text-slate-600 mb-1.5">
-                        Active Clinical User (From API)
+                        Staff Member ({snapshot?.activeOrganization?.shortName})
                       </label>
                       <select
                         value={activeUserId}
                         onChange={(e) => handleUserSwitch(e.target.value)}
                         className="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-300 text-base font-semibold text-slate-900"
                       >
-                        {snapshot.users.map((u) => (
+                        {orgUsers.map((u) => (
                           <option key={u.id} value={u.id}>
-                            {u.name} — {u.title}
+                            {u.name} ({u.role.toUpperCase()})
                           </option>
                         ))}
                       </select>
@@ -663,7 +882,9 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                 <Database className="w-3.5 h-3.5 text-emerald-600" />
                 {snapshot?.integrations?.supabasePostgres.mode ??
                   snapshot?.postgresEngineStatus}{" "}
-                ({snapshot?.stats.totalPatients ?? 0} Records)
+                • Tenant: {snapshot?.activeOrganization?.shortName} (
+                {snapshot?.stats.organizationPatients ?? 0} Org Pts /{" "}
+                {snapshot?.stats.totalPatients ?? 0} Total)
               </span>
             </div>
             <div className="flex items-center gap-3">
@@ -683,7 +904,667 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         </footer>
 
         {/* ================================================================= */}
-        {/* MODAL: 5-VITAL CHECK-IN (DYNAMICALLY POPULATED FROM API CATALOG)  */}
+        {/* MODAL 1: MULTI-ORGANIZATION SIGN-IN & LANDING PORTAL              */}
+        {/* ================================================================= */}
+        {signInModalOpen && snapshot && (
+          <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 overflow-y-auto">
+            <div className="w-full h-full sm:h-auto sm:max-w-2xl bg-white sm:rounded-2xl border border-slate-200 p-6 shadow-2xl space-y-5 overflow-y-auto max-h-[92vh]">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+                    <Building2 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-emerald-700 uppercase">
+                      Strict Multi-Tenant Organization Isolation
+                    </span>
+                    <h3 className="text-xl font-bold text-slate-900">
+                      Organization Sign-In & 15-Worker Team Portal
+                    </h3>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSignInModalOpen(false)}
+                  className="min-h-[44px] min-w-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-4 rounded-xl bg-emerald-50/80 border border-emerald-200 text-sm text-slate-800 space-y-1.5">
+                <p className="font-bold text-emerald-950 flex items-center gap-1.5">
+                  <Lock className="w-4 h-4 text-emerald-700" />
+                  Zero Cross-Organization Data Leakage (PostgreSQL RLS + API Gate)
+                </p>
+                <p className="text-slate-700 leading-relaxed">
+                  When you sign into an organization (for example,{" "}
+                  <strong>Sevak Health Foundation</strong> with its{" "}
+                  <strong>15-person frontline worker team</strong>), you only
+                  receive and manage patients registered under{" "}
+                  <strong>Sevak</strong>. Patients registered under{" "}
+                  <strong>Kamrup Rural NHM</strong> or{" "}
+                  <strong>Arogya Trust</strong> are strictly isolated (`403`
+                  blocked).
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+                <button
+                  type="button"
+                  onClick={() => setSignInTab("signin")}
+                  className={`min-h-[40px] px-4 py-2 rounded-xl text-sm font-bold ${
+                    signInTab === "signin"
+                      ? "bg-slate-900 text-white"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  }`}
+                >
+                  Sign Into Existing Organization ({snapshot.organizations.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSignInTab("create")}
+                  className={`min-h-[40px] px-4 py-2 rounded-xl text-sm font-bold ${
+                    signInTab === "create"
+                      ? "bg-emerald-600 text-white"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  }`}
+                >
+                  + Onboard New Organization
+                </button>
+              </div>
+
+              {signInTab === "signin" ? (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                      1. Select Healthcare Organization
+                    </label>
+                    <div className="grid grid-cols-1 gap-2.5">
+                      {snapshot.organizations.map((org) => {
+                        const selected = selectedOrgForLogin === org.id;
+                        return (
+                          <button
+                            key={org.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedOrgForLogin(org.id);
+                              setPasscodeInput(org.accessPasscode);
+                              const firstUser = snapshot.users.find(
+                                (u) => u.organizationId === org.id
+                              );
+                              if (firstUser) {
+                                setSelectedUserForLogin(firstUser.id);
+                              }
+                            }}
+                            className={`p-3.5 rounded-xl border text-left transition-all ${
+                              selected
+                                ? "bg-emerald-50/70 border-emerald-600 ring-2 ring-emerald-500/20"
+                                : "bg-white border-slate-200 hover:border-slate-300"
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-bold text-base text-slate-900">
+                                {org.name} ({org.id})
+                              </span>
+                              <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+                                {org.teamSize} Frontline Workers
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-600 mt-1">
+                              {org.description}
+                            </p>
+                            <div className="mt-2 flex items-center gap-3 text-xs font-mono text-slate-500">
+                              <span>District: {org.district}</span>
+                              <span>•</span>
+                              <span>Demo Passcode: {org.accessPasscode}</span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-1">
+                        2. Select Team Member / Role
+                      </label>
+                      <select
+                        value={selectedUserForLogin}
+                        onChange={(e) => setSelectedUserForLogin(e.target.value)}
+                        className="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900"
+                      >
+                        {snapshot.users
+                          .filter((u) => u.organizationId === selectedOrgForLogin)
+                          .map((u) => (
+                            <option key={u.id} value={u.id}>
+                              {u.name} — {u.role.toUpperCase()}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-1">
+                        3. Organization Credentials Passcode
+                      </label>
+                      <div className="relative">
+                        <KeyRound className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          value={passcodeInput}
+                          onChange={(e) => setPasscodeInput(e.target.value)}
+                          className="w-full min-h-[44px] pl-10 pr-3.5 py-2 rounded-xl bg-slate-50 border border-slate-300 text-sm font-mono font-bold text-slate-900"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <button
+                      type="button"
+                      disabled={busyAction}
+                      onClick={async () => {
+                        // Test cross-tenant isolation by attempting to access a patient from another organization
+                        const otherOrgPatientId =
+                          activeOrganizationId === "ORG-SEVAK"
+                            ? "PT-SYN-285"
+                            : "PT-ONC-401";
+                        await executeAction({
+                          action: "LOG_CHECKIN",
+                          patientId: otherOrgPatientId,
+                          systolicBp: 140,
+                          diastolicBp: 90,
+                        });
+                        setSignInModalOpen(false);
+                      }}
+                      className="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-bold flex items-center justify-center gap-1.5"
+                    >
+                      <ShieldAlert className="w-4 h-4" />
+                      <span>Test Cross-Org Isolation (403 Block)</span>
+                    </button>
+
+                    <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setSignInModalOpen(false)}
+                        className="min-h-[44px] px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-sm font-semibold"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        disabled={busyAction}
+                        onClick={async () => {
+                          const targetUser = snapshot.users.find(
+                            (u) => u.id === selectedUserForLogin
+                          );
+                          const res = await executeAction({
+                            action: "SIGN_IN_ORGANIZATION",
+                            targetOrganizationId: selectedOrgForLogin,
+                            targetUserId: selectedUserForLogin,
+                            accessPasscode: passcodeInput,
+                          });
+                          if (res.ok && targetUser) {
+                            setActiveOrganizationId(selectedOrgForLogin);
+                            setActiveRole(targetUser.role);
+                            setActiveUserId(targetUser.id);
+                            setActiveUserName(targetUser.name);
+                            setSignInModalOpen(false);
+                          }
+                        }}
+                        className="min-h-[44px] px-6 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-xs flex items-center gap-1.5"
+                      >
+                        <UserCheck className="w-4 h-4" />
+                        <span>Sign In to Organization</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-1">
+                        Organization Full Name
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g., Brahmaputra Rural Care NGO"
+                        value={newOrgForm.orgName}
+                        onChange={(e) =>
+                          setNewOrgForm({
+                            ...newOrgForm,
+                            orgName: e.target.value,
+                          })
+                        }
+                        className="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-1">
+                        Short Code / Badge Name
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g., Brahmaputra NGO"
+                        value={newOrgForm.orgShortName}
+                        onChange={(e) =>
+                          setNewOrgForm({
+                            ...newOrgForm,
+                            orgShortName: e.target.value,
+                          })
+                        }
+                        className="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-1">
+                        Lead Frontline Worker Name
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g., Binita Kalita"
+                        value={newOrgForm.leadWorkerName}
+                        onChange={(e) =>
+                          setNewOrgForm({
+                            ...newOrgForm,
+                            leadWorkerName: e.target.value,
+                          })
+                        }
+                        className="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-1">
+                        Organization Access Passcode
+                      </label>
+                      <input
+                        type="text"
+                        value={newOrgForm.accessPasscode}
+                        onChange={(e) =>
+                          setNewOrgForm({
+                            ...newOrgForm,
+                            accessPasscode: e.target.value,
+                          })
+                        }
+                        className="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-300 text-sm font-mono font-bold text-slate-900"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setSignInModalOpen(false)}
+                      className="min-h-[44px] px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-sm font-semibold"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busyAction}
+                      onClick={async () => {
+                        const res = await executeAction({
+                          action: "REGISTER_ORGANIZATION",
+                          ...newOrgForm,
+                        });
+                        if (res.ok) {
+                          setSignInModalOpen(false);
+                        }
+                      }}
+                      className="min-h-[44px] px-6 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold"
+                    >
+                      Create & Sign Into Organization
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ================================================================= */}
+        {/* MODAL 2: + REGISTER NEW PATIENT INTO ACTIVE ORGANIZATION          */}
+        {/* ================================================================= */}
+        {registerModalOpen && snapshot && (
+          <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 overflow-y-auto">
+            <div className="w-full h-full sm:h-auto sm:max-w-2xl bg-white sm:rounded-2xl border border-slate-200 p-6 shadow-2xl space-y-5 overflow-y-auto max-h-[92vh]">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center">
+                    <UserPlus className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-emerald-700 uppercase">
+                      Tenant Registry: {snapshot.activeOrganization.name}
+                    </span>
+                    <h3 className="text-xl font-bold text-slate-900">
+                      Register New High-Risk Patient
+                    </h3>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setRegisterModalOpen(false)}
+                  className="min-h-[44px] min-w-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Quick Preset Buttons for Fast Demo */}
+              <div className="flex flex-wrap items-center gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-xs font-bold text-slate-600 uppercase mr-1">
+                  Quick Clinical Presets:
+                </span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setRegisterForm({
+                      ...registerForm,
+                      initials: "M.B. (Severe Preeclampsia)",
+                      ageBand: "20–29",
+                      cohort: "pregnancy",
+                      mobility: "independent",
+                      systolicBp: 164,
+                      diastolicBp: 112,
+                      heartRate: 114,
+                      bloodGlucose: 98,
+                      temperature: 37.2,
+                      spo2: 96,
+                      symptoms: ["blurred_vision_headache"],
+                      daysOverdue: 4,
+                    })
+                  }
+                  className="px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-bold"
+                >
+                  Load High-Risk Pregnancy Preset (Score ≥ 100)
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setRegisterForm({
+                      ...registerForm,
+                      initials: "R.D. (Routine HTN)",
+                      ageBand: "50–59",
+                      cohort: "hypertension",
+                      mobility: "independent",
+                      systolicBp: 144,
+                      diastolicBp: 92,
+                      heartRate: 80,
+                      bloodGlucose: 118,
+                      temperature: 36.8,
+                      spo2: 98,
+                      symptoms: [],
+                      daysOverdue: 3,
+                    })
+                  }
+                  className="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-bold"
+                >
+                  Load Routine Follow-Up Preset (Score &lt; 100)
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Patient Initials / Tag
+                  </label>
+                  <input
+                    type="text"
+                    value={registerForm.initials}
+                    onChange={(e) =>
+                      setRegisterForm({
+                        ...registerForm,
+                        initials: e.target.value,
+                      })
+                    }
+                    className="w-full min-h-[42px] px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-bold text-slate-900"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Age Band
+                  </label>
+                  <select
+                    value={registerForm.ageBand}
+                    onChange={(e) =>
+                      setRegisterForm({
+                        ...registerForm,
+                        ageBand: e.target.value,
+                      })
+                    }
+                    className="w-full min-h-[42px] px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900"
+                  >
+                    <option value="20–29">20–29 yrs</option>
+                    <option value="30–39">30–39 yrs</option>
+                    <option value="40–49">40–49 yrs</option>
+                    <option value="50–59">50–59 yrs</option>
+                    <option value="60–69">60–69 yrs</option>
+                    <option value="70+">70+ yrs</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    High-Risk Cohort
+                  </label>
+                  <select
+                    value={registerForm.cohort}
+                    onChange={(e) =>
+                      setRegisterForm({
+                        ...registerForm,
+                        cohort: e.target.value as CohortType,
+                      })
+                    }
+                    className="w-full min-h-[42px] px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900"
+                  >
+                    <option value="hypertension">Hypertension</option>
+                    <option value="pregnancy">Maternal / Pregnancy (MEOWS)</option>
+                    <option value="diabetes">Diabetes</option>
+                    <option value="post_illness">
+                      Post-Illness / Oncology Recovery
+                    </option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Village Facility (Hexagon)
+                  </label>
+                  <select
+                    value={registerForm.facilityId}
+                    onChange={(e) =>
+                      setRegisterForm({
+                        ...registerForm,
+                        facilityId: e.target.value,
+                      })
+                    }
+                    className="w-full min-h-[42px] px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900"
+                  >
+                    {snapshot.facilities.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {f.hexagonId} — {f.village}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Mobility Status
+                  </label>
+                  <select
+                    value={registerForm.mobility}
+                    onChange={(e) =>
+                      setRegisterForm({
+                        ...registerForm,
+                        mobility: e.target.value as MobilityStatus,
+                      })
+                    }
+                    className="w-full min-h-[42px] px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900"
+                  >
+                    <option value="independent">Ambulatory (Can Walk)</option>
+                    <option value="homebound">
+                      Homebound (Needs 108 Transport)
+                    </option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Phone (AES-256-GCM Encrypted)
+                  </label>
+                  <input
+                    type="text"
+                    value={registerForm.phonePlain}
+                    onChange={(e) =>
+                      setRegisterForm({
+                        ...registerForm,
+                        phonePlain: e.target.value,
+                      })
+                    }
+                    className="w-full min-h-[42px] px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-mono font-bold text-slate-900"
+                  />
+                </div>
+              </div>
+
+              {/* 5-Category Vitals Entry */}
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                <div className="text-xs font-bold text-slate-700 uppercase">
+                  Initial 5-Category Clinical Vitals (Evaluated by QuickSort Engine)
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
+                      Systolic BP (mmHg)
+                    </label>
+                    <input
+                      type="number"
+                      value={registerForm.systolicBp}
+                      onChange={(e) =>
+                        setRegisterForm({
+                          ...registerForm,
+                          systolicBp: Number(e.target.value),
+                        })
+                      }
+                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-white border border-slate-300 text-sm font-mono font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
+                      Diastolic BP (mmHg)
+                    </label>
+                    <input
+                      type="number"
+                      value={registerForm.diastolicBp}
+                      onChange={(e) =>
+                        setRegisterForm({
+                          ...registerForm,
+                          diastolicBp: Number(e.target.value),
+                        })
+                      }
+                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-white border border-slate-300 text-sm font-mono font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
+                      Heart Rate (bpm)
+                    </label>
+                    <input
+                      type="number"
+                      value={registerForm.heartRate}
+                      onChange={(e) =>
+                        setRegisterForm({
+                          ...registerForm,
+                          heartRate: Number(e.target.value),
+                        })
+                      }
+                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-white border border-slate-300 text-sm font-mono font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
+                      Glucose (mg/dL)
+                    </label>
+                    <input
+                      type="number"
+                      value={registerForm.bloodGlucose}
+                      onChange={(e) =>
+                        setRegisterForm({
+                          ...registerForm,
+                          bloodGlucose: Number(e.target.value),
+                        })
+                      }
+                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-white border border-slate-300 text-sm font-mono font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
+                      Temp (°C)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={registerForm.temperature}
+                      onChange={(e) =>
+                        setRegisterForm({
+                          ...registerForm,
+                          temperature: Number(e.target.value),
+                        })
+                      }
+                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-white border border-slate-300 text-sm font-mono font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
+                      SpO₂ (%)
+                    </label>
+                    <input
+                      type="number"
+                      value={registerForm.spo2}
+                      onChange={(e) =>
+                        setRegisterForm({
+                          ...registerForm,
+                          spo2: Number(e.target.value),
+                        })
+                      }
+                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-white border border-slate-300 text-sm font-mono font-bold"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-end gap-2.5 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setRegisterModalOpen(false)}
+                  className="w-full sm:w-auto min-h-[44px] px-5 py-2 rounded-xl bg-slate-100 text-slate-800 text-sm font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={busyAction}
+                  onClick={async () => {
+                    const res = await executeAction({
+                      action: "REGISTER_PATIENT",
+                      ...registerForm,
+                    });
+                    if (res.ok) {
+                      setRegisterModalOpen(false);
+                    }
+                  }}
+                  className="w-full sm:w-auto min-h-[44px] px-6 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-xs flex items-center justify-center gap-1.5"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>Register Patient & Run QuickSort</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ================================================================= */}
+        {/* MODAL 3: 5-VITAL CHECK-IN (DYNAMICALLY POPULATED FROM API CATALOG)*/}
         {/* ================================================================= */}
         {checkinModalPatient && snapshot && (
           <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 overflow-y-auto">

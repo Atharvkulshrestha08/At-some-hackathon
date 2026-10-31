@@ -7,12 +7,16 @@ import {
   AlertCircle,
   Ambulance,
   ArrowRight,
+  Building2,
+  CheckCircle2,
   Clock,
   Hexagon,
+  Lock,
   PlusCircle,
   ShieldCheck,
   Smartphone,
   Stethoscope,
+  UserPlus,
 } from "lucide-react";
 import { useSwasthya } from "@/components/SwasthyaShell";
 import { UI_TRANSLATIONS } from "@/lib/i18n";
@@ -24,6 +28,9 @@ export default function HomePage() {
     busyAction,
     executeAction,
     openCheckinModal,
+    openRegisterPatientModal,
+    openSignInModal,
+    clearPatient,
     openPhoneDrawer,
   } = useSwasthya();
 
@@ -38,17 +45,59 @@ export default function HomePage() {
   return (
     <div className="space-y-12 sm:space-y-16">
       {/* =================================================================== */}
-      {/* HERO SECTION (Fluid Typography & Doctor Red/Green/White Palette)    */}
+      {/* LANDING & MULTI-TENANT ORGANIZATION PORTAL HERO SECTION             */}
       {/* =================================================================== */}
-      <section className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 lg:p-12 shadow-xs">
+      <section className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 lg:p-12 shadow-xs space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold">
+              <Building2 className="w-4 h-4 text-emerald-600" />
+              <span>
+                Active Organization: {snapshot.activeOrganization.name} (
+                {snapshot.activeOrganization.id})
+              </span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-800 text-xs font-bold">
+              <Lock className="w-3.5 h-3.5 text-emerald-600" />
+              <span>
+                {snapshot.activeOrganization.teamSize}-Worker Team • Strict
+                Multi-Tenant Isolation ({stats.organizationPatients} Org
+                Patients)
+              </span>
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={openSignInModal}
+              className="min-h-[42px] px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold flex items-center gap-1.5 shadow-xs"
+            >
+              <Building2 className="w-4 h-4 text-emerald-400" />
+              <span>Organization Sign-In / Switch Tenant</span>
+            </button>
+            <button
+              type="button"
+              onClick={openRegisterPatientModal}
+              className="min-h-[42px] px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold flex items-center gap-1.5 shadow-xs"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span>+ Register New Patient</span>
+            </button>
+          </div>
+        </div>
+
         <div className="max-w-3xl space-y-5">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-base font-semibold">
             <ShieldCheck className="w-5 h-5 text-emerald-600" />
-            <span>QuickSort Pivot Threshold ≥ {snapshot.activeThresholds.pivotThreshold}</span>
+            <span>
+              QuickSort Pivot Threshold ≥ {snapshot.activeThresholds.pivotThreshold} •
+              MEOWS &amp; NEWS2 Single-Vital Override Active
+            </span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-snug">
-            Early Warning & Follow-Up for High-Risk Patients
+            Early Warning &amp; Follow-Up for High-Risk Patients
           </h1>
 
           <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
@@ -56,7 +105,8 @@ export default function HomePage() {
             partitions patients via <strong>QuickSort</strong> into immediate priority slots vs.
             50-minute to 2-hour flexible clinic windows, protects{" "}
             <strong>10 general walk-in slots</strong> per clinic, and routes overflow across{" "}
-            <strong>5 connected village hexagon clinics</strong>.
+            <strong>5 connected village hexagon clinics</strong> with strict{" "}
+            <strong>multi-organization tenant isolation</strong>.
           </p>
 
           <div className="pt-2 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
@@ -68,6 +118,15 @@ export default function HomePage() {
               <span>Open Morning Triage Queue</span>
               <ArrowRight className="w-5 h-5" />
             </Link>
+
+            <button
+              type="button"
+              onClick={openRegisterPatientModal}
+              className="min-h-[48px] px-6 py-3 rounded-xl bg-white hover:bg-emerald-50 border-2 border-emerald-600 text-emerald-800 text-base font-bold flex items-center justify-center gap-2 transition-colors"
+            >
+              <UserPlus className="w-5 h-5 text-emerald-600" />
+              <span>+ Register Patient in {snapshot.activeOrganization.shortName}</span>
+            </button>
 
             <Link
               href="/network"
@@ -238,10 +297,10 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row gap-2">
+              <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row flex-wrap gap-2">
                 <button
                   onClick={() => openCheckinModal(pt)}
-                  className="flex-1 min-h-[44px] px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-base font-bold"
+                  className="flex-1 min-h-[44px] px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold"
                 >
                   Log Vitals
                 </button>
@@ -252,9 +311,17 @@ export default function HomePage() {
                       patientId: pt.patientId,
                     })
                   }
-                  className="flex-1 min-h-[44px] px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-base font-bold"
+                  className="flex-1 min-h-[44px] px-3 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-bold"
                 >
                   Escalate
+                </button>
+                <button
+                  disabled={busyAction}
+                  onClick={() => void clearPatient(pt.patientId)}
+                  className="w-full sm:w-auto min-h-[44px] px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-sm font-bold flex items-center justify-center gap-1"
+                >
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span>Clear Patient</span>
                 </button>
               </div>
             </div>

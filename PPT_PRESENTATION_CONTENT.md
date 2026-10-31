@@ -159,3 +159,4 @@
 
 ### 3. Conclusion
 - **SwasthyaSense** transforms fragmented frontline follow-ups into a **closed-loop, mathematically prioritized, and spatially connected safety net**—ensuring that the sickest patients receive immediate care, village clinics never collapse under overflow, and patient privacy is cryptographically guaranteed.
+

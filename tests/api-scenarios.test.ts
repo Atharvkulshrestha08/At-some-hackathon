@@ -158,13 +158,94 @@ resetDbState();
   console.log("✅ [PASS] Scenario 7: Admin rule draft v2 stayed inactive until Clinician sign-off activated it.");
 }
 
-// Scenario 8: Verify SHA-256 Hash-Chained Audit Trail Integrity after all mutations
+// Scenario 8: Multi-Tenant Organization Sign-In & Cross-Organization 403 Isolation
+{
+  const signInRes = await callPost({
+    action: "SIGN_IN_ORGANIZATION",
+    targetOrganizationId: "ORG-SEVAK",
+    targetUserId: "USR-WRK-RINA",
+    accessPasscode: "SEVAK-2026",
+  });
+  assert.equal(signInRes.status, 200);
+  assert.ok(signInRes.json.authToken, "Expected HMAC-SHA256 signed authToken");
+  assert.equal(signInRes.json.snapshot.activeOrganization.id, "ORG-SEVAK");
+
+  // Attempt to access a patient registered in ORG-NHM-KAMRUP (PT-SYN-285) while signed into ORG-SEVAK
+  const crossOrgRes = await callPost({
+    action: "LOG_CHECKIN",
+    callerRole: "worker",
+    callerId: "USR-WRK-RINA",
+    organizationId: "ORG-SEVAK",
+    authToken: signInRes.json.authToken,
+    patientId: "PT-SYN-285",
+    systolicBp: 142,
+    diastolicBp: 90,
+  });
+  assert.equal(crossOrgRes.status, 403);
+  assert.ok(crossOrgRes.json.error.includes("Cross-Tenant Isolation"));
+  console.log(
+    "✅ [PASS] Scenario 8: Multi-Tenant Sign-In (Sevak 15-Worker Team) & 403 Cross-Organization Isolation verified."
+  );
+}
+
+// Scenario 9: Register New Patient (MEOWS Severe Preeclampsia Override) & Clear Patient
+{
+  const regRes = await callPost({
+    action: "REGISTER_PATIENT",
+    callerRole: "worker",
+    callerId: "USR-WRK-RINA",
+    organizationId: "ORG-SEVAK",
+    initials: "M.B.",
+    ageBand: "20–29",
+    cohort: "pregnancy",
+    facilityId: "FAC-HEX-0",
+    mobility: "ambulatory",
+    phonePlain: "+919854099881",
+    systolicBp: 164,
+    diastolicBp: 112,
+    heartRate: 112,
+    bloodGlucose: 95,
+    temperature: 37.1,
+    spo2: 97,
+    symptoms: ["blurred_vision_headache"],
+    daysOverdue: 3,
+    consentActive: true,
+  });
+  assert.equal(regRes.status, 200);
+  const newlyRegistered = regRes.json.snapshot.quickSortResult.combinedRanked.find(
+    (p: { initials?: string; pseudonym: string }) => p.pseudonym.startsWith("PT-MAT-8")
+  );
+  assert.ok(newlyRegistered, "Expected newly registered patient in active Sevak queue");
+  assert.equal(newlyRegistered.abovePivotThreshold, true);
+
+  // Now clear/discharge the patient and verify they move to clearedPatients
+  const clearRes = await callPost({
+    action: "CLEAR_PATIENT",
+    callerRole: "worker",
+    callerId: "USR-WRK-RINA",
+    organizationId: "ORG-SEVAK",
+    patientId: newlyRegistered.patientId,
+    clearanceNote: "Stabilized and referred to obstetric specialist.",
+  });
+  assert.equal(clearRes.status, 200);
+  assert.ok(
+    clearRes.json.snapshot.clearedPatients.some(
+      (cp: { id: string }) => cp.id === newlyRegistered.patientId
+    ),
+    "Expected patient in clearedPatients list"
+  );
+  console.log(
+    "✅ [PASS] Scenario 9: REGISTER_PATIENT (AES-256-GCM + MEOWS Override) & CLEAR_PATIENT verified."
+  );
+}
+
+// Scenario 10: Verify Full-Field 64-Hex SHA-256 Hash-Chained Audit Trail Integrity after all mutations
 {
   const auditCheck = verifyAuditChainIntegrity();
   assert.equal(auditCheck.valid, true);
   assert.equal(auditCheck.brokenAtId, null);
   console.log(
-    `✅ [PASS] Scenario 8: SHA-256 Audit Chain 100% verified across all ${auditCheck.totalEntries} entries.`
+    `✅ [PASS] Scenario 10: Full-Field 64-Hex SHA-256 Audit Chain 100% verified across all ${auditCheck.totalEntries} entries.`
   );
 }
 

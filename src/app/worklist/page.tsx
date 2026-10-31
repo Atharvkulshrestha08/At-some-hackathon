@@ -8,14 +8,19 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
+  Building2,
+  CheckCircle2,
   ChevronDown,
   ChevronUp,
   Hexagon,
   PhoneCall,
   PlusCircle,
+  RotateCcw,
   Send,
   Stethoscope,
   TrendingUp,
+  UserPlus,
+  Users,
 } from "lucide-react";
 import { useSwasthya } from "@/components/SwasthyaShell";
 import { UI_TRANSLATIONS } from "@/lib/i18n";
@@ -27,9 +32,16 @@ export default function WorklistPage() {
     snapshot,
     lang,
     busyAction,
+    activeRole,
     activeUserName,
+    workerScope,
+    setWorkerScope,
     executeAction,
     openCheckinModal,
+    openRegisterPatientModal,
+    openSignInModal,
+    clearPatient,
+    restoreClearedPatient,
     openPhoneDrawer,
   } = useSwasthya();
 
@@ -67,8 +79,77 @@ export default function WorklistPage() {
 
   return (
     <div className="space-y-8">
-      {/* Page Header & Filter Controls */}
+      {/* Page Header, Multi-Tenant Organization Scope & Filter Controls */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
+        {/* Top Tenant & Registration Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-bold">
+              <Building2 className="w-4 h-4 text-emerald-600" />
+              <span>
+                Tenant: {snapshot.activeOrganization.name} (
+                {snapshot.stats.organizationPatients} Org Patients)
+              </span>
+            </span>
+
+            {activeRole === "worker" && (
+              <div className="inline-flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setWorkerScope("assigned");
+                    setPage(1);
+                  }}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
+                    workerScope === "assigned"
+                      ? "bg-white text-slate-900 shadow-xs"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  My Assigned Patients
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setWorkerScope("organization");
+                    setPage(1);
+                  }}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors ${
+                    workerScope === "organization"
+                      ? "bg-emerald-600 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <Users className="w-3.5 h-3.5" />
+                  <span>
+                    All {snapshot.activeOrganization.shortName} Team (
+                    {snapshot.activeOrganization.teamSize} Workers)
+                  </span>
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={openRegisterPatientModal}
+              className="min-h-[42px] px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold flex items-center gap-1.5 shadow-xs"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span>+ Register New Patient</span>
+            </button>
+            <button
+              type="button"
+              onClick={openSignInModal}
+              className="min-h-[42px] px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-bold flex items-center gap-1.5"
+            >
+              <Building2 className="w-4 h-4 text-emerald-600" />
+              <span>Switch Org / Staff</span>
+            </button>
+          </div>
+        </div>
+
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-2">
             <span className="inline-block px-3 py-1 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold">
@@ -79,9 +160,14 @@ export default function WorklistPage() {
               {t.worklistTitle}
             </h1>
             <p className="text-base text-slate-600 leading-relaxed">
-              Assigned Queue for <strong>{activeUserName}</strong>. Showing{" "}
+              Active Queue for <strong>{activeUserName}</strong> in{" "}
+              <strong>{snapshot.activeOrganization.shortName}</strong>. Showing{" "}
               <strong>{filtered.length}</strong> ranked patients (Page {safePage} of{" "}
-              {totalPages}).
+              {totalPages}) •{" "}
+              <strong className="text-emerald-700">
+                {snapshot.stats.clearedPatients} Cleared Today
+              </strong>
+              .
             </p>
           </div>
 
@@ -402,6 +488,14 @@ export default function WorklistPage() {
                       <span>{t.broadcastHexagon}</span>
                     </button>
                   )}
+                  <button
+                    disabled={busyAction}
+                    onClick={() => void clearPatient(pt.patientId)}
+                    className="min-h-[44px] px-4 py-2.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 border border-emerald-400 text-emerald-950 text-base font-bold flex items-center justify-center gap-2"
+                  >
+                    <CheckCircle2 className="w-5 h-5 text-emerald-700" />
+                    <span>Clear / Stabilize Patient</span>
+                  </button>
                 </div>
 
                 <button
@@ -456,6 +550,55 @@ export default function WorklistPage() {
           </button>
         </div>
       </div>
+
+      {/* Cleared / Stabilized Patients Section */}
+      {snapshot.clearedPatients && snapshot.clearedPatients.length > 0 && (
+        <div className="bg-white rounded-2xl border border-emerald-200 p-6 sm:p-8 shadow-xs space-y-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <span className="text-xs font-bold text-emerald-700 uppercase">
+                Clinic Slot Freed &amp; Logged in SHA-256 Audit Trail
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+                Cleared / Stabilized Patients Today ({snapshot.clearedPatients.length})
+              </h2>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {snapshot.clearedPatients.map((cp) => (
+              <div
+                key={cp.id}
+                className="p-4 rounded-xl bg-emerald-50/60 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span className="font-mono font-bold text-base text-slate-900">
+                      {cp.pseudonym} ({cp.initials})
+                    </span>
+                    <span className="text-xs text-slate-600">
+                      {cp.ageBand}y • {cp.village}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-700">
+                    {cp.clearedNotes || "Cleared from active queue."}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  disabled={busyAction}
+                  onClick={() => void restoreClearedPatient(cp.id)}
+                  className="min-h-[40px] px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-emerald-300 text-emerald-800 text-xs font-bold flex items-center gap-1.5 shrink-0"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Restore to Queue</span>
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
