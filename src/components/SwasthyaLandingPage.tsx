@@ -19,11 +19,9 @@ import {
   Ambulance,
   Radio,
   Sparkles,
-  FileCheck2,
   KeyRound,
   UserPlus,
   Layers,
-  Clock,
   ChevronRight,
   Menu,
   X,
@@ -33,6 +31,13 @@ import {
   LogOut,
   Play,
   Pause,
+  Stethoscope,
+  TrendingUp,
+  Cpu,
+  Clock,
+  Compass,
+  Check,
+  ChevronDown,
 } from "lucide-react";
 import type { SupportedLanguage } from "@/lib/i18n";
 import { SUPPORTED_LANGUAGES } from "@/lib/i18n";
@@ -47,238 +52,193 @@ export interface DemoAccountPreset {
   passwordPlain: string;
   roleBadge: string;
   facilityHex: string;
+  avatarText: string;
+  highlightColor: string;
 }
 
 export const LANDING_DEMO_PRESETS: DemoAccountPreset[] = [
   {
-    personRole: "Clinic doctor",
+    personRole: "Clinic Doctor",
     organizationId: "ORG-BOKO",
     organizationName: "Boko Central PHC Medical Block",
     userId: "doc.boko01",
-    userName: "Dr. Pranabjyoti Bora (MO)",
+    userName: "Dr. Pranabjyoti Bora",
     passwordPlain: "Boko@Demo#101",
-    roleBadge: "Clinician, HEX-0 Boko Central PHC",
+    roleBadge: "Clinician • HEX-0 Boko Central PHC",
     facilityHex: "HEX-0",
+    avatarText: "DR",
+    highlightColor: "from-red-600 to-rose-600",
   },
   {
-    personRole: "Frontline worker",
+    personRole: "Frontline ASHA Worker",
     organizationId: "ORG-SEVAK",
     organizationName: "Sevak Health Foundation",
     userId: "asha.sevak07",
-    userName: "Rina Devi (Sevak ASHA #07)",
+    userName: "Rina Devi",
     passwordPlain: "Sevak@Demo#207",
-    roleBadge: "ASHA worker, Sevak 15-worker team",
+    roleBadge: "ASHA Worker • Sevak 15-Worker Team",
     facilityHex: "HEX-0",
+    avatarText: "RD",
+    highlightColor: "from-emerald-600 to-teal-600",
   },
   {
-    personRole: "Local clinic nurse",
+    personRole: "Local Clinic Nurse",
     organizationId: "ORG-CHHAY",
     organizationName: "Chhaygaon North Sub-Centre Network",
     userId: "anm.chhay03",
-    userName: " Sister Dipali Kalita (ANM #03)",
+    userName: "Sister Dipali Kalita",
     passwordPlain: "Chhay@Demo#303",
-    roleBadge: "ANM nurse, HEX-1 Chhaygaon North",
+    roleBadge: "ANM Nurse • HEX-1 Chhaygaon North",
     facilityHex: "HEX-1",
+    avatarText: "DK",
+    highlightColor: "from-blue-600 to-cyan-600",
   },
 ];
 
 interface LandingTranslations {
   badge: string;
-  heroTitle: string;
-  heroHighlight: string;
+  heroTitle1: string;
+  heroTitleHighlight: string;
+  heroTitle2: string;
   heroSubtitle: string;
   ctaSignIn: string;
-  ctaSignInSub: string;
   ctaOnboard: string;
+  demoChipHeader: string;
   navHowItWorks: string;
   navJourney3D: string;
   navHexArchitecture: string;
   navSecurity: string;
   navLaunch: string;
   problemHeading: string;
-  problem1Title: string;
-  problem1Body: string;
-  problem2Title: string;
-  problem2Body: string;
-  problem3Title: string;
-  problem3Body: string;
+  problemSub: string;
 }
 
 const LANDING_I18N: Record<SupportedLanguage, LandingTranslations> = {
   en: {
-    badge: "NON-DIAGNOSTIC CLINICAL EARLY-WARNING & HEXAGONAL LOAD-BALANCING",
-    heroTitle: "Catch the patient who didn't show up,",
-    heroHighlight: "before it becomes an emergency.",
+    badge: "CLINICAL DECISION SUPPORT & LOAD-BALANCING MESH",
+    heroTitle1: "Catch the silent clinical turn,",
+    heroTitleHighlight: "before it becomes an emergency.",
+    heroTitle2: "",
     heroSubtitle:
-      "SwasthyaSense detects silent multi-visit clinical deterioration across high-risk pregnancy, post-illness recovery, hypertension, and diabetes—partitioning queues in ~242µs while protecting 100% of village walk-in capacity.",
-    ctaSignIn: "Sign In with Organization Credentials",
-    ctaSignInSub: "Sevak 15-Worker Team • Boko Central PHC • Chhaygaon North",
-    ctaOnboard: "+ Onboard New Healthcare Organization",
+      "SwasthyaSense detects multi-visit silent deterioration across maternal preeclampsia, hypertension, diabetes, and oncology recovery. It partitions queues in ~242µs while keeping 100% of village walk-in clinic capacity untouched.",
+    ctaSignIn: "Launch Organization Portal",
+    ctaOnboard: "+ Onboard New Healthcare Org",
+    demoChipHeader: "Instant 1-Click Demo Accounts (Simultaneous Multi-Tenant Access)",
     navHowItWorks: "How It Works",
     navJourney3D: "3D Patient Journey",
-    navHexArchitecture: "5-Hexagon Architecture",
+    navHexArchitecture: "5-Hexagon Mesh",
     navSecurity: "Security & DPDP",
-    navLaunch: "Organization Sign-In / Launch Portal",
+    navLaunch: "Launch Portal",
     problemHeading: "Why Rural Follow-Up Care Breaks Down",
-    problem1Title: "Silent Deterioration After Missed Visits",
-    problem1Body:
-      "Patients miss follow-ups due to river crossings, transport costs, daily wage loss, and language barriers—turning manageable hypertension or gestational risk into acute emergencies.",
-    problem2Title: "Fragmented Registers Hide Rising Trajectories",
-    problem2Body:
-      "A 3-visit rising blood pressure trajectory (148 → 156 → 163 mmHg) looks like a routine missed appointment on paper registers until severe preeclampsia or stroke occurs.",
-    problem3Title: "Bulk Reminders Flood Small Village Clinics",
-    problem3Body:
-      "Uncoordinated SMS blasts trigger morning crowds at 30-slot PHCs, overwhelming the lone Medical Officer and displacing regular village walk-in patients.",
+    problemSub: "Three systemic failures in primary healthcare delivery that SwasthyaSense fixes at the root.",
   },
   as: {
-    badge: "অ-নিদানমূলক ক্লিনিকেল আগতীয়া সতৰ্কীকৰণ আৰু হেক্সাগনেল ভাৰসাম্য মঞ্চ",
-    heroTitle: "যিজন ৰোগী ক্লিনিকলৈ নাহিল তেওঁক চিনাক্ত কৰক,",
-    heroHighlight: "জৰুৰীকালীন বিপদ হোৱাৰ আগতেই।",
+    badge: "ক্লিনিকেল আগতীয়া সতৰ্কীকৰণ আৰু লোড-ভাৰসাম্য মঞ্চ",
+    heroTitle1: "ৰোগীৰ নীৰৱ শাৰীৰিক অৱনতি চিনাক্ত কৰক,",
+    heroTitleHighlight: "জৰুৰীকালীন সংকট হোৱাৰ আগতেই।",
+    heroTitle2: "",
     heroSubtitle:
-      "স্বাস্থ্য-সেন্সে গৰ্ভাৱস্থা, উচ্চ ৰক্তচাপ, মধুমেহ আৰু জটিল ৰোগৰ পিছত নীৰৱে বাঢ়ি অহা বিপদ ধৰা পেলায়—~২৪২ মাইক্ৰ’ছেকেণ্ডত কিউক-চৰ্ট বিভাজন কৰি গাঁৱৰ সাধাৰণ ৰোগীৰ ১০টা আসন ১০০% সুৰক্ষিত ৰাখে।",
-    ctaSignIn: "সংগঠনৰ পৰিচয় পত্ৰৰে ছাইন-ইন কৰক",
-    ctaSignInSub: "সেৱক ১৫-জনীয়া আশা দল • বকো পিএইচচি • ছয়গাঁও উত্তৰ",
-    ctaOnboard: "+ নতুন স্বাস্থ্য সংগঠন পঞ্জীয়ন কৰক",
+      "স্বাস্থ্য-সেন্সে গৰ্ভাৱস্থাৰ এক্লাম্পচিয়া, উচ্চ ৰক্তচাপ, মধুমেহ আৰু কেন্সাৰৰ পিছৰ নীৰৱ বিপদ ধৰা পেলায়—~২৪২ মাইক্ৰ’ছেকেণ্ডত কিউইক-চৰ্ট বিভাজন কৰি গাঁৱৰ সাধাৰণ ৰোগীৰ ১০টা আসন ১০০% সুৰক্ষিত ৰাখে।",
+    ctaSignIn: "সংগঠন পৰ্টেল খোলক",
+    ctaOnboard: "+ নতুন স্বাস্থ্য সংগঠন পঞ্জীয়ন",
+    demoChipHeader: "১-ক্লিকত ডেম' একাউণ্টত প্ৰৱেশ কৰক (তিনিটা সুকীয়া সংগঠন)",
     navHowItWorks: "কেনেকৈ কাম কৰে",
     navJourney3D: "3D ৰোগীৰ যাত্ৰা",
     navHexArchitecture: "৫-হেক্সাগন নেটৱৰ্ক",
     navSecurity: "সুৰক্ষা আৰু DPDP",
-    navLaunch: "সংগঠন ছাইন-ইন / পৰ্টেল খোলক",
+    navLaunch: "পৰ্টেল খোলক",
     problemHeading: "গ্ৰাম্য অনুসৰণ চিকিৎসাত কিয় ব্যৱধান আহে",
-    problem1Title: "সাক্ষাৎ হেৰুৱাৰ পিছত নীৰৱ অৱনতি",
-    problem1Body:
-      "দূৰত্ব, যাতায়তৰ অসুবিধা, দিনহাজিৰা ক্ষতি আৰু ভাষাৰ বাধাৰ বাবে ৰোগীয়ে ফলো-আপ এৰি দিয়ে।",
-    problem2Title: "কাগজৰ বহীত লুকাই থকা ৩-বাৰৰ বৃদ্ধি (148 → 156 → 163)",
-    problem2Body:
-      "তিনিটা ভিজিটত ক্ৰমান্বয়ে বাঢ়ি অহা ৰক্তচাপ কাগজৰ পঞ্জীত সাধাৰণ যেন লাগে, যেতিয়ালৈকে এক্লাম্পচিয়া নহয়।",
-    problem3Title: "একেলগে পঠিওৱা মেছেজে ক্ষুদ্ৰ ক্লিনিক উপচাই পেলায়",
-    problem3Body:
-      "পৰিকল্পনাহীন ৰিমাইণ্ডাৰে ৩০-আসনৰ স্বাস্থ্য কেন্দ্ৰত ভিৰ সৃষ্টি কৰে আৰু সাধাৰণ গাঁওবাসীক বঞ্চিত কৰে।",
+    problemSub: "কাগজৰ পঞ্জী আৰু সমন্বয়হীন ব্যৱস্থাৰ তিনিটা গভীৰ সমস্যা যিটো স্বাস্থ্য-সেন্সে সমাধান কৰে।",
   },
   bn: {
-    badge: "নন-ডায়াগনস্টিক ক্লিনিক্যাল আর্লি-ওয়ার্নিং ও হেক্সাগোনাল লোড-ব্যালেন্সিং",
-    heroTitle: "যে রোগী ফলো-আপে আসেননি তাঁকে শনাক্ত করুন,",
-    heroHighlight: "জরুরি সংকট তৈরি হওয়ার আগেই।",
+    badge: "ক্লিনিক্যাল আর্লি-ওয়ার্নিং ও লোড-ব্যালেন্সিং মেশ",
+    heroTitle1: "রোগীর নীরব অবনতি শনাক্ত করুন,",
+    heroTitleHighlight: "জরুরি সংকট তৈরি হওয়ার আগেই।",
+    heroTitle2: "",
     heroSubtitle:
-      "স্বাস্থ্যসেন্স উচ্চ-ঝুঁকির গর্ভাবস্থা, রক্তচাপ ও ডায়াবেটিস রোগীদের নীরব অবনতি শনাক্ত করে এবং ~২৪২µs-এ কিউইকসর্ট বিভাজন করে গ্রামের ওয়াক-ইন রোগীদের ১০টি স্লট ১০০% সুরক্ষিত রাখে।",
-    ctaSignIn: "সংস্থার ক্রেডেনশিয়াল দিয়ে সাইন-ইন করুন",
-    ctaSignInSub: "সেবক ১৫-কর্মী দল • বকো পিএইচসি • ছয়গাঁও উত্তর",
+      "স্বাস্থ্যসেন্স উচ্চ-ঝুঁকির গর্ভাবস্থা, রক্তচাপ ও ডায়াবেটিস রোগীদের নীরব অবনতি শনাক্ত করে এবং ~২৪২µs-এ কুইক-সর্ট বিভাজন করে গ্রামীণ সাধারণ রোগীদের ১০টি স্লট ১০০% সুরক্ষিত রাখে।",
+    ctaSignIn: "সংস্থা পোর্টাল খুলুন",
     ctaOnboard: "+ নতুন স্বাস্থ্য সংস্থা যুক্ত করুন",
+    demoChipHeader: "১-ক্লিকে ডেমো অ্যাকাউন্টে প্রবেশ করুন",
     navHowItWorks: "কীভাবে কাজ করে",
     navJourney3D: "3D রোগীর যাত্রা",
     navHexArchitecture: "৫-হেক্সাগন আর্কিটেকচার",
     navSecurity: "নিরাপত্তা ও DPDP",
-    navLaunch: "সংস্থা সাইন-ইন / পোর্টাল খুলুন",
+    navLaunch: "পোর্টাল খুলুন",
     problemHeading: "গ্রামীণ ফলো-আপ চিকিৎসা কেন ভেঙে পড়ে",
-    problem1Title: "মিসড ভিজিটের পর নীরব অবনতি",
-    problem1Body:
-      "দূরত্ব, পরিবহন খরচ ও ভাষার বাধার কারণে রোগীরা ফলো-আপ মিস করেন এবং নীরবে সংকটাপন্ন হন।",
-    problem2Title: "কাগজের রেজিস্টারে লুকিয়ে থাকা ৩-ভিজিট বৃদ্ধি",
-    problem2Body:
-      "১৪৮ → ১৫৬ → ১৬৩ mmHg রক্তচাপ বৃদ্ধি কাগজের খাতায় সাধারণ মিসড অ্যাপয়েন্টমেন্ট মনে হয়।",
-    problem3Title: "বাল্ক রিমাইন্ডারে ছোট ক্লিনিকে অতিরিক্ত ভিড়",
-    problem3Body:
-      "একসাথে সবাইকে ডাকার ফলে ৩০-স্লটের ক্লিনিকে ভিড় হয় এবং সাধারণ ওয়াক-ইন রোগীরা বঞ্চিত হন।",
+    problemSub: "কাগজের খাতা এবং সমন্বয়ের অভাবের তিনটি মূল সংকট।",
   },
   hi: {
-    badge: "गैर-निदानात्मक क्लिनिकल अर्ली-वॉर्निंग और हेक्सागोनल लोड-बैलेंसिंग",
-    heroTitle: "उस मरीज़ को समय रहते पहचानें जो क्लिनिक नहीं आया,",
-    heroHighlight: "इससे पहले कि वह आपातकाल बन जाए।",
+    badge: "क्लिनिकल अर्ली-वॉर्निंग और लोड-बैलेंसिंग मेश",
+    heroTitle1: "मरीज़ की शांत गिरावट को पहचानें,",
+    heroTitleHighlight: "इससे पहले कि वह आपातकाल बन जाए।",
+    heroTitle2: "",
     heroSubtitle:
-      "स्वास्थ्य-सेंस उच्च जोखिम वाली गर्भावस्था, रक्तचाप, मधुमेह और गंभीर बीमारी के बाद होने वाली शांत गिरावट को पकड़ता है—~242µs में QuickSort विभाजन कर गाँव के 10 वॉक-इन स्लॉट 100% सुरक्षित रखता है।",
-    ctaSignIn: "संगठन क्रेडेंशियल के साथ साइन-इन करें",
-    ctaSignInSub: "सेवक 15-आशा टीम • बोको PHC • छयगांव नॉर्थ",
-    ctaOnboard: "+ नया स्वास्थ्य संगठन पंजीकृत करें",
+      "स्वास्थ्य-सेंस उच्च जोखिम गर्भावस्था, रक्तचाप, मधुमेह और ऑन्कोलॉजी रिकवरी में शांत गिरावट को पकड़ता है—~242µs में QuickSort विभाजन कर गाँव के 10 वॉक-इन स्लॉट 100% सुरक्षित रखता है।",
+    ctaSignIn: "संगठन पोर्टल खोलें",
+    ctaOnboard: "+ नया स्वास्थ्य संगठन जोड़ें",
+    demoChipHeader: "1-क्लिक डेमो खाते (एक साथ तीन स्वतंत्र टेनेंट)",
     navHowItWorks: "यह कैसे काम करता है",
     navJourney3D: "3D मरीज़ यात्रा",
-    navHexArchitecture: "5-हेक्सागोन आर्किटेक्चर",
+    navHexArchitecture: "5-हेक्सागोन नेटवर्क",
     navSecurity: "सुरक्षा और DPDP",
-    navLaunch: "संगठन साइन-इन / पोर्टल खोलें",
-    problemHeading: "ग्रामीण फॉलो-अप देखभाल क्यों विफल हो जाती है",
-    problem1Title: "छूटे हुए विज़िट के बाद शांत गिरावट",
-    problem1Body:
-      "दूरी, परिवहन, दिहाड़ी के नुकसान और भाषा की बाधाओं के कारण मरीज़ फॉलो-अप छोड़ देते हैं।",
-    problem2Title: "कागज़ी रजिस्टरों में छिपा 3-विज़िट बढ़ता रुझान",
-    problem2Body:
-      "तीन विज़िट में बढ़ता BP (148 → 156 → 163 mmHg) कागज़ पर सामान्य लगता है जब तक गंभीर संकट न आ जाए।",
-    problem3Title: "बल्क रिमाइंडर से छोटे क्लिनिकों में भीड़",
-    problem3Body:
-      "बिना क्रम के भेजे गए रिमाइंडर 30-स्लॉट क्लिनिक को भर देते हैं और सामान्य ग्रामीण मरीज़ों को जगह नहीं मिलती।",
+    navLaunch: "पोर्टल खोलें",
+    problemHeading: "ग्रामीण फॉलो-अप देखभाल क्यों विफल होती है",
+    problemSub: "कागज़ी रजिस्टरों और अनियमित भीड़ के तीन गंभीर कारण जिन्हें हम हल करते हैं।",
   },
   ta: {
-    badge: "நோய் নির্ণயமற்ற மருத்துவ முன்னெச்சரிக்கை & அறுகோண சுமை சமநிலை",
-    heroTitle: "மருத்துவமனைக்கு வராத நோயாளியைக் கண்டறியுங்கள்,",
-    heroHighlight: "அது அவசரநிலையாக மாறுவதற்கு முன்பு.",
+    badge: "மருத்துவ முன்னெச்சரிக்கை & சுமை சமநிலை நெட்வொர்க்",
+    heroTitle1: "நோயாளியின் தொடர் சரிவைக் கண்டறியுங்கள்,",
+    heroTitleHighlight: "அது அவசரநிலையாக மாறுவதற்கு முன்பு.",
+    heroTitle2: "",
     heroSubtitle:
-      "SwasthyaSense உயர்-ஆபத்து கர்ப்பம், இரத்த அழுத்தம் மற்றும் நீரிழிவு நோயாளிகளின் தொடர் சரிவைக் கண்டறிந்து ~242µs-இல் QuickSort மூலம் வரிசையைப் பிரிக்கிறது.",
-    ctaSignIn: "நிறுவன சான்றுகளுடன் உள்நுழையவும்",
-    ctaSignInSub: "சேவக் 15-பணியாளர் குழு • போகோ PHC • சாய்கான்",
-    ctaOnboard: "+ புதிய சுகாதார நிறுவனத்தைச் சேர்க்கவும்",
+      "SwasthyaSense உயர்-ஆபத்து கர்ப்பம், இரத்த அழுத்தம் மற்றும் நீரிழிவு நோயாளிகளில் அமைதியான சரிவைக் கண்டறிந்து ~242µs-இல் QuickSort மூலம் வரிசையைப் பிரிக்கிறது.",
+    ctaSignIn: "போர்ட்டலைத் தொடங்கவும்",
+    ctaOnboard: "+ புதிய சுகாதார நிறுவனம்",
+    demoChipHeader: "1-கிளிக் டெமோ கணக்குகள்",
     navHowItWorks: "செயல்படும் விதம்",
     navJourney3D: "3D நோயாளி பயணம்",
     navHexArchitecture: "5-அறுகோண கட்டமைப்பு",
     navSecurity: "பாதுகாப்பு & DPDP",
-    navLaunch: "நிறுவன உள்நுழைவு / போர்டல்",
+    navLaunch: "போர்ட்டல்",
     problemHeading: "கிராமப்புற தொடர் சிகிச்சை ஏன் தடைபடுகிறது",
-    problem1Title: "தவறவிட்ட வருகைக்குப் பின் அமைதியான பாதிப்பு",
-    problem1Body:
-      "தூரம், போக்குவரத்து மற்றும் மொழித் தடைகளால் நோயாளிகள் தொடர் பரிசோதனையைத் தவறவிடுகின்றனர்.",
-    problem2Title: "காகிதப் பதிவேடுகளில் மறையும் 3-முறை உயர்வு (148→156→163)",
-    problem2Body:
-      "மூன்று வருகைகளில் உயரும் இரத்த அழுத்தம் காகிதப் பதிவேட்டில் சாதாரணமாகத் தெரிகிறது.",
-    problem3Title: "மொத்த நினைவூட்டல்களால் சிறிய கிளினிக்குகளில் நெரிசல்",
-    problem3Body:
-      "ஒரே நேரத்தில் அனுப்பப்படும் செய்திகள் 30-இட கிளினிக்கை நிரப்பி சாதாரண மக்களைப் பாதிக்கின்றன.",
+    problemSub: "காகிதப் பதிவேடுகள் மற்றும் கட்டுப்பாடற்ற வருகைகளின் 3 சவால்கள்.",
   },
   te: {
-    badge: "నాన్-డయాగ్నస్టిక్ క్లినికల్ ఎర్లీ-వార్నింగ్ & హెక్సాగోనల్ లోడ్-బ్యాలెన్సింగ్",
-    heroTitle: "క్లినిక్‌కు రాని రోగిని ముందే గుర్తించండి,",
-    heroHighlight: "అది అత్యవசర పరిస్థితిగా మారకముందే.",
+    badge: "క్లినికల్ ఎర్లీ-వార్నింగ్ & లోడ్-బ్యాలెన్సింగ్ మెష్",
+    heroTitle1: "రోగి నిశ్శబ్ద క్షీణతను ముందే గుర్తించండి,",
+    heroTitleHighlight: "అది అత్యవసర పరిస్థితిగా మారకముందే.",
+    heroTitle2: "",
     heroSubtitle:
       "SwasthyaSense అధిక-ప్రమాద గర్భం, రక్తపోటు మరియు మధుమేహ రోగులలో నిశ్శబ్ద క్షీణతను గుర్తించి ~242µsలో QuickSort ద్వారా క్యూలను విభజిస్తుంది.",
-    ctaSignIn: "సంస్థ క్రెడెన్షియల్స్‌తో సైన్-ఇన్ చేయండి",
-    ctaSignInSub: "సేవక్ 15-వర్కర్ టీమ్ • బోకో PHC • ఛాయ్‌గావ్ నార్త్",
-    ctaOnboard: "+ కొత్త ఆరోగ్య సంస్థను నమోదు చేయండి",
+    ctaSignIn: "పోర్టల్ ప్రారంభించండి",
+    ctaOnboard: "+ కొత్త ఆరోగ్య సంస్థ",
+    demoChipHeader: "1-క్లిక్ డెమో ఖాతాలు",
     navHowItWorks: "ఇది ఎలా పనిచేస్తుంది",
     navJourney3D: "3D పేషెంట్ జర్నీ",
     navHexArchitecture: "5-హెక్సాగాన్ ఆర్కిటెక్చర్",
     navSecurity: "భద్రత & DPDP",
-    navLaunch: "సంస్థ సైన్-ఇన్ / పోర్టల్ తెరవండి",
+    navLaunch: "పోర్టల్ తెరవండి",
     problemHeading: "గ్రామీణ ఫాలో-అప్ కేర్ ఎందుకు విఫలమవుతుంది",
-    problem1Title: "మిస్ అయిన విజిట్ల తర్వాత నిశ్శబ్ద క్షీణత",
-    problem1Body:
-      "దూరం, రవాణా ఖర్చులు మరియు భాషా అడ్డంకుల వల్ల రోగులు ఫాలో-అప్ విజిట్లను కోల్పోతారు.",
-    problem2Title: "పేపర్ రిజిస్టర్లలో దాగి ఉండే 3-విజిట్ పెరుగుదల (148→156→163)",
-    problem2Body:
-      "మూడు విజిట్లలో పెరుగుతున్న రక్తపోటు కాగితపు రిజిస్టర్లలో సాధారణంగా కనిపిస్తుంది.",
-    problem3Title: "బల్క్ రిమైండర్ల వల్ల చిన్న క్లినిక్‌లలో రద్దీ",
-    problem3Body:
-      "ఒకేసారి పంపే రిమైండర్లు 30-స్లాట్ PHCలను నింపేసి సాధారణ వాక్-ఇన్ రోగులకు ఇబ్బంది కలిగిస్తాయి.",
+    problemSub: "కాగితపు రికార్డులు మరియు అనుకోని రద్దీ వల్ల వచ్చే 3 సమస్యలు.",
   },
   mr: {
-    badge: "नॉन-डायग्नोस्टिक क्लिनिकल अर्ली-वॉर्निंग आणि हेक्सागोनल लोड-बॅलन्सिंग",
-    heroTitle: "क्लिनिकला न आलेल्या रुग्णाला वेळीच ओळखा,",
-    heroHighlight: "आणीबाणीची परिस्थिती उद्भवण्यापूर्वी.",
+    badge: "क्लिनिकल अर्ली-वॉर्निंग आणि लोड-बॅलन्सिंग मेश",
+    heroTitle1: "रुग्णाच्या शांतपणे खालावणाऱ्या प्रकृतीला ओळखा,",
+    heroTitleHighlight: "आणीबाणीची परिस्थिती उद्भवण्यापूर्वी.",
+    heroTitle2: "",
     heroSubtitle:
       "SwasthyaSense उच्च-जोखीम गर्भधारणा, रक्तदाब आणि मधुमेह रुग्णांमधील शांत खालावणारी प्रकृती ओळखते आणि ~242µs मध्ये QuickSort द्वारे रांगांचे विभाजन करते.",
-    ctaSignIn: "संस्थेच्या क्रेडेंशियल्ससह साइन-इन करा",
-    ctaSignInSub: "सेवक १५-आशा टीम • बोको PHC • छयगाव नॉर्थ",
-    ctaOnboard: "+ नवीन आरोग्य संस्था नोंदणी करा",
+    ctaSignIn: "संस्था पोर्टल सुरू करा",
+    ctaOnboard: "+ नवीन आरोग्य संस्था",
+    demoChipHeader: "1-क्लिक डेमो खाती",
     navHowItWorks: "हे कसे कार्य करते",
     navJourney3D: "3D रुग्ण प्रवास",
-    navHexArchitecture: "5-हेक्सागोन आर्किटेक्चर",
+    navHexArchitecture: "5-हेक्सागोन नेटवर्क",
     navSecurity: "सुरक्षा आणि DPDP",
-    navLaunch: "संस्था साइन-इन / पोर्टल उघडा",
+    navLaunch: "पोर्टल उघडा",
     problemHeading: "ग्रामीण फॉलो-अप आरोग्यसेवा का खंडित होते",
-    problem1Title: "चुकलेल्या भेटीनंतर शांतपणे खालावणारी प्रकृती",
-    problem1Body:
-      "अंतर, वाहतूक खर्च, रोजंदारीचे नुकसान आणि भाषेच्या अडथळ्यांमुळे रुग्ण फॉलो-अप टाळतात.",
-    problem2Title: "कागदी नोंदवहीत लपलेला ३-भेटींचा वाढता कल (148→156→163)",
-    problem2Body:
-      "तीन भेटींमध्ये वाढत जाणारा रक्तदाब कागदावर सामान्य वाटतो जोपर्यंत गंभीर संकट येत नाही.",
-    problem3Title: "एकत्रित रिमाइंडर्समुळे छोट्या क्लिनिकमध्ये गर्दी",
-    problem3Body:
-      "अचानक पाठवलेल्या मेसेजमुळे ३०-स्लॉट क्लिनिकमध्ये गर्दी होते आणि सामान्य ग्रामस्थांना जागा मिळत नाही.",
+    problemSub: "कागदी नोंदी आणि अनियंत्रित गर्दीच्या ३ मुख्य समस्या.",
   },
 };
 
@@ -324,30 +284,19 @@ export default function SwasthyaLandingPage({
 }: SwasthyaLandingPageProps) {
   const t = LANDING_I18N[selectedLanguage] || LANDING_I18N.en;
 
-  // Theme state (Light / Dark mode)
+  // Theme state
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Interactive Pipeline Stepper (Step 1 -> Step 4)
+  // Stepper & 3D Interactive Beats
   const [activePipelineStep, setActivePipelineStep] = useState<number>(0);
-
-  // Scroll-Driven 3D Patient Journey Beat (0 to 4 -> Beats a, b, c, d, e)
   const [journeyBeat, setJourneyBeat] = useState<number>(0);
   const [autoPlayJourney, setAutoPlayJourney] = useState<boolean>(true);
   const journeySectionRef = useRef<HTMLDivElement | null>(null);
 
-  // Interactive Pillar 3 & 4 mini-simulators on Landing Page
-  const [simFollowUpUsed, setSimFollowUpUsed] = useState<number>(14);
-  const [simCriticalUsed, setSimCriticalUsed] = useState<number>(4);
-  const [hexOverflowState, setHexOverflowState] = useState<
-    "normal" | "broadcasting" | "locked_hex2" | "ambulance_hex4"
-  >("normal");
-  const [doctorUnavailablePreview, setDoctorUnavailablePreview] = useState<boolean>(false);
-  const [previewSmsReply, setPreviewSmsReply] = useState<"1" | "2" | "STOP">("1");
-
-  // Auth Card / Modal State
-  const [authTab, setAuthTab] = useState<"signin" | "onboard">("signin");
+  // Auth Modal State
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
+  const [authTab, setAuthTab] = useState<"signin" | "onboard">("signin");
   const [orgIdInput, setOrgIdInput] = useState<string>("ORG-BOKO");
   const [userIdInput, setUserIdInput] = useState<string>("doc.boko01");
   const [passwordInput, setPasswordInput] = useState<string>("Boko@Demo#101");
@@ -357,51 +306,55 @@ export default function SwasthyaLandingPage({
   const [authLocked, setAuthLocked] = useState<boolean>(false);
   const [authSuccessBanner, setAuthSuccessBanner] = useState<string | null>(null);
 
-  // New Org Onboarding inputs
+  // New Organization Onboarding Form
   const [newOrgName, setNewOrgName] = useState("");
   const [newOrgShort, setNewOrgShort] = useState("");
   const [newOrgDistrict, setNewOrgDistrict] = useState("Kamrup Rural, Assam");
-  const [newOrgPasscode, setNewOrgPasscode] = useState("GRAMIN-2026");
+  const [newOrgPasscode, setNewOrgPasscode] = useState("CARE-2026");
   const [newOrgTeamSize, setNewOrgTeamSize] = useState(15);
-  const [newOrgLead, setNewOrgLead] = useState("Meenakshi Das");
+  const [newOrgLead, setNewOrgLead] = useState("Mitali Das");
 
-  // Scroll listener for the 3D Patient Journey section
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!journeySectionRef.current) return;
-      const rect = journeySectionRef.current.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      if (rect.top < viewportHeight * 0.75 && rect.bottom > viewportHeight * 0.25) {
-        const totalScrollable = Math.max(1, rect.height - viewportHeight * 0.35);
-        const scrolled = Math.max(0, viewportHeight * 0.55 - rect.top);
-        const progress = Math.min(1, Math.max(0, scrolled / totalScrollable));
-        const computedBeat = Math.min(4, Math.floor(progress * 5));
-        setJourneyBeat(computedBeat);
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // Interactive Mini-Simulators on Landing Page
+  const [simFollowUpUsed, setSimFollowUpUsed] = useState<number>(14);
+  const [simCriticalUsed, setSimCriticalUsed] = useState<number>(4);
+  const [simVitals, setSimVitals] = useState({
+    bpSys: 164,
+    bpDia: 104,
+    glucose: 142,
+    heartRate: 98,
+    spo2: 96,
+  });
+  const [hexOverflowState, setHexOverflowState] = useState<
+    "idle" | "broadcast" | "accepted_hex2" | "ambulance_hex4"
+  >("idle");
+  const [previewSmsReply, setPreviewSmsReply] = useState<"1" | "2" | "STOP">("1");
 
-  // Auto-advance 3D journey beat when autoPlayJourney is enabled
+  // Auto-advance 3D Journey Beat
   useEffect(() => {
     if (!autoPlayJourney) return;
     const timer = setInterval(() => {
       setJourneyBeat((prev) => (prev + 1) % 5);
-    }, 4200);
+    }, 4500);
     return () => clearInterval(timer);
   }, [autoPlayJourney]);
 
-  const handleSelectDemoPreset = (preset: DemoAccountPreset) => {
-    setAuthTab("signin");
-    setOrgIdInput(preset.organizationId);
-    setUserIdInput(preset.userId);
-    setPasswordInput(preset.passwordPlain);
+  // Direct 1-Click Instant Demo Login
+  const handleDirectDemoLogin = async (preset: DemoAccountPreset) => {
+    setAuthLoading(true);
     setAuthError(null);
-    setAuthLocked(false);
-    setAuthSuccessBanner(
-      `Autofilled ${preset.personRole}: ${preset.userId} @ ${preset.organizationId} (${preset.roleBadge})`
-    );
+    try {
+      const res = await onSignInSuccess({
+        organizationId: preset.organizationId,
+        userId: preset.userId,
+        accessPasscode: preset.passwordPlain,
+      });
+      if (!res.ok) {
+        setAuthError(res.error || "Authentication failed");
+        setLoginModalOpen(true);
+      }
+    } finally {
+      setAuthLoading(false);
+    }
   };
 
   const handleSignInSubmit = async (e: React.FormEvent) => {
@@ -410,7 +363,7 @@ export default function SwasthyaLandingPage({
     setAuthSuccessBanner(null);
 
     if (!orgIdInput.trim() || !userIdInput.trim() || !passwordInput.trim()) {
-      setAuthError("Please enter Organization ID, User ID, and Password.");
+      setAuthError("Please provide Organization ID, Staff User ID, and Password.");
       return;
     }
 
@@ -423,12 +376,8 @@ export default function SwasthyaLandingPage({
       });
       if (!res.ok) {
         setAuthError(res.error || "Invalid credentials.");
-        if (res.locked) {
-          setAuthLocked(true);
-        }
+        if (res.locked) setAuthLocked(true);
       } else {
-        setAuthLocked(false);
-        setAuthSuccessBanner("Authenticated! Launching isolated clinical workspace...");
         setLoginModalOpen(false);
       }
     } finally {
@@ -440,7 +389,7 @@ export default function SwasthyaLandingPage({
     e.preventDefault();
     setAuthError(null);
     if (!newOrgName.trim()) {
-      setAuthError("Please provide an Organization Name.");
+      setAuthError("Please enter an Organization Name.");
       return;
     }
     setAuthLoading(true);
@@ -463,596 +412,175 @@ export default function SwasthyaLandingPage({
     }
   };
 
-  // Resolve matching preset or user for live Role Badge preview
-  const matchedPreset = LANDING_DEMO_PRESETS.find(
-    (p) =>
-      p.organizationId.toUpperCase() === orgIdInput.trim().toUpperCase() &&
-      p.userId.toLowerCase() === userIdInput.trim().toLowerCase()
-  );
-  const matchedStaffUser = users.find(
-    (u) =>
-      (u.organizationId || "").toUpperCase() === orgIdInput.trim().toUpperCase() &&
-      u.id.toLowerCase() === userIdInput.trim().toLowerCase()
-  );
-  const previewRoleBadge =
-    matchedPreset?.roleBadge ||
-    (matchedStaffUser
-      ? `${matchedStaffUser.title} (${matchedStaffUser.role.toUpperCase()})`
-      : "Role verified upon organization sign-in");
-
   const PIPELINE_STEPS = [
     {
-      step: "STEP 01",
-      title: "5-Vital Bidirectional Field Check-In (↑ High & ↓ Low)",
-      short: "BP, Heart Rate, Blood Glucose, Temp/SpO₂, Danger Signs & Overdue Gaps",
+      step: "01",
+      tag: "5-Vital Vector",
+      title: "Bidirectional Field Check-In",
+      summary: "Evaluates BP, Heart Rate, Glucose, Temp/SpO₂, and Danger Symptoms in both High ↑ and Low ↓ directions.",
       detail:
-        "ASHA & ANM workers capture 5 vital categories in rural homes or sub-centres. Every parameter is evaluated bidirectionally—catching both hypertensive crises (≥160/110) and hypotensive shock (<90/60), hyperglycaemia (>240) and hypoglycaemia (<70), fever (≥38.0°C) and hypothermia (<35.5°C), plus 3-visit rising trajectories (+28 pts).",
-      badge: "5 Vitals ↑↓ + 3-Visit Trend",
-      color: "red",
+        "ASHA & ANM workers record vitals in rural homes. The engine flags both hypertensive urgency (≥160/110) and hypotensive shock (<90/60), hyperglycaemia (>240) and hypoglycaemia (<70), and correlates 3-visit rising systolic trajectories (+28 pts).",
+      icon: Activity,
+      color: "text-rose-500",
+      accentBg: "bg-rose-500/10",
+      accentBorder: "border-rose-500/20",
     },
     {
-      step: "STEP 02",
-      title: "QuickSort Pivot Engine (Pivot = 100 in ~242µs)",
-      short: "Upper Partition (≥100 or NEWS2/MEOWS Override) vs Lower Partition (<100)",
+      step: "02",
+      tag: "Pivot = 100",
+      title: "QuickSort Engine (~242µs)",
+      summary: "In-place Hoare partition splits the cohort into Upper Red (≥100) and Lower Green (<100).",
       detail:
-        "Hoare's in-place QuickSort partitions the active cohort around Pivot = 100 in ~242 microseconds. Score ≥ 100 or a single-parameter NEWS2/MEOWS red flag routes immediately to the Upper Partition (Red, 4-hour clinician SLA). Score < 100 routes to the Lower Partition (Green, staggered 50-min to 2-hour clinic windows between 09:00 and 17:00).",
-      badge: "Pivot = 100 • O(n log n)",
-      color: "emerald",
+        "In ~242 microseconds, patients scoring ≥ 100 or with a single MEOWS/NEWS2 hard red flag route to the Upper Partition (Red, 4-hour Doctor SLA). Scores < 100 route to the Lower Partition (Green, staggered 50-minute clinic windows between 09:00 and 17:00).",
+      icon: Cpu,
+      color: "text-amber-500",
+      accentBg: "bg-amber-500/10",
+      accentBorder: "border-amber-500/20",
     },
     {
-      step: "STEP 03",
-      title: "30-Slot Clinic Matrix (15 / 5 / 10 Isolation)",
-      short: "15 System Follow-Up • 5 Reserved Critical • 10 Protected Walk-In (100% Untouched)",
+      step: "03",
+      tag: "15 / 5 / 10 Matrix",
+      title: "Clinic Capacity Isolation",
+      summary: "15 Follow-Up, 5 Reserved Critical, and 10 Protected Walk-In Slots (100% Untouched).",
       detail:
-        "Automated follow-up scheduling is strictly capped at 15 routine slots + 5 emergency buffer slots. The 10 Walk-In slots are hardware-isolated in software—ensuring regular villagers walking into the PHC with acute fever or injury are 100% untouched by system reminders.",
-      badge: "10 Walk-In Slots 100% Protected",
-      color: "emerald",
+        "Automated outreach is strictly capped at 20 total slots per PHC. The 10 Walk-In slots are hardware-isolated in software—ensuring unscheduled village villagers seeking routine acute care are never crowded out.",
+      icon: Users,
+      color: "text-emerald-500",
+      accentBg: "bg-emerald-500/10",
+      accentBorder: "border-emerald-500/20",
     },
     {
-      step: "STEP 04",
-      title: "5-Hexagon Overflow Broadcast or 108 Ambulance Bypass",
-      short: "Atomic First-to-Accept Neighbor Lock or Tertiary Bypass to HEX-4 (GMCH & BBCI)",
+      step: "04",
+      tag: "Spatial Fallback",
+      title: "5-Hexagon Mesh & 108 Bypass",
+      summary: "First-to-accept neighbor lock across Ring-1 clinics or 108 Ambulance dispatch to Guwahati.",
       detail:
-        "When the 31st critical patient arrives at a saturated clinic (20/20 system cap), SwasthyaSense broadcasts an encrypted H3 Ring-1 overflow request to neighboring clinics (HEX-1 Chhaygaon, HEX-2 Rani, HEX-3 Mirza). The first clinic to accept atomically locks the referral. Severe maternal eclampsia or neutropenic sepsis triggers a 108 Ambulance Bypass directly to HEX-4 (GMCH & BBCI Tertiary Hub).",
-      badge: "H3 Ring-1 Mesh + 108 Bypass",
-      color: "red",
+        "When the 31st patient arrives at a saturated clinic, an H3 Ring-1 overflow broadcast alerts adjacent sub-centres (HEX-1 Chhaygaon, HEX-2 Rani, HEX-3 Mirza). Severe eclampsia or neutropenic sepsis triggers a 108 Ambulance Bypass directly to HEX-4 (GMCH & BBCI).",
+      icon: Radio,
+      color: "text-cyan-500",
+      accentBg: "bg-cyan-500/10",
+      accentBorder: "border-cyan-500/20",
     },
   ];
 
   const JOURNEY_BEATS = [
     {
       id: "a",
-      label: "Beat A • Silent 3-Visit Trajectory",
-      title: "Patient Dot & 3-Visit Rising BP (148 → 156 → 163 mmHg)",
+      label: "Beat 01 • Silent Deterioration",
+      title: "PT-MAT-2001 BP Rises: 148 → 156 → 163 mmHg",
       description:
-        "PT-MAT-2001 (3rd-trimester maternal patient in Boko) misses her scheduled PHC checkup. SwasthyaSense correlates her 3-visit rising systolic trajectory (148 → 156 → 163 mmHg) with blurred vision—adding +28 trajectory points and firing a MEOWS severe preeclampsia override (Score = 135).",
-      metric: "BP 148 → 156 → 163 mmHg (+28 Trajectory Bonus)",
-      tiltX: 16,
-      tiltY: -14,
-      zoomZ: 10,
+        "A 3rd-trimester mother in Boko misses her scheduled PHC visit. Paper registers mark this as a routine absence, but SwasthyaSense tracks the 3-visit rising systolic trajectory (148 → 156 → 163 mmHg) with blurred vision—firing a MEOWS severe preeclampsia override (Score: 135).",
+      metric: "Trajectory: +28 pts • Hard Override Activated",
+      accent: "from-red-600 to-rose-600",
     },
     {
       id: "b",
-      label: "Beat B • QuickSort Pivot = 100",
-      title: "In-Place Hoare Partition Splits Red (≥100) vs Green (<100)",
+      label: "Beat 02 • QuickSort Pivot = 100",
+      title: "In-Place Hoare Partitioning in ~242µs",
       description:
-        "In 242 microseconds, the QuickSort Pivot Line (100) bisects the 300-patient registry. Upper Partition (Red, Score ≥ 100) locks an immediate 4-hour Doctor SLA. Lower Partition (Green, Score < 100) assigns staggered 50-min to 2-hour windows across 09:00–17:00.",
-      metric: "Pivot = 100 • 16 Immediate (Red) / 42 Flexible (Green)",
-      tiltX: 10,
-      tiltY: 12,
-      zoomZ: 24,
+        "The algorithmic engine executes an in-place QuickSort around Pivot = 100. Upper Partition (Red, Score ≥ 100) locks an immediate 4-hour Doctor SLA. Lower Partition (Green, Score < 100) assigns staggered 50-minute consultation windows across the day.",
+      metric: "Execution: 242µs • 16 Red / 42 Green Slots",
+      accent: "from-amber-500 to-red-500",
     },
     {
       id: "c",
-      label: "Beat C • 30-Slot Clinic Isolation",
-      title: "15 Follow-Up / 5 Critical / 10 Walk-In ('100% Untouched')",
+      label: "Beat 03 • 30-Slot Clinic Protection",
+      title: "15 Follow-Up / 5 Critical / 10 Walk-In (100% Untouched)",
       description:
-        "Inside HEX-0 Boko Central PHC, the 30 daily slots are partitioned into 15 System Follow-Up and 5 Reserved Critical slots. Even at peak triage load, all 10 Protected Walk-In slots glow emerald green—100% untouched for unscheduled village walk-ins.",
-      metric: "15 System + 5 Critical | 10 Walk-In = 100% Untouched",
-      tiltX: 22,
-      tiltY: -6,
-      zoomZ: 18,
+        "Inside HEX-0 Boko Central PHC, 30 daily slots are isolated. Even when 20 automated slots are completely booked, all 10 Protected Walk-In slots remain untouched and luminous for local villagers walking in with acute fevers or snakebites.",
+      metric: "10 Walk-In Slots: 100% Guaranteed Untouched",
+      accent: "from-emerald-500 to-teal-500",
     },
     {
       id: "d",
-      label: "Beat D • 31st Critical Patient Hex Broadcast",
-      title: "HEX-0 & HEX-1 Hit 100% → Neighbor HEX-2 Accepts & Locks",
+      label: "Beat 04 • 31st Patient Hexagon Wave",
+      title: "HEX-0 Hits 100% → HEX-2 Rani Accepts & Atomically Locks",
       description:
-        "When the 31st critical patient arrives and HEX-0 (Boko) & HEX-1 (Chhaygaon) reach 20/20 system capacity, an H3 Ring-1 overflow wave pulses outward to HEX-2 (Rani South-East) and HEX-3 (Mirza). HEX-2 accepts first, turning emerald green and atomically locking the slot!",
-      metric: "HEX-0 Full (20/20) → Atomic Lock at HEX-2 (Rani PHC)",
-      tiltX: 28,
-      tiltY: 18,
-      zoomZ: 30,
+        "When the 31st critical patient arrives and HEX-0 & HEX-1 hit their 20/20 automated cap, an H3 Ring-1 overflow broadcast alerts HEX-2 (Rani) and HEX-3 (Mirza). Rani East Community PHC accepts first, atomically claiming the slot and updating the regional clinical mesh.",
+      metric: "First-to-Accept Atomic Lock at HEX-2 Rani",
+      accent: "from-cyan-500 to-blue-600",
     },
     {
       id: "e",
-      label: "Beat E • 108 Ambulance Tertiary Bypass",
-      title: "Direct 108 Emergency Route to HEX-4 (GMCH & BBCI Hub)",
+      label: "Beat 05 • 108 Tertiary Care Bypass",
+      title: "Direct 108 Emergency Route to HEX-4 (GMCH & BBCI)",
       description:
-        "For post-chemotherapy neutropenic fever (PT-ONC-3004: 39.1°C, SpO₂ 91%) or eclampsia with no local PHC doctor on duty, SwasthyaSense bypasses rural sub-centres—dispatching a 108 Boat/Road Ambulance directly to HEX-4 (GMCH & BBCI Tertiary Care Hub) with an eSanjeevani tele-consult packet.",
-      metric: "108 Tertiary Bypass → HEX-4 (GMCH & BBCI Guwahati)",
-      tiltX: 14,
-      tiltY: -20,
-      zoomZ: 28,
+        "For severe post-chemotherapy neutropenic sepsis (PT-ONC-3004: 39.1°C, SpO₂ 91%) or eclampsia with no local PHC doctor on duty, the system bypasses rural clinics entirely—dispatching a 108 Boat/Road Ambulance directly to HEX-4 (Guwahati Tertiary Care Hub).",
+      metric: "108 Tertiary Bypass → HEX-4 GMCH / BBCI Hub",
+      accent: "from-rose-600 to-red-600",
     },
   ];
 
   const currentBeat = JOURNEY_BEATS[journeyBeat] || JOURNEY_BEATS[0];
 
-  // Reusable Sign-In / Onboard Form Renderer
-  const renderAuthCardContent = () => (
-    <div
-      className={`rounded-2xl border transition-all ${
-        darkMode
-          ? "bg-slate-900/95 border-slate-800 text-slate-100 shadow-2xl"
-          : "bg-white border-slate-200/90 text-slate-900 shadow-xl shadow-slate-900/5"
-      }`}
-    >
-      {/* Card Header Tabs */}
-      <div
-        className={`flex items-center justify-between border-b px-5 py-3.5 ${
-          darkMode ? "border-slate-800 bg-slate-950/60" : "border-slate-100 bg-slate-50/80"
-        } rounded-t-2xl`}
-      >
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              setAuthTab("signin");
-              setAuthError(null);
-            }}
-            className={`px-3.5 py-2 rounded-lg text-xs font-bold tracking-wide transition-all cursor-pointer ${
-              authTab === "signin"
-                ? "bg-red-600 text-white shadow-sm"
-                : darkMode
-                ? "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
-            }`}
-          >
-            <span className="flex items-center gap-1.5">
-              <KeyRound className="w-3.5 h-3.5" />
-              Organization Sign-In
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setAuthTab("onboard");
-              setAuthError(null);
-            }}
-            className={`px-3.5 py-2 rounded-lg text-xs font-bold tracking-wide transition-all cursor-pointer ${
-              authTab === "onboard"
-                ? "bg-emerald-600 text-white shadow-sm"
-                : darkMode
-                ? "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
-            }`}
-          >
-            <span className="flex items-center gap-1.5">
-              <UserPlus className="w-3.5 h-3.5" />
-              + Onboard New Org
-            </span>
-          </button>
-        </div>
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-          <Lock className="w-3 h-3" /> RLS Isolated
-        </span>
-      </div>
-
-      {authTab === "signin" ? (
-        <form onSubmit={handleSignInSubmit} className="p-5 space-y-4">
-          {/* 3 Simultaneous Demo Users Helper Panel */}
-          <div
-            className={`p-3 rounded-xl border ${
-              darkMode
-                ? "bg-slate-950/90 border-slate-800"
-                : "bg-slate-50/90 border-slate-200/80"
-            }`}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-red-600" />
-                Simultaneous Multi-Tenant Demo Accounts
-              </span>
-              <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-500/15 text-amber-700 border border-amber-500/30">
-                DEMO ONLY
-              </span>
-            </div>
-            <div className="grid grid-cols-1 gap-1.5">
-              {LANDING_DEMO_PRESETS.map((preset) => {
-                const isSelected =
-                  orgIdInput.toUpperCase() === preset.organizationId &&
-                  userIdInput.toLowerCase() === preset.userId;
-                return (
-                  <button
-                    key={preset.userId}
-                    type="button"
-                    onClick={() => handleSelectDemoPreset(preset)}
-                    className={`w-full text-left px-3 py-2 rounded-lg border text-xs transition-all flex items-center justify-between gap-2 cursor-pointer ${
-                      isSelected
-                        ? darkMode
-                          ? "bg-red-950/40 border-red-500/60 text-white"
-                          : "bg-red-50/90 border-red-300 text-slate-900 shadow-xs"
-                        : darkMode
-                        ? "bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700"
-                        : "bg-white border-slate-200 text-slate-700 hover:border-slate-300"
-                    }`}
-                  >
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="font-bold text-red-600 font-mono">
-                          {preset.userId}
-                        </span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-500/10 font-mono font-semibold">
-                          {preset.organizationId}
-                        </span>
-                        <span className="text-[11px] font-medium opacity-85 truncate">
-                          • {preset.personRole}
-                        </span>
-                      </div>
-                      <div className="text-[11px] text-emerald-600 font-semibold truncate mt-0.5">
-                        {preset.roleBadge}
-                      </div>
-                    </div>
-                    <span className="shrink-0 text-[10px] font-bold px-2 py-1 rounded bg-slate-900 text-white dark:bg-slate-800">
-                      Autofill
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Organization ID Field */}
-          <div>
-            <label className="block text-xs font-bold mb-1.5">
-              Organization ID / Tenant Block
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <input
-                type="text"
-                value={orgIdInput}
-                onChange={(e) => setOrgIdInput(e.target.value)}
-                placeholder="e.g. ORG-BOKO or ORG-SEVAK"
-                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 ${
-                  darkMode
-                    ? "bg-slate-950 border-slate-800 text-white"
-                    : "bg-white border-slate-300 text-slate-900"
-                }`}
-              />
-              <select
-                aria-label="Select Healthcare Organization"
-                value={
-                  organizations.some(
-                    (o) => o.id.toUpperCase() === orgIdInput.trim().toUpperCase()
-                  )
-                    ? orgIdInput.trim().toUpperCase()
-                    : ""
-                }
-                onChange={(e) => {
-                  if (!e.target.value) return;
-                  const nextOrgId = e.target.value;
-                  setOrgIdInput(nextOrgId);
-                  const preset = LANDING_DEMO_PRESETS.find(
-                    (p) => p.organizationId === nextOrgId
-                  );
-                  if (preset) {
-                    setUserIdInput(preset.userId);
-                    setPasswordInput(preset.passwordPlain);
-                  } else {
-                    const firstUser = users.find((u) => u.organizationId === nextOrgId);
-                    const orgObj = organizations.find((o) => o.id === nextOrgId);
-                    if (firstUser) setUserIdInput(firstUser.id);
-                    if (orgObj) setPasswordInput(orgObj.accessPasscode);
-                  }
-                }}
-                className={`w-full px-3 py-2.5 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 ${
-                  darkMode
-                    ? "bg-slate-950 border-slate-800 text-slate-200"
-                    : "bg-slate-50 border-slate-300 text-slate-800"
-                }`}
-              >
-                <option value="">Quick-Select Organization...</option>
-                {organizations.map((org) => (
-                  <option key={org.id} value={org.id}>
-                    {org.id} — {org.shortName}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* User ID & Password Fields */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-bold mb-1.5">
-                Staff User ID
-              </label>
-              <input
-                type="text"
-                value={userIdInput}
-                onChange={(e) => setUserIdInput(e.target.value)}
-                placeholder="doc.boko01 / asha.sevak07"
-                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 ${
-                  darkMode
-                    ? "bg-slate-950 border-slate-800 text-white"
-                    : "bg-white border-slate-300 text-slate-900"
-                }`}
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold mb-1.5">
-                Password / Org Passcode
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
-                  placeholder="Enter password..."
-                  className={`w-full pl-3.5 pr-10 py-2.5 rounded-xl border text-xs font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 ${
-                    darkMode
-                      ? "bg-slate-950 border-slate-800 text-white"
-                      : "bg-white border-slate-300 text-slate-900"
-                  }`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Resolved Role Badge Preview */}
-          <div
-            className={`px-3.5 py-2.5 rounded-xl border flex items-center justify-between gap-2 text-xs ${
-              darkMode
-                ? "bg-emerald-950/30 border-emerald-800/50 text-emerald-300"
-                : "bg-emerald-50/90 border-emerald-200 text-emerald-900"
-            }`}
-          >
-            <span className="font-semibold flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-              Role Badge:
-            </span>
-            <span className="font-bold text-right">{previewRoleBadge}</span>
-          </div>
-
-          {/* Error / Lockout / Success Feedback */}
-          {authError && (
-            <div
-              className={`p-3 rounded-xl border text-xs font-semibold flex items-start gap-2 ${
-                authLocked
-                  ? "bg-red-950 text-red-200 border-red-600"
-                  : "bg-red-50 text-red-800 border-red-200 dark:bg-red-950/60 dark:text-red-200 dark:border-red-800"
-              }`}
-            >
-              <AlertTriangle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
-              <div>
-                {authLocked && (
-                  <div className="font-extrabold uppercase tracking-wider text-red-500 mb-0.5">
-                    HTTP 423 • ACCOUNT LOCKED AFTER 5 FAILED ATTEMPTS
-                  </div>
-                )}
-                {authError}
-              </div>
-            </div>
-          )}
-
-          {authSuccessBanner && !authError && (
-            <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>{authSuccessBanner}</span>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={authLoading}
-            className="w-full py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white font-bold text-sm shadow-lg shadow-red-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
-          >
-            {authLoading ? (
-              <>
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                Verifying Scrypt Hash & RLS Session...
-              </>
-            ) : (
-              <>
-                <Lock className="w-4 h-4" />
-                Sign In & Launch Isolated Clinical Workspace
-                <ArrowRight className="w-4 h-4" />
-              </>
-            )}
-          </button>
-        </form>
-      ) : (
-        <form onSubmit={handleOnboardSubmit} className="p-5 space-y-3.5">
-          <div className="text-xs text-slate-500">
-            Provision a new multi-tenant healthcare organization with its own isolated PostgreSQL RLS patient registry and 15-worker frontline team.
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-bold mb-1">Organization Name</label>
-              <input
-                type="text"
-                required
-                value={newOrgName}
-                onChange={(e) => setNewOrgName(e.target.value)}
-                placeholder="e.g. Gramin Swasthya Trust"
-                className={`w-full px-3 py-2 rounded-xl border text-xs font-semibold ${
-                  darkMode
-                    ? "bg-slate-950 border-slate-800 text-white"
-                    : "bg-white border-slate-300 text-slate-900"
-                }`}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold mb-1">Short Code</label>
-              <input
-                type="text"
-                value={newOrgShort}
-                onChange={(e) => setNewOrgShort(e.target.value)}
-                placeholder="e.g. Gramin Trust"
-                className={`w-full px-3 py-2 rounded-xl border text-xs font-semibold ${
-                  darkMode
-                    ? "bg-slate-950 border-slate-800 text-white"
-                    : "bg-white border-slate-300 text-slate-900"
-                }`}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
-              <label className="block text-xs font-bold mb-1">District / Block</label>
-              <input
-                type="text"
-                value={newOrgDistrict}
-                onChange={(e) => setNewOrgDistrict(e.target.value)}
-                className={`w-full px-3 py-2 rounded-xl border text-xs font-semibold ${
-                  darkMode
-                    ? "bg-slate-950 border-slate-800 text-white"
-                    : "bg-white border-slate-300 text-slate-900"
-                }`}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold mb-1">Org Passcode</label>
-              <input
-                type="text"
-                value={newOrgPasscode}
-                onChange={(e) => setNewOrgPasscode(e.target.value)}
-                className={`w-full px-3 py-2 rounded-xl border text-xs font-mono font-bold ${
-                  darkMode
-                    ? "bg-slate-950 border-slate-800 text-white"
-                    : "bg-white border-slate-300 text-slate-900"
-                }`}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold mb-1">ASHA Team Size</label>
-              <input
-                type="number"
-                min={1}
-                max={200}
-                value={newOrgTeamSize}
-                onChange={(e) => setNewOrgTeamSize(Number(e.target.value) || 15)}
-                className={`w-full px-3 py-2 rounded-xl border text-xs font-bold ${
-                  darkMode
-                    ? "bg-slate-950 border-slate-800 text-white"
-                    : "bg-white border-slate-300 text-slate-900"
-                }`}
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-bold mb-1">Lead Frontline Worker Name</label>
-            <input
-              type="text"
-              value={newOrgLead}
-              onChange={(e) => setNewOrgLead(e.target.value)}
-              className={`w-full px-3 py-2 rounded-xl border text-xs font-semibold ${
-                darkMode
-                  ? "bg-slate-950 border-slate-800 text-white"
-                  : "bg-white border-slate-300 text-slate-900"
-              }`}
-            />
-          </div>
-          {authError && (
-            <div className="p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold">
-              {authError}
-            </div>
-          )}
-          <button
-            type="submit"
-            disabled={authLoading}
-            className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <UserPlus className="w-4 h-4" />
-            Create Isolated Organization & Sign In
-          </button>
-        </form>
-      )}
-    </div>
-  );
-
   return (
     <div
-      className={`min-h-screen transition-colors duration-200 ${
-        darkMode ? "bg-slate-950 text-slate-100" : "bg-white text-slate-900"
+      className={`min-h-screen selection:bg-red-500/20 selection:text-red-700 font-sans transition-colors duration-300 ${
+        darkMode ? "bg-[#0B0F17] text-slate-100" : "bg-[#FBFDFD] text-slate-900"
       }`}
     >
       {/* ===================================================================
-          1. STICKY GLASS-BLUR TOP NAVIGATION BAR
+          1. ULTRA-POLISHED FLOATING GLASS NAVBAR
       =================================================================== */}
-      <header
-        className={`sticky top-0 z-50 backdrop-blur-md border-b transition-colors ${
-          darkMode
-            ? "bg-slate-950/85 border-slate-800/90"
-            : "bg-white/90 border-slate-200/80"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-3">
-          {/* Brand Logo / Wordmark (Red / Green / White) */}
+      <header className="sticky top-0 z-50 px-4 sm:px-6 lg:px-8 pt-3 pb-2">
+        <div
+          className={`max-w-7xl mx-auto rounded-2xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4 border transition-all ${
+            darkMode
+              ? "bg-slate-900/80 border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+              : "bg-white/85 border-slate-200/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] backdrop-blur-xl"
+          }`}
+        >
+          {/* Brand Logo & Clinical Sub-Badge */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white shadow-md shadow-red-600/25 relative">
-              <HeartPulse className="w-5 h-5" />
-              <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-950" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 via-rose-600 to-red-700 text-white flex items-center justify-center shadow-lg shadow-red-600/30 ring-1 ring-white/20 relative">
+              <HeartPulse className="w-5 h-5 animate-pulse" />
+              <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-lg tracking-tight">
+                <span className="font-extrabold text-lg sm:text-xl tracking-tight">
                   Swasthya<span className="text-red-600">Sense</span>
                 </span>
-                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                  v2.5 Clinical Mesh
+                <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 border border-emerald-500/25">
+                  Clinical Mesh v2.5
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 hidden sm:block">
-                Early-Warning • QuickSort Queue • 5-Hexagon Load Balancer
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
+                Early-Warning • QuickSort Triage • Hexagonal Load-Balancing
               </p>
             </div>
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6 text-xs font-bold">
+          <nav className="hidden lg:flex items-center gap-7 text-xs font-semibold tracking-wide">
             <a
               href="#how-it-works"
-              className="hover:text-red-600 transition-colors py-2"
+              className="text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
             >
               {t.navHowItWorks}
             </a>
             <a
               href="#patient-journey-3d"
-              className="hover:text-red-600 transition-colors py-2 flex items-center gap-1"
+              className="text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors flex items-center gap-1.5"
             >
-              <Sparkles className="w-3.5 h-3.5 text-red-600" />
+              <Sparkles className="w-3.5 h-3.5 text-red-500" />
               {t.navJourney3D}
             </a>
             <a
-              href="#hexagon-architecture"
-              className="hover:text-red-600 transition-colors py-2"
+              href="#hexagon-mesh"
+              className="text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
             >
               {t.navHexArchitecture}
             </a>
             <a
               href="#security-dpdp"
-              className="hover:text-red-600 transition-colors py-2"
+              className="text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
             >
               {t.navSecurity}
             </a>
           </nav>
 
-          {/* Right Controls: 7-Language Selector + Dark Mode + Auth Status / CTA */}
+          {/* Right Action Bar */}
           <div className="flex items-center gap-2.5">
             {/* 7-Language Selector */}
             <div className="relative flex items-center">
@@ -1060,13 +588,11 @@ export default function SwasthyaLandingPage({
               <select
                 aria-label="Select Language"
                 value={selectedLanguage}
-                onChange={(e) =>
-                  onSelectLanguage(e.target.value as SupportedLanguage)
-                }
-                className={`pl-8 pr-2.5 py-2 rounded-xl border text-xs font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                onChange={(e) => onSelectLanguage(e.target.value as SupportedLanguage)}
+                className={`pl-8 pr-3 py-1.5 rounded-xl border text-xs font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500/50 ${
                   darkMode
-                    ? "bg-slate-900 border-slate-800 text-slate-200"
-                    : "bg-slate-50 border-slate-200 text-slate-800"
+                    ? "bg-slate-950 border-white/10 text-slate-200"
+                    : "bg-slate-100/80 border-slate-200 text-slate-800"
                 }`}
               >
                 {SUPPORTED_LANGUAGES.map((langObj) => (
@@ -1077,44 +603,38 @@ export default function SwasthyaLandingPage({
               </select>
             </div>
 
-            {/* Light / Dark Mode Button */}
+            {/* Dark Mode Toggle */}
             <button
               type="button"
               onClick={() => setDarkMode((prev) => !prev)}
-              aria-label="Toggle Light or Dark Mode"
-              className={`p-2.5 rounded-xl border transition-colors cursor-pointer ${
+              aria-label="Toggle Theme"
+              className={`p-2 rounded-xl border transition-colors cursor-pointer ${
                 darkMode
-                  ? "bg-slate-900 border-slate-800 text-amber-400 hover:bg-slate-800"
-                  : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+                  ? "bg-slate-950 border-white/10 text-amber-400 hover:bg-slate-800"
+                  : "bg-slate-100/80 border-slate-200 text-slate-700 hover:bg-slate-200/60"
               }`}
             >
               {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
-            {/* Session Active Pill OR Organization Sign-In CTA */}
+            {/* If Authenticated: Show active user pill + Enter Workspace */}
             {isAuthenticated && currentUser && currentOrganization ? (
               <div className="hidden sm:flex items-center gap-2">
                 <div
                   className={`px-3 py-1.5 rounded-xl border text-xs flex items-center gap-2 ${
                     darkMode
-                      ? "bg-emerald-950/50 border-emerald-800 text-emerald-200"
+                      ? "bg-emerald-950/40 border-emerald-500/30 text-emerald-300"
                       : "bg-emerald-50 border-emerald-200 text-emerald-900"
                   }`}
                 >
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <div className="text-left">
-                    <div className="font-bold leading-tight">
-                      {currentUser.name}
-                    </div>
-                    <div className="text-[10px] opacity-80">
-                      {currentOrganization.shortName} • Session Active
-                    </div>
-                  </div>
+                  <span className="font-bold">{currentUser.name.split(" ")[0]}</span>
+                  <span className="opacity-70 text-[11px]">• {currentOrganization.shortName}</span>
                 </div>
                 <button
                   type="button"
                   onClick={onEnterWorkspace}
-                  className="px-3.5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-sm flex items-center gap-1.5 cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-600/20 flex items-center gap-1.5 cursor-pointer"
                 >
                   Enter Workspace <ArrowRight className="w-3.5 h-3.5" />
                 </button>
@@ -1122,11 +642,7 @@ export default function SwasthyaLandingPage({
                   type="button"
                   onClick={onSignOut}
                   title="Sign Out"
-                  className={`p-2.5 rounded-xl border text-xs font-bold cursor-pointer ${
-                    darkMode
-                      ? "border-slate-800 text-slate-300 hover:bg-slate-900"
-                      : "border-slate-200 text-slate-600 hover:bg-slate-100"
-                  }`}
+                  className="p-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-500 hover:text-red-600 cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -1138,7 +654,7 @@ export default function SwasthyaLandingPage({
                   setAuthTab("signin");
                   setLoginModalOpen(true);
                 }}
-                className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-600/20 transition-all cursor-pointer"
+                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-lg shadow-red-600/25 transition-all cursor-pointer"
               >
                 <KeyRound className="w-3.5 h-3.5" />
                 {t.navLaunch}
@@ -1149,50 +665,34 @@ export default function SwasthyaLandingPage({
             <button
               type="button"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
-              aria-label="Open Navigation Menu"
-              className="lg:hidden p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer"
+              aria-label="Navigation Menu"
+              className="lg:hidden p-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Drawer */}
+        {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div
-            className={`lg:hidden border-t px-4 py-4 space-y-3 ${
+            className={`lg:hidden mt-2 p-5 rounded-2xl border space-y-4 ${
               darkMode
-                ? "bg-slate-950 border-slate-800"
-                : "bg-white border-slate-200"
+                ? "bg-slate-900 border-white/10 text-slate-100"
+                : "bg-white border-slate-200 text-slate-900 shadow-xl"
             }`}
           >
-            <div className="flex flex-col space-y-2 text-sm font-bold">
-              <a
-                href="#how-it-works"
-                onClick={() => setMobileMenuOpen(false)}
-                className="py-2"
-              >
+            <div className="flex flex-col space-y-3 font-semibold text-sm">
+              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>
                 {t.navHowItWorks}
               </a>
-              <a
-                href="#patient-journey-3d"
-                onClick={() => setMobileMenuOpen(false)}
-                className="py-2 text-red-600"
-              >
+              <a href="#patient-journey-3d" onClick={() => setMobileMenuOpen(false)} className="text-red-600">
                 {t.navJourney3D}
               </a>
-              <a
-                href="#hexagon-architecture"
-                onClick={() => setMobileMenuOpen(false)}
-                className="py-2"
-              >
+              <a href="#hexagon-mesh" onClick={() => setMobileMenuOpen(false)}>
                 {t.navHexArchitecture}
               </a>
-              <a
-                href="#security-dpdp"
-                onClick={() => setMobileMenuOpen(false)}
-                className="py-2"
-              >
+              <a href="#security-dpdp" onClick={() => setMobileMenuOpen(false)}>
                 {t.navSecurity}
               </a>
             </div>
@@ -1202,7 +702,7 @@ export default function SwasthyaLandingPage({
                 setMobileMenuOpen(false);
                 setLoginModalOpen(true);
               }}
-              className="w-full py-3 rounded-xl bg-red-600 text-white font-bold text-xs flex items-center justify-center gap-2"
+              className="w-full py-2.5 rounded-xl bg-red-600 text-white text-xs font-bold flex items-center justify-center gap-2"
             >
               <KeyRound className="w-4 h-4" />
               {t.navLaunch}
@@ -1212,91 +712,69 @@ export default function SwasthyaLandingPage({
       </header>
 
       {/* ===================================================================
-          2. HERO SECTION + LIVE MICRO-TELEMETRY TICKER + SIGN-IN PORTAL
+          2. GRAND HERO: EDITORIAL IMPACT + REAL-TIME CLINICAL COMMAND RADAR
       =================================================================== */}
-      <section className="relative overflow-hidden pt-8 pb-16 lg:pt-12 lg:pb-24 border-b border-slate-200/70 dark:border-slate-800/80">
-        {/* Subtle Clinical Grid Background */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-35 dark:opacity-20"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 1px 1px, rgba(220,38,38,0.16) 1px, transparent 0)",
-            backgroundSize: "28px 28px",
-          }}
-        />
+      <section className="relative overflow-hidden pt-8 pb-16 lg:pt-16 lg:pb-24">
+        {/* Subtle Ambient Radial Glows */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 pointer-events-none opacity-40 dark:opacity-20">
+          <div className="absolute -top-10 left-1/4 w-96 h-96 rounded-full bg-red-500/20 blur-3xl" />
+          <div className="absolute top-10 right-1/4 w-96 h-96 rounded-full bg-emerald-500/20 blur-3xl" />
+        </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          {/* Live Micro-Telemetry Ticker Bar */}
-          <div
-            className={`mb-8 rounded-2xl border px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 ${
-              darkMode
-                ? "bg-slate-900/90 border-slate-800"
-                : "bg-slate-50/90 border-slate-200/90"
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping" />
-              <span className="text-[11px] font-extrabold uppercase tracking-wider text-red-600">
-                LIVE TELEMETRY
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Live Micro-Telemetry Ribbon */}
+          <div className="flex items-center justify-center mb-8">
+            <div
+              className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-medium transition-all ${
+                darkMode
+                  ? "bg-slate-900/90 border-white/10 text-slate-300 shadow-md"
+                  : "bg-white/90 border-slate-200/80 text-slate-700 shadow-xs"
+              }`}
+            >
+              <span className="w-2 h-2 rounded-full bg-red-600 animate-ping shrink-0" />
+              <span className="font-bold text-red-600 tracking-wide font-mono text-[11px]">
+                LIVE PROTOCOL
               </span>
-            </div>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-mono font-bold">
-              <span className="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 border border-red-500/20">
-                ⚡ ~242µs QuickSort Partition
-              </span>
-              <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                🛡️ 15/5/10 Slot Isolation (10 Walk-In Untouched)
-              </span>
-              <span className="px-2.5 py-1 rounded-lg bg-slate-500/10 text-slate-700 dark:text-slate-300 border border-slate-500/20">
-                ⬢ 5-Hexagon Clinic Mesh
-              </span>
-              <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                🔒 AES-256-GCM + SHA-256 Verified
-              </span>
+              <span className="text-slate-300 dark:text-slate-700">•</span>
+              <span className="hidden sm:inline">NEWS2 & MEOWS Maternal Overrides</span>
+              <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
+              <span className="font-mono text-emerald-600 font-bold">~242µs QuickSort</span>
+              <span className="text-slate-300 dark:text-slate-700 hidden md:inline">•</span>
+              <span className="font-mono text-slate-500 hidden md:inline">10 Protected Walk-In Slots</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
-            {/* Left Column: Product Headline, Value Prop, CTAs, Stylized Village-Clinic Hex Map */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-600 text-xs font-extrabold tracking-wide">
-                <Activity className="w-3.5 h-3.5" />
-                {t.badge}
-              </div>
-
-              <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.12]">
-                {t.heroTitle}{" "}
-                <span className="text-red-600 underline decoration-emerald-500/60 decoration-wavy underline-offset-8">
-                  {t.heroHighlight}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            {/* Left 7 Columns: Editorial Headline, Mission, Dual CTA, and 1-Click Demo Launcher */}
+            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+              <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.08]">
+                {t.heroTitle1}{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-rose-500 to-amber-500">
+                  {t.heroTitleHighlight}
                 </span>
               </h1>
 
               <p
-                className={`text-base sm:text-lg leading-relaxed max-w-2xl ${
+                className={`text-base sm:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0 ${
                   darkMode ? "text-slate-300" : "text-slate-600"
                 }`}
               >
                 {t.heroSubtitle}
               </p>
 
-              {/* Two Primary CTA Buttons */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-1">
+              {/* Primary Launch Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
                 <button
                   type="button"
                   onClick={() => {
                     setAuthTab("signin");
                     setLoginModalOpen(true);
                   }}
-                  className="px-6 py-3.5 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-xl shadow-red-600/25 transition-all flex flex-col items-start cursor-pointer"
+                  className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-bold text-sm shadow-xl shadow-red-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer group"
                 >
-                  <span className="flex items-center gap-2">
-                    <KeyRound className="w-4 h-4" />
-                    {t.ctaSignIn}
-                    <ArrowRight className="w-4 h-4" />
-                  </span>
-                  <span className="text-[11px] font-medium text-red-100 mt-0.5">
-                    {t.ctaSignInSub}
-                  </span>
+                  <KeyRound className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                  <span>{t.ctaSignIn}</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
 
                 <button
@@ -1305,196 +783,283 @@ export default function SwasthyaLandingPage({
                     setAuthTab("onboard");
                     setLoginModalOpen(true);
                   }}
-                  className={`px-5 py-4 rounded-2xl border-2 font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  className={`w-full sm:w-auto px-6 py-4 rounded-2xl border font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     darkMode
-                      ? "border-emerald-500/60 text-emerald-400 hover:bg-emerald-950/40"
-                      : "border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+                      ? "bg-slate-900 border-white/10 text-slate-200 hover:bg-slate-800"
+                      : "bg-white border-slate-200 text-slate-800 hover:bg-slate-50 shadow-xs"
                   }`}
                 >
-                  <Building2 className="w-4 h-4" />
-                  {t.ctaOnboard}
+                  <Building2 className="w-4 h-4 text-emerald-600" />
+                  <span>{t.ctaOnboard}</span>
                 </button>
               </div>
 
-              {/* Stylized Village-Clinic Hexagon Map & Patient Queue Illustration */}
+              {/* 1-Click Instant Demo Launcher Ribbon */}
               <div
-                className={`p-5 rounded-2xl border ${
+                className={`p-4 rounded-2xl border transition-all ${
                   darkMode
-                    ? "bg-slate-900/70 border-slate-800"
-                    : "bg-slate-50/90 border-slate-200/90"
+                    ? "bg-slate-900/60 border-white/10 backdrop-blur-md"
+                    : "bg-white/80 border-slate-200/90 shadow-xs backdrop-blur-md"
                 }`}
               >
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                    <Layers className="w-4 h-4 text-red-600" />
-                    Kamrup Rural 5-Hexagon Clinic Mesh & Trajectory Preview
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-red-500" />
+                    Instant 1-Click Multi-Tenant Demo Accounts
                   </span>
-                  <span className="text-[11px] font-mono font-bold text-emerald-600">
-                    Walk-In Protection: 10/10 Slots Free
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/25">
+                    NO SETUP REQUIRED
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5">
-                  {[
-                    {
-                      hex: "HEX-0",
-                      name: "Boko Central PHC",
-                      org: "ORG-BOKO / SEVAK",
-                      slots: "18/20 Sys • 10/10 Walk-In",
-                      status: "amber",
-                    },
-                    {
-                      hex: "HEX-1",
-                      name: "Chhaygaon North",
-                      org: "ORG-CHHAY",
-                      slots: "14/20 Sys • 10/10 Walk-In",
-                      status: "emerald",
-                    },
-                    {
-                      hex: "HEX-2",
-                      name: "Rani South-East",
-                      org: "Ring-1 Neighbor",
-                      slots: "9/20 Sys • Ready for Overflow",
-                      status: "emerald",
-                    },
-                    {
-                      hex: "HEX-3",
-                      name: "Mirza South-West",
-                      org: "Ring-1 Neighbor",
-                      slots: "11/20 Sys • Ready for Overflow",
-                      status: "emerald",
-                    },
-                    {
-                      hex: "HEX-4",
-                      name: "GMCH & BBCI Hub",
-                      org: "Tertiary 108 Bypass",
-                      slots: "24×7 ICU / Oncology / OBGYN",
-                      status: "red",
-                    },
-                  ].map((node) => (
-                    <div
-                      key={node.hex}
-                      className={`p-2.5 rounded-xl border text-left transition-all ${
-                        node.status === "red"
-                          ? darkMode
-                            ? "bg-red-950/40 border-red-700/60"
-                            : "bg-red-50/80 border-red-200"
-                          : node.status === "amber"
-                          ? darkMode
-                            ? "bg-amber-950/30 border-amber-700/50"
-                            : "bg-amber-50/80 border-amber-200"
-                          : darkMode
-                          ? "bg-emerald-950/30 border-emerald-800/50"
-                          : "bg-white border-slate-200"
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {LANDING_DEMO_PRESETS.map((preset) => (
+                    <button
+                      key={preset.userId}
+                      type="button"
+                      disabled={authLoading}
+                      onClick={() => void handleDirectDemoLogin(preset)}
+                      className={`p-2.5 rounded-xl border text-left transition-all flex items-center gap-2.5 cursor-pointer group ${
+                        darkMode
+                          ? "bg-slate-950/80 border-white/5 hover:border-red-500/50 hover:bg-slate-900"
+                          : "bg-slate-50 border-slate-200/80 hover:border-red-400 hover:bg-white hover:shadow-sm"
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono text-[10px] font-extrabold text-red-600">
-                          {node.hex}
-                        </span>
-                        <span
-                          className={`w-2 h-2 rounded-full ${
-                            node.status === "red"
-                              ? "bg-red-600 animate-ping"
-                              : node.status === "amber"
-                              ? "bg-amber-500"
-                              : "bg-emerald-500"
-                          }`}
-                        />
+                      <div
+                        className={`w-8 h-8 rounded-lg bg-gradient-to-br ${preset.highlightColor} text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-sm`}
+                      >
+                        {preset.avatarText}
                       </div>
-                      <div className="font-bold text-xs mt-1 truncate">
-                        {node.name}
+                      <div className="min-w-0 flex-1">
+                        <div className="font-bold text-xs truncate group-hover:text-red-600 transition-colors">
+                          {preset.userName}
+                        </div>
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                          {preset.personRole}
+                        </div>
+                        <div className="text-[10px] font-mono text-emerald-600 font-semibold truncate">
+                          {preset.organizationId}
+                        </div>
                       </div>
-                      <div className="text-[10px] text-slate-500 truncate">
-                        {node.org}
-                      </div>
-                      <div className="text-[10px] font-mono font-semibold text-emerald-600 mt-1">
-                        {node.slots}
-                      </div>
-                    </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 group-hover:text-red-600 transition-all shrink-0" />
+                    </button>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Embedded Multi-Tenant Organization Sign-In Card */}
-            <div className="lg:col-span-5">{renderAuthCardContent()}</div>
+            {/* Right 5 Columns: Futuristic Real-Time Hologram & Hexagonal Command Radar */}
+            <div className="lg:col-span-5 relative">
+              <div
+                className={`relative rounded-3xl p-6 sm:p-7 border overflow-hidden ${
+                  darkMode
+                    ? "bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 border-white/10 shadow-2xl"
+                    : "bg-gradient-to-b from-slate-50 via-white to-white border-slate-200/90 shadow-2xl shadow-slate-900/5"
+                }`}
+              >
+                {/* Header HUD Bar */}
+                <div className="flex items-center justify-between pb-4 border-b border-slate-200/60 dark:border-white/10 mb-5">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+                    <span className="font-mono text-xs font-extrabold uppercase tracking-wider text-emerald-600">
+                      KAMRUP 5-HEX MESH ACTIVE
+                    </span>
+                  </div>
+                  <span className="font-mono text-xs text-slate-400">
+                    SLA: 4h • RT: 242µs
+                  </span>
+                </div>
+
+                {/* SVG Hexagonal Mesh Hologram Canvas */}
+                <div className="relative h-64 w-full flex items-center justify-center">
+                  <svg
+                    viewBox="0 0 400 260"
+                    className="w-full h-full drop-shadow-md select-none"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    {/* Background Connection Links */}
+                    <line x1="200" y1="130" x2="110" y2="70" stroke="#CBD5E1" strokeWidth="2" strokeDasharray="4 4" className="dark:stroke-slate-700" />
+                    <line x1="200" y1="130" x2="290" y2="70" stroke="#CBD5E1" strokeWidth="2" strokeDasharray="4 4" className="dark:stroke-slate-700" />
+                    <line x1="200" y1="130" x2="110" y2="190" stroke="#CBD5E1" strokeWidth="2" strokeDasharray="4 4" className="dark:stroke-slate-700" />
+                    <line x1="200" y1="130" x2="290" y2="190" stroke="#CBD5E1" strokeWidth="2" strokeDasharray="4 4" className="dark:stroke-slate-700" />
+
+                    {/* Ambulance Tertiary Line from HEX-0 directly to HEX-4 */}
+                    <path
+                      d="M 200 130 Q 320 130 360 40"
+                      stroke="#EF4444"
+                      strokeWidth="2.5"
+                      strokeDasharray="6 4"
+                      className="animate-pulse"
+                    />
+
+                    {/* HEX-0 Center (Boko Central PHC) */}
+                    <g transform="translate(200, 130)">
+                      <polygon
+                        points="0,-32 28,-16 28,16 0,32 -28,16 -28,-16"
+                        className="fill-red-500/15 stroke-red-600 stroke-[2.5]"
+                      />
+                      <circle cx="0" cy="0" r="6" className="fill-red-600 animate-ping" />
+                      <circle cx="0" cy="0" r="4" className="fill-white" />
+                      <text x="0" y="-38" textAnchor="middle" className="text-[10px] font-mono font-bold fill-red-600">HEX-0 • Boko</text>
+                      <text x="0" y="44" textAnchor="middle" className="text-[9px] font-sans font-medium fill-slate-500">18/20 Sys • 10 Free</text>
+                    </g>
+
+                    {/* HEX-1 (Chhaygaon North) */}
+                    <g transform="translate(110, 70)">
+                      <polygon
+                        points="0,-24 21,-12 21,12 0,24 -21,12 -21,-12"
+                        className="fill-amber-500/15 stroke-amber-500 stroke-2"
+                      />
+                      <text x="0" y="-28" textAnchor="middle" className="text-[9px] font-mono font-bold fill-amber-600">HEX-1 • Chhaygaon</text>
+                    </g>
+
+                    {/* HEX-2 (Rani South-East) */}
+                    <g transform="translate(290, 70)">
+                      <polygon
+                        points="0,-24 21,-12 21,12 0,24 -21,12 -21,-12"
+                        className="fill-emerald-500/15 stroke-emerald-500 stroke-2"
+                      />
+                      <text x="0" y="-28" textAnchor="middle" className="text-[9px] font-mono font-bold fill-emerald-600">HEX-2 • Rani</text>
+                    </g>
+
+                    {/* HEX-3 (Mirza South-West) */}
+                    <g transform="translate(110, 190)">
+                      <polygon
+                        points="0,-24 21,-12 21,12 0,24 -21,12 -21,-12"
+                        className="fill-emerald-500/15 stroke-emerald-500 stroke-2"
+                      />
+                      <text x="0" y="34" textAnchor="middle" className="text-[9px] font-mono font-bold fill-slate-500">HEX-3 • Mirza</text>
+                    </g>
+
+                    {/* HEX-4 (Guwahati GMCH / BBCI Tertiary Care Hub) */}
+                    <g transform="translate(360, 40)">
+                      <circle cx="0" cy="0" r="16" className="fill-red-600/20 stroke-red-600 stroke-2" />
+                      <circle cx="0" cy="0" r="5" className="fill-red-600" />
+                      <text x="0" y="-20" textAnchor="middle" className="text-[9px] font-mono font-extrabold fill-red-600">HEX-4 • GMCH</text>
+                      <text x="0" y="24" textAnchor="middle" className="text-[8px] font-mono fill-red-500 font-bold">108 BYPASS</text>
+                    </g>
+                  </svg>
+                </div>
+
+                {/* Floating Telemetry Glass Card */}
+                <div
+                  className={`mt-4 p-3.5 rounded-2xl border text-xs font-mono space-y-1.5 transition-all ${
+                    darkMode
+                      ? "bg-slate-950/80 border-white/10 text-slate-300"
+                      : "bg-white border-slate-200 text-slate-800 shadow-sm"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-red-600 flex items-center gap-1.5">
+                      <TrendingUp className="w-3.5 h-3.5" />
+                      PT-MAT-2001 (Boko PHC)
+                    </span>
+                    <span className="px-2 py-0.5 rounded bg-red-600 text-white text-[10px] font-extrabold">
+                      MEOWS OVERRIDE
+                    </span>
+                  </div>
+                  <div className="text-slate-600 dark:text-slate-400">
+                    Systolic Trajectory: 148 → 156 → 163 mmHg (+28 pts)
+                  </div>
+                  <div className="flex items-center justify-between pt-1 border-t border-slate-200/50 dark:border-white/5 text-[11px]">
+                    <span className="text-emerald-600 font-bold">
+                      ✓ 10/10 Walk-In Slots Free
+                    </span>
+                    <span className="text-slate-500">Score: 135 / Pivot: 100</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ===================================================================
-          3. THE PROBLEM STRIP (3 CONCISE CLINICAL REALITY CARDS)
+          3. THE PROBLEM BENTO GRID: WHY RURAL FOLLOW-UP CARE FAILS
       =================================================================== */}
       <section
-        className={`py-14 border-b ${
-          darkMode
-            ? "bg-slate-900/50 border-slate-800"
-            : "bg-slate-50/70 border-slate-200/70"
+        className={`py-16 sm:py-20 border-y ${
+          darkMode ? "bg-slate-900/40 border-white/10" : "bg-slate-50/70 border-slate-200/80"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-10">
+          <div className="text-center max-w-3xl mx-auto mb-12">
             <span className="text-xs font-extrabold uppercase tracking-widest text-red-600">
-              THE FRONTLINE REALITY GAP
+              THE FRONTLINE CARE CRISIS
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold mt-1">
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1">
               {t.problemHeading}
             </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+              {t.problemSub}
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Problem 01 */}
             <div
-              className={`p-6 rounded-2xl border ${
+              className={`p-7 rounded-3xl border transition-all ${
                 darkMode
-                  ? "bg-slate-900 border-slate-800"
-                  : "bg-white border-slate-200 shadow-xs"
+                  ? "bg-slate-900 border-white/10 hover:border-red-500/40"
+                  : "bg-white border-slate-200 hover:border-red-300 shadow-sm"
               }`}
             >
-              <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center font-extrabold mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-red-500/10 text-red-600 flex items-center justify-center font-extrabold text-lg mb-5">
                 01
               </div>
-              <h3 className="text-lg font-extrabold mb-2">{t.problem1Title}</h3>
+              <h3 className="text-lg font-bold mb-2">
+                Silent Deterioration After Missed Visits
+              </h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                {t.problem1Body}
+                Rural patients miss follow-up visits due to river crossings, transport costs, and lost daily wages. When contact breaks down, manageable conditions turn into acute emergencies unnoticed.
               </p>
+              <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/5 font-mono text-xs text-red-600 font-semibold">
+                Result: Preventable ICU admissions
+              </div>
             </div>
 
+            {/* Problem 02 */}
             <div
-              className={`p-6 rounded-2xl border ${
+              className={`p-7 rounded-3xl border transition-all ${
                 darkMode
-                  ? "bg-slate-900 border-slate-800"
-                  : "bg-white border-slate-200 shadow-xs"
+                  ? "bg-slate-900 border-white/10 hover:border-red-500/40"
+                  : "bg-white border-slate-200 hover:border-red-300 shadow-sm"
               }`}
             >
-              <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center font-extrabold mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-extrabold text-lg mb-5">
                 02
               </div>
-              <h3 className="text-lg font-extrabold mb-2">{t.problem2Title}</h3>
+              <h3 className="text-lg font-bold mb-2">
+                Fragmented Registers Hide Rising Trends
+              </h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                {t.problem2Body}
+                A 3-visit rising blood pressure trajectory looks like a routine absence in paper registers. The isolated visits fail to connect, concealing imminent eclampsia or stroke until it is too late.
               </p>
-              <div className="mt-3 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 font-mono text-xs font-bold">
-                Visit 1: 148/92 → Visit 2: 156/98 → Visit 3: 163/106 mmHg
+              <div className="mt-4 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 font-mono text-xs font-bold text-red-700 dark:text-red-300">
+                148 → 156 → 163 mmHg (+28 pts)
               </div>
             </div>
 
+            {/* Problem 03 */}
             <div
-              className={`p-6 rounded-2xl border ${
+              className={`p-7 rounded-3xl border transition-all ${
                 darkMode
-                  ? "bg-slate-900 border-slate-800"
-                  : "bg-white border-slate-200 shadow-xs"
+                  ? "bg-slate-900 border-white/10 hover:border-emerald-500/40"
+                  : "bg-white border-slate-200 hover:border-emerald-300 shadow-sm"
               }`}
             >
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-extrabold mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-extrabold text-lg mb-5">
                 03
               </div>
-              <h3 className="text-lg font-extrabold mb-2">{t.problem3Title}</h3>
+              <h3 className="text-lg font-bold mb-2">
+                Bulk Reminders Overwhelm Local PHCs
+              </h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                {t.problem3Body}
+                Automated reminders sent in uncoordinated blasts cause morning crowds at small 30-slot village clinics—overwhelming the lone Medical Officer and displacing regular walk-in villagers.
               </p>
-              <div className="mt-3 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 font-mono text-xs font-bold">
-                SwasthyaSense Solution: 15 Follow-Up / 5 Critical / 10 Walk-In
+              <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/5 font-mono text-xs text-emerald-600 font-bold">
+                SwasthyaSense: 10 Walk-In Slots 100% Free
               </div>
             </div>
           </div>
@@ -1502,88 +1067,79 @@ export default function SwasthyaLandingPage({
       </section>
 
       {/* ===================================================================
-          4. INTERACTIVE VISUAL PIPELINE (STEP 1 → STEP 4)
+          4. INTERACTIVE 4-STAGE CLINICAL PIPELINE
       =================================================================== */}
-      <section
-        id="how-it-works"
-        className="py-16 lg:py-20 border-b border-slate-200/70 dark:border-slate-800"
-      >
+      <section id="how-it-works" className="py-16 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div>
               <span className="text-xs font-extrabold uppercase tracking-widest text-red-600">
-                CLOSED-LOOP CLINICAL ARCHITECTURE
+                HOW IT WORKS
               </span>
-              <h2 className="text-2xl sm:text-4xl font-extrabold mt-1">
-                Interactive 4-Stage Clinical Pipeline
+              <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1">
+                The 4-Stage Clinical Coordination Pipeline
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-slate-500 max-w-md">
-              Click or hover any stage below to inspect how field vitals flow through the ~242µs QuickSort partition into the 30-slot clinic matrix.
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md">
+              From the rural home check-in to regional hospital bypass—explore each deterministic stage below.
             </p>
           </div>
 
-          {/* Horizontal Stepper Selector */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            {PIPELINE_STEPS.map((s, idx) => {
+          {/* Stepper Tabs */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+            {PIPELINE_STEPS.map((step, idx) => {
+              const Icon = step.icon;
               const isActive = activePipelineStep === idx;
               return (
                 <button
-                  key={s.step}
+                  key={step.step}
                   type="button"
                   onClick={() => setActivePipelineStep(idx)}
-                  onMouseEnter={() => setActivePipelineStep(idx)}
-                  className={`text-left p-5 rounded-2xl border transition-all cursor-pointer ${
+                  className={`p-5 rounded-2xl border text-left transition-all cursor-pointer ${
                     isActive
-                      ? s.color === "red"
-                        ? "border-red-600 bg-red-50/60 dark:bg-red-950/30 shadow-md"
-                        : "border-emerald-600 bg-emerald-50/60 dark:bg-emerald-950/30 shadow-md"
+                      ? darkMode
+                        ? "bg-slate-900 border-red-500 shadow-lg shadow-red-500/10 ring-1 ring-red-500/50"
+                        : "bg-white border-red-500 shadow-md ring-1 ring-red-500/20"
                       : darkMode
-                      ? "bg-slate-900 border-slate-800 hover:border-slate-700"
-                      : "bg-white border-slate-200 hover:border-slate-300"
+                      ? "bg-slate-950/60 border-white/5 hover:border-white/20"
+                      : "bg-slate-50 border-slate-200/80 hover:border-slate-300"
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span
-                      className={`font-mono text-xs font-extrabold px-2.5 py-0.5 rounded-full ${
-                        s.color === "red"
-                          ? "bg-red-600 text-white"
-                          : "bg-emerald-600 text-white"
-                      }`}
-                    >
-                      {s.step}
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-xs font-extrabold text-slate-400">
+                      STEP {step.step}
                     </span>
-                    <ChevronRight
-                      className={`w-4 h-4 transition-transform ${
-                        isActive ? "rotate-90 text-red-600" : "text-slate-400"
-                      }`}
-                    />
+                    <span
+                      className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${step.accentBg} ${step.color} border ${step.accentBorder}`}
+                    >
+                      {step.tag}
+                    </span>
                   </div>
-                  <h3 className="font-extrabold text-sm sm:text-base mb-1">
-                    {s.title}
-                  </h3>
+                  <h3 className="font-bold text-sm sm:text-base mb-1">{step.title}</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
-                    {s.short}
+                    {step.summary}
                   </p>
                 </button>
               );
             })}
           </div>
 
-          {/* Expanded Step Detail & Animated Graphic */}
+          {/* Detailed Pipeline Stage Visualizer */}
           <div
-            className={`p-6 sm:p-8 rounded-2xl border ${
+            className={`p-6 sm:p-9 rounded-3xl border transition-all ${
               darkMode
-                ? "bg-slate-900 border-slate-800"
-                : "bg-slate-50 border-slate-200"
+                ? "bg-slate-900/80 border-white/10"
+                : "bg-white border-slate-200/90 shadow-lg shadow-slate-900/5"
             }`}
           >
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-              <div className="lg:col-span-7 space-y-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-red-600/10 text-red-600 border border-red-600/20">
-                  {PIPELINE_STEPS[activePipelineStep].badge}
-                </span>
-                <h3 className="text-xl sm:text-2xl font-extrabold">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-6 space-y-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-red-500/10 text-red-600 border border-red-500/20">
+                  <span>STAGE {PIPELINE_STEPS[activePipelineStep].step}</span>
+                  <span>•</span>
+                  <span>{PIPELINE_STEPS[activePipelineStep].tag}</span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-extrabold">
                   {PIPELINE_STEPS[activePipelineStep].title}
                 </h3>
                 <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -1591,84 +1147,106 @@ export default function SwasthyaLandingPage({
                 </p>
               </div>
 
-              <div className="lg:col-span-5">
+              {/* Dynamic Stage Interactive Simulator */}
+              <div className="lg:col-span-6">
                 {activePipelineStep === 0 && (
-                  <div className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2 font-mono text-xs">
-                    <div className="font-bold text-slate-500 uppercase">
-                      Bidirectional 5-Vital Check-In Vector
+                  <div
+                    className={`p-5 rounded-2xl border space-y-3 font-mono text-xs ${
+                      darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-200"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between font-bold text-slate-500">
+                      <span>INTERACTIVE 5-VITAL INPUT</span>
+                      <span className="text-red-500">Live Scoring</span>
                     </div>
-                    <div className="flex justify-between p-2 rounded bg-red-500/10 text-red-600 font-bold">
-                      <span>1. BP: 163/106 mmHg (↑ Severe)</span>
-                      <span>+28 Trend + Override</span>
-                    </div>
-                    <div className="flex justify-between p-2 rounded bg-amber-500/10 text-amber-600 font-bold">
-                      <span>2. Heart Rate: 114 bpm (↑ Tachy)</span>
-                      <span>+20 pts</span>
-                    </div>
-                    <div className="flex justify-between p-2 rounded bg-emerald-500/10 text-emerald-600 font-bold">
-                      <span>3. Glucose: 64 mg/dL (↓ Hypo)</span>
-                      <span>+25 pts</span>
-                    </div>
-                    <div className="flex justify-between p-2 rounded bg-red-500/10 text-red-600 font-bold">
-                      <span>4. Temp 39.1°C / SpO₂ 91% (↓)</span>
-                      <span>Hard Override ≥100</span>
+
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 font-bold">
+                        <span>Systolic BP: {simVitals.bpSys} mmHg</span>
+                        <span>{simVitals.bpSys >= 160 ? "Severe (+40 pts)" : "Normal"}</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 font-bold">
+                        <span>Heart Rate: {simVitals.heartRate} bpm</span>
+                        <span>Tachycardia (+20 pts)</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 font-bold">
+                        <span>Blood Glucose: {simVitals.glucose} mg/dL</span>
+                        <span>Controlled</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-700 dark:text-slate-300 font-bold">
+                        <span>SpO₂: {simVitals.spo2}% / Temp 37.1°C</span>
+                        <span>Stable</span>
+                      </div>
                     </div>
                   </div>
                 )}
 
                 {activePipelineStep === 1 && (
-                  <div className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3 font-mono text-xs">
+                  <div
+                    className={`p-5 rounded-2xl border space-y-4 font-mono text-xs ${
+                      darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-200"
+                    }`}
+                  >
                     <div className="flex items-center justify-between">
                       <span className="font-bold">QUICKSORT PIVOT = 100</span>
-                      <span className="text-emerald-600 font-bold">~242 µs</span>
+                      <span className="text-emerald-500 font-bold">~242 µs Execution</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-red-600 text-white font-bold flex justify-between">
+                    <div className="p-3 rounded-xl bg-red-600 text-white font-bold flex justify-between items-center shadow-md shadow-red-600/20">
                       <span>Upper Partition (Score ≥ 100)</span>
-                      <span>4-Hour Doctor SLA</span>
+                      <span>4h Doctor SLA</span>
                     </div>
-                    <div className="border-t-2 border-dashed border-red-500 py-1 text-center text-[11px] font-extrabold text-red-600">
-                      ▲ PIVOT = 100 BOUNDARY ▼
+                    <div className="text-center font-bold text-red-500 border-y-2 border-dashed border-red-500/40 py-1.5 text-[11px]">
+                      ▲ PIVOT BOUNDARY (SCORE 100) ▼
                     </div>
-                    <div className="p-2.5 rounded-lg bg-emerald-600 text-white font-bold flex justify-between">
+                    <div className="p-3 rounded-xl bg-emerald-600 text-white font-bold flex justify-between items-center shadow-md shadow-emerald-600/20">
                       <span>Lower Partition (Score &lt; 100)</span>
-                      <span>09:00–17:00 Staggered</span>
+                      <span>09:00–17:00 Staggered Slots</span>
                     </div>
                   </div>
                 )}
 
                 {activePipelineStep === 2 && (
-                  <div className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
-                    <div className="font-bold flex justify-between">
-                      <span>30-Slot PHC Daily Matrix</span>
-                      <span className="text-emerald-600 font-mono">15 / 5 / 10</span>
+                  <div
+                    className={`p-5 rounded-2xl border space-y-4 text-xs ${
+                      darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-200"
+                    }`}
+                  >
+                    <div className="flex justify-between items-center font-bold">
+                      <span>30-Slot Clinic Daily Allocation</span>
+                      <span className="font-mono text-emerald-600">15 / 5 / 10 Isolation</span>
                     </div>
-                    <div className="h-6 rounded-xl overflow-hidden flex font-mono text-[10px] font-extrabold text-white">
+                    <div className="h-7 rounded-xl overflow-hidden flex font-mono text-[10px] font-extrabold text-white shadow-inner">
                       <div className="w-1/2 bg-amber-500 flex items-center justify-center">
                         15 FOLLOW-UP
                       </div>
                       <div className="w-1/6 bg-red-600 flex items-center justify-center">
                         5 CRIT
                       </div>
-                      <div className="w-1/3 bg-emerald-600 flex items-center justify-center">
+                      <div className="w-1/3 bg-emerald-600 flex items-center justify-center animate-pulse">
                         10 WALK-IN (FREE)
                       </div>
                     </div>
-                    <p className="text-[11px] text-emerald-600 font-semibold">
-                      ✓ 10 Walk-In slots are 100% Untouched by automated outreach.
+                    <p className="text-emerald-600 font-semibold text-center">
+                      ✓ 10 Walk-In slots are 100% Protected for unannounced village walk-ins.
                     </p>
                   </div>
                 )}
 
                 {activePipelineStep === 3 && (
-                  <div className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2.5 text-xs font-mono">
-                    <div className="p-2 rounded bg-red-500/10 text-red-600 font-bold">
-                      HEX-0 Boko PHC: 20/20 System Cap (31st Patient Arrives)
+                  <div
+                    className={`p-5 rounded-2xl border space-y-3 font-mono text-xs ${
+                      darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-200"
+                    }`}
+                  >
+                    <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 font-bold">
+                      HEX-0 Full (20/20) → 31st Patient Arrives
                     </div>
-                    <div className="p-2 rounded bg-emerald-500/15 text-emerald-600 font-bold">
-                      → Ring-1 Broadcast → HEX-2 Rani Accepts & Atomically Locks!
+                    <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 font-bold">
+                      → Ring-1 Broadcast: HEX-2 (Rani) Accepts & Atomically Locks
                     </div>
-                    <div className="p-2 rounded bg-red-600 text-white font-bold">
-                      → Severe Eclampsia / Oncology → 108 Bypass to HEX-4 (GMCH)
+                    <div className="p-3 rounded-xl bg-rose-600 text-white font-bold flex justify-between items-center">
+                      <span>Severe Eclampsia / Sepsis</span>
+                      <span>🚑 108 Bypass to HEX-4 (GMCH)</span>
                     </div>
                   </div>
                 )}
@@ -1679,53 +1257,47 @@ export default function SwasthyaLandingPage({
       </section>
 
       {/* ===================================================================
-          5. SIGNATURE SCROLL-DRIVEN 3D "PATIENT JOURNEY" STAGE
+          5. SIGNATURE 3D PATIENT JOURNEY (OBSIDIAN MEDTECH CANVAS)
       =================================================================== */}
       <section
         id="patient-journey-3d"
         ref={journeySectionRef}
-        className={`py-16 lg:py-24 border-b transition-colors ${
-          darkMode
-            ? "bg-slate-950 border-slate-800"
-            : "bg-slate-900 text-white border-slate-800"
-        }`}
+        className="py-16 sm:py-24 bg-[#070B11] text-white border-y border-white/10 relative overflow-hidden"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-8 gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
             <div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-xs font-extrabold uppercase tracking-wider mb-2">
-                <Sparkles className="w-3.5 h-3.5" />
-                SCROLL-DRIVEN 3D TELEMETRY STAGE
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/20 text-red-400 font-mono text-xs font-bold uppercase tracking-wider mb-2">
+                <Compass className="w-3.5 h-3.5" />
+                SCROLL-DRIVEN 3D SPATIAL TELEMETRY
               </span>
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-white">
-                3D Patient Journey: From Silent Trend to Hexagonal Rescue
+              <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
+                3D Patient Journey: From Silent Risk to Rescue
               </h2>
             </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setAutoPlayJourney((prev) => !prev)}
-                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center gap-1.5 border border-slate-700 cursor-pointer"
-              >
-                {autoPlayJourney ? (
-                  <>
-                    <Pause className="w-3.5 h-3.5 text-emerald-400" /> Auto-Scrubbing (Pause)
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-3.5 h-3.5 text-red-400" /> Resume Auto-Scrub
-                  </>
-                )}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setAutoPlayJourney((prev) => !prev)}
+              className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-bold flex items-center gap-2 cursor-pointer transition-colors"
+            >
+              {autoPlayJourney ? (
+                <>
+                  <Pause className="w-3.5 h-3.5 text-emerald-400" /> Auto-Scrub Active
+                </>
+              ) : (
+                <>
+                  <Play className="w-3.5 h-3.5 text-red-400" /> Resume Auto-Scrub
+                </>
+              )}
+            </button>
           </div>
 
-          {/* 5 Scroll Beat Selector Pills */}
+          {/* 5 Beat Selector Pills */}
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-8">
-            {JOURNEY_BEATS.map((b, idx) => (
+            {JOURNEY_BEATS.map((beat, idx) => (
               <button
-                key={b.id}
+                key={beat.id}
                 type="button"
                 onClick={() => {
                   setAutoPlayJourney(false);
@@ -1733,249 +1305,151 @@ export default function SwasthyaLandingPage({
                 }}
                 className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                   journeyBeat === idx
-                    ? "bg-red-600 border-red-400 text-white shadow-lg shadow-red-600/30"
-                    : "bg-slate-900/90 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700"
+                    ? "bg-gradient-to-r from-red-600 to-rose-600 border-red-400 text-white shadow-lg shadow-red-600/30"
+                    : "bg-slate-900/60 border-white/10 text-slate-400 hover:text-white hover:border-white/20"
                 }`}
               >
-                <div className="font-mono text-[10px] font-extrabold uppercase opacity-90">
-                  {b.label}
+                <div className="font-mono text-[10px] font-extrabold uppercase opacity-80">
+                  {beat.label}
                 </div>
-                <div className="font-bold text-xs mt-1 line-clamp-1">
-                  {b.title}
-                </div>
+                <div className="font-bold text-xs truncate mt-0.5">{beat.title}</div>
               </button>
             ))}
           </div>
 
-          {/* 3D Perspective Stage Container */}
+          {/* 3D Isometric Telemetry Stage Container */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Left 7 Columns: GPU-Accelerated CSS 3D Hexagonal Mesh Stage */}
+            {/* Visual Isometric Canvas */}
             <div
-              className="lg:col-span-7 relative rounded-3xl border border-slate-800 bg-slate-950/90 p-6 sm:p-10 overflow-hidden min-h-[420px] flex items-center justify-center"
-              style={{ perspective: "1200px" }}
+              className="lg:col-span-7 relative rounded-3xl border border-white/10 bg-slate-950 p-6 sm:p-10 min-h-[380px] flex items-center justify-center overflow-hidden"
+              style={{ perspective: "1000px" }}
             >
-              {/* Layer 1 (Background): Parallax Coordinate Grid */}
               <div
-                className="absolute inset-0 opacity-25 pointer-events-none transition-transform duration-700"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(to right, #334155 1px, transparent 1px), linear-gradient(to bottom, #334155 1px, transparent 1px)",
-                  backgroundSize: "36px 36px",
-                  transform: `rotateX(${currentBeat.tiltX * 0.6}deg) rotateY(${
-                    currentBeat.tiltY * 0.4
-                  }deg) scale(1.1)`,
-                }}
-              />
-
-              {/* Layer 2 & 3: 3D Tilted Plane with 5 Hexagon Clinics + Floating Vitals */}
-              <div
-                className="relative w-full max-w-xl transition-transform duration-700 ease-out"
+                className="relative w-full max-w-lg transition-transform duration-700 ease-out"
                 style={{
                   transformStyle: "preserve-3d",
-                  transform: `rotateX(${currentBeat.tiltX}deg) rotateY(${currentBeat.tiltY}deg) translateZ(${currentBeat.zoomZ}px)`,
+                  transform: `rotateX(18deg) rotateY(${journeyBeat * 3 - 6}deg)`,
                 }}
               >
-                {/* Floating Vitals Midground Badges */}
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
-                  <div
-                    className={`px-3 py-1.5 rounded-xl font-mono text-xs font-extrabold border transition-all ${
-                      journeyBeat === 0
-                        ? "bg-red-600 text-white border-red-400 scale-105 shadow-lg shadow-red-600/40"
-                        : "bg-slate-900/90 text-red-400 border-slate-700"
-                    }`}
-                  >
-                    ● PT-MAT-2001 BP: 148 → 156 → 163 mmHg
-                  </div>
-                  <div
-                    className={`px-3 py-1.5 rounded-xl font-mono text-xs font-extrabold border transition-all ${
-                      journeyBeat === 1
-                        ? "bg-emerald-600 text-white border-emerald-400 scale-105 shadow-lg"
-                        : "bg-slate-900/90 text-emerald-400 border-slate-700"
-                    }`}
-                  >
-                    ⚡ QuickSort Pivot = 100 (~242µs)
-                  </div>
+                {/* Floating Metric Badges */}
+                <div className="flex justify-between items-center mb-5 font-mono text-xs">
+                  <span className="px-3 py-1 rounded-xl bg-red-600/30 border border-red-500 text-red-300 font-bold">
+                    ● PT-MAT-2001 BP: 148 → 156 → 163
+                  </span>
+                  <span className="px-3 py-1 rounded-xl bg-emerald-600/30 border border-emerald-500 text-emerald-300 font-bold">
+                    ⚡ QuickSort: ~242µs
+                  </span>
                 </div>
 
-                {/* Beat B QuickSort Partition Laser Line */}
+                {/* Beat 02 QuickSort Laser Line */}
                 {journeyBeat === 1 && (
-                  <div className="mb-4 p-3 rounded-xl bg-red-600/20 border-2 border-dashed border-red-500 text-center font-mono text-xs font-extrabold text-red-300 animate-pulse">
-                    ═══ QUICKSORT PIVOT = 100 SPLIT: UPPER RED (≥100) vs LOWER GREEN (&lt;100) ═══
+                  <div className="mb-4 p-2.5 rounded-xl bg-red-600/20 border-2 border-dashed border-red-500 text-center font-mono text-xs font-bold text-red-300 animate-pulse">
+                    ═══ QUICKSORT PIVOT = 100 SPLIT (UPPER RED vs LOWER GREEN) ═══
                   </div>
                 )}
 
-                {/* Beat C 30-Slot 3D Segmented Bar */}
+                {/* Beat 03 30-Slot Bar */}
                 {journeyBeat === 2 && (
-                  <div className="mb-4 p-3.5 rounded-2xl bg-slate-900 border border-emerald-500/50 space-y-2">
-                    <div className="flex justify-between text-xs font-mono font-bold">
-                      <span className="text-amber-400">15 System Follow-Up</span>
+                  <div className="mb-4 p-3 rounded-xl bg-slate-900 border border-emerald-500 space-y-1.5">
+                    <div className="flex justify-between text-xs font-mono">
+                      <span className="text-amber-400">15 Follow-Up</span>
                       <span className="text-red-400">5 Critical</span>
-                      <span className="text-emerald-400">
-                        10 Walk-In (100% Untouched)
-                      </span>
+                      <span className="text-emerald-400 font-bold">10 Walk-In (100% Free)</span>
                     </div>
-                    <div className="h-5 rounded-xl overflow-hidden flex font-mono text-[10px] font-extrabold">
-                      <div className="w-1/2 bg-amber-500 text-slate-950 flex items-center justify-center">
-                        15 SYS
-                      </div>
-                      <div className="w-1/6 bg-red-600 text-white flex items-center justify-center">
-                        5 CRIT
-                      </div>
-                      <div className="w-1/3 bg-emerald-500 text-slate-950 flex items-center justify-center animate-pulse">
-                        10 WALK-IN FREE
-                      </div>
+                    <div className="h-5 rounded-lg overflow-hidden flex font-mono text-[9px] font-bold">
+                      <div className="w-1/2 bg-amber-500 text-slate-950 flex items-center justify-center">15 SYS</div>
+                      <div className="w-1/6 bg-red-600 text-white flex items-center justify-center">5 CRIT</div>
+                      <div className="w-1/3 bg-emerald-500 text-slate-950 flex items-center justify-center animate-pulse">10 WALK-IN</div>
                     </div>
                   </div>
                 )}
 
-                {/* 5 Hexagonal Clinic Nodes in 3D Space */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {/* HEX-0 Boko Central PHC */}
+                {/* 5 Hexagon Clinic Nodes Grid */}
+                <div className="grid grid-cols-3 gap-3">
                   <div
-                    className={`p-4 rounded-2xl border-2 transition-all ${
+                    className={`p-3.5 rounded-2xl border transition-all ${
                       journeyBeat === 3
-                        ? "bg-red-950/90 border-red-500 shadow-lg shadow-red-600/30"
-                        : "bg-slate-900/90 border-slate-700"
+                        ? "bg-red-950/80 border-red-500"
+                        : "bg-slate-900/80 border-white/10"
                     }`}
                   >
-                    <div className="flex justify-between items-center">
-                      <span className="font-mono text-xs font-extrabold text-red-400">
-                        HEX-0 • BOKO PHC
-                      </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-red-500/20 text-red-300 font-mono">
-                        {journeyBeat === 3 ? "20/20 FULL" : "18/20 SYS"}
-                      </span>
-                    </div>
-                    <div className="text-xs font-bold text-white mt-1">
-                      Boko Central PHC
-                    </div>
-                    <div className="text-[11px] text-emerald-400 font-mono mt-1">
-                      Walk-In: 10/10 Untouched
-                    </div>
+                    <div className="text-[10px] font-mono font-bold text-red-400">HEX-0 BOKO</div>
+                    <div className="font-bold text-xs mt-0.5">Boko Central PHC</div>
+                    <div className="text-[10px] text-emerald-400 mt-1 font-mono">10 Walk-In Free</div>
                   </div>
 
-                  {/* HEX-1 Chhaygaon North */}
                   <div
-                    className={`p-4 rounded-2xl border-2 transition-all ${
+                    className={`p-3.5 rounded-2xl border transition-all ${
                       journeyBeat === 3
-                        ? "bg-red-950/90 border-red-500 shadow-lg shadow-red-600/30"
-                        : "bg-slate-900/90 border-slate-700"
+                        ? "bg-amber-950/80 border-amber-500"
+                        : "bg-slate-900/80 border-white/10"
                     }`}
                   >
-                    <div className="flex justify-between items-center">
-                      <span className="font-mono text-xs font-extrabold text-amber-400">
-                        HEX-1 • CHHAYGAON
-                      </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">
-                        {journeyBeat === 3 ? "20/20 FULL" : "14/20 SYS"}
-                      </span>
-                    </div>
-                    <div className="text-xs font-bold text-white mt-1">
-                      Chhaygaon North PHC
-                    </div>
-                    <div className="text-[11px] text-emerald-400 font-mono mt-1">
-                      Walk-In: 10/10 Untouched
-                    </div>
+                    <div className="text-[10px] font-mono font-bold text-amber-400">HEX-1 CHHAY</div>
+                    <div className="font-bold text-xs mt-0.5">Chhaygaon North</div>
+                    <div className="text-[10px] text-emerald-400 mt-1 font-mono">10 Walk-In Free</div>
                   </div>
 
-                  {/* HEX-2 Rani South-East (First-to-Accept Neighbor) */}
                   <div
-                    className={`p-4 rounded-2xl border-2 transition-all ${
+                    className={`p-3.5 rounded-2xl border transition-all ${
                       journeyBeat === 3
-                        ? "bg-emerald-950/90 border-emerald-400 scale-105 shadow-xl shadow-emerald-500/30"
-                        : "bg-slate-900/90 border-slate-700"
+                        ? "bg-emerald-950/90 border-emerald-400 ring-2 ring-emerald-500/50 scale-105"
+                        : "bg-slate-900/80 border-white/10"
                     }`}
                   >
-                    <div className="flex justify-between items-center">
-                      <span className="font-mono text-xs font-extrabold text-emerald-400">
-                        HEX-2 • RANI PHC
-                      </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">
-                        {journeyBeat === 3 ? "LOCKED ✓" : "9/20 SYS"}
-                      </span>
-                    </div>
-                    <div className="text-xs font-bold text-white mt-1">
-                      Rani South-East
-                    </div>
-                    <div className="text-[11px] text-emerald-300 font-mono mt-1">
-                      {journeyBeat === 3
-                        ? "⚡ Accepted 31st Patient!"
-                        : "Ring-1 Neighbor Ready"}
+                    <div className="text-[10px] font-mono font-bold text-emerald-400">HEX-2 RANI</div>
+                    <div className="font-bold text-xs mt-0.5">Rani East PHC</div>
+                    <div className="text-[10px] text-emerald-300 mt-1 font-mono">
+                      {journeyBeat === 3 ? "⚡ Locked 31st Pt" : "Ring-1 Standby"}
                     </div>
                   </div>
                 </div>
 
-                {/* Bottom Row: HEX-3 Mirza & HEX-4 GMCH Tertiary Hub */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
-                  <div className="p-3.5 rounded-2xl border border-slate-700 bg-slate-900/90">
-                    <div className="flex justify-between items-center">
-                      <span className="font-mono text-xs font-extrabold text-slate-300">
-                        HEX-3 • MIRZA SOUTH-WEST
-                      </span>
-                      <span className="text-[10px] font-mono text-emerald-400">
-                        11/20 SYS • Standby
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-slate-400 mt-1">
-                      Secondary Ring-1 Neighbor • Auto-released when HEX-2 locks
-                    </div>
-                  </div>
-
-                  <div
-                    className={`p-3.5 rounded-2xl border-2 transition-all ${
-                      journeyBeat === 4
-                        ? "bg-red-950 border-red-400 scale-105 shadow-xl shadow-red-600/40"
-                        : "bg-slate-900/90 border-red-900/60"
-                    }`}
-                  >
-                    <div className="flex justify-between items-center">
-                      <span className="font-mono text-xs font-extrabold text-red-400 flex items-center gap-1">
-                        <Ambulance className="w-3.5 h-3.5" /> HEX-4 • GMCH & BBCI
-                      </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-red-600 text-white font-mono font-bold">
-                        108 BYPASS
-                      </span>
-                    </div>
-                    <div className="text-xs font-bold text-white mt-1">
-                      Guwahati Tertiary Care Hub
-                    </div>
-                    <div className="text-[11px] text-red-300 font-mono mt-0.5">
-                      {journeyBeat === 4
-                        ? "🚑 108 Route Active (Eclampsia / Oncology)"
-                        : "24×7 Maternal & Oncology Escalation"}
+                {/* Tertiary Care 108 Emergency Route */}
+                <div
+                  className={`mt-3 p-3.5 rounded-2xl border transition-all flex items-center justify-between ${
+                    journeyBeat === 4
+                      ? "bg-red-950 border-red-400 ring-2 ring-red-500/50 scale-105"
+                      : "bg-slate-900/80 border-white/10"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Ambulance className="w-4 h-4 text-red-500" />
+                    <div>
+                      <div className="font-bold text-xs">HEX-4 • GMCH & BBCI Tertiary Hub</div>
+                      <div className="text-[10px] text-red-400 font-mono">24×7 ICU / Oncology Route</div>
                     </div>
                   </div>
+                  <span className="px-2 py-0.5 rounded bg-red-600 text-white font-mono text-[10px] font-bold">
+                    108 DISPATCH
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Right 5 Columns: Active Beat Narrative & Live Telemetry Card */}
+            {/* Narrative Info Card */}
             <div className="lg:col-span-5 space-y-5">
-              <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 text-red-400 font-mono text-xs font-extrabold">
+              <div className="p-7 rounded-3xl bg-slate-900/90 border border-white/10 space-y-4">
+                <span className="px-3 py-1 rounded-full bg-red-500/20 text-red-400 font-mono text-xs font-bold">
                   {currentBeat.label}
-                </div>
-                <h3 className="text-xl sm:text-2xl font-extrabold text-white">
-                  {currentBeat.title}
-                </h3>
+                </span>
+                <h3 className="text-xl sm:text-2xl font-extrabold">{currentBeat.title}</h3>
                 <p className="text-sm text-slate-300 leading-relaxed">
                   {currentBeat.description}
                 </p>
-                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-emerald-400 font-bold">
+                <div className="p-3 rounded-xl bg-slate-950 border border-white/10 font-mono text-xs text-emerald-400 font-bold">
                   {currentBeat.metric}
                 </div>
                 <div className="flex items-center justify-between pt-2">
                   <button
                     type="button"
-                    onClick={() =>
-                      setJourneyBeat((prev) => (prev - 1 + 5) % 5)
-                    }
-                    className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 cursor-pointer"
+                    onClick={() => setJourneyBeat((prev) => (prev - 1 + 5) % 5)}
+                    className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold cursor-pointer"
                   >
-                    ← Previous Beat
+                    ← Previous
                   </button>
                   <span className="font-mono text-xs text-slate-400">
-                    Beat {journeyBeat + 1} of 5
+                    Beat {journeyBeat + 1} / 5
                   </span>
                   <button
                     type="button"
@@ -1992,130 +1466,82 @@ export default function SwasthyaLandingPage({
       </section>
 
       {/* ===================================================================
-          6. CORE CAPABILITIES (THE 5 PILLARS)
+          6. CORE CAPABILITIES (FIVE PILLARS BENTO GRID)
       =================================================================== */}
-      <section
-        id="hexagon-architecture"
-        className="py-16 lg:py-24 border-b border-slate-200/70 dark:border-slate-800"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      <section id="hexagon-mesh" className="py-16 sm:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-3xl mx-auto">
             <span className="text-xs font-extrabold uppercase tracking-widest text-red-600">
-              FIVE ARCHITECTURAL PILLARS
+              ARCHITECTURAL EXCELLENCE
             </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold mt-1">
-              Built for Frontline Scale, Clinical Rigor & Zero Clinic Overload
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1">
+              Five Resilient Pillars of SwasthyaSense
             </h2>
           </div>
 
-          {/* PILLAR 1 & PILLAR 3 ROW */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Pillar 1: Multi-Organization Sign-In & Strict Tenant Isolation */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
+            {/* Pillar 01: Multi-Tenant RLS */}
             <div
-              className={`p-6 sm:p-8 rounded-3xl border ${
-                darkMode
-                  ? "bg-slate-900 border-slate-800"
-                  : "bg-white border-slate-200 shadow-xs"
+              className={`p-7 rounded-3xl border ${
+                darkMode ? "bg-slate-900 border-white/10" : "bg-white border-slate-200 shadow-sm"
               }`}
             >
               <div className="flex items-center justify-between mb-4">
-                <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-600 font-mono text-xs font-extrabold">
+                <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-600 font-mono text-xs font-bold">
                   PILLAR 01 • MULTI-TENANT RLS
                 </span>
-                <Building2 className="w-5 h-5 text-red-600" />
+                <Lock className="w-5 h-5 text-red-600" />
               </div>
-              <h3 className="text-xl font-extrabold mb-2">
-                Multi-Organization Sign-In & Strict Tenant Isolation
+              <h3 className="text-xl font-bold mb-2">
+                Multi-Organization Isolation & Frontline Collaboration
               </h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
-                Healthcare organizations (Sevak Health Foundation, Boko Central PHC, Chhaygaon North, Kamrup Rural NHM, Arogya Trust) sign in with scoped credentials. Frontline teams collaborate internally via{" "}
-                <strong className="text-slate-900 dark:text-white">
-                  &ldquo;My Assigned Patients&rdquo;
-                </strong>{" "}
-                vs{" "}
-                <strong className="text-slate-900 dark:text-white">
-                  &ldquo;All Organization Team&rdquo;
-                </strong>
-                , while cross-organization access is blocked with{" "}
-                <code className="text-red-600 font-bold">
-                  403 Not your organization
-                </code>{" "}
-                and PostgreSQL Row-Level Security.
+                Organizations like Sevak Health Foundation, Boko Central PHC, and Chhaygaon North sign in independently. Frontline workers collaborate internally across their 15-worker teams, while cross-organization reads are blocked with <code>HTTP 403 Not your organization</code> and logged.
               </p>
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-xs space-y-1.5">
-                <div className="text-emerald-600 font-bold">
-                  ✓ asha.sevak07 @ ORG-SEVAK → 260 Sevak Patients (58 Assigned)
-                </div>
-                <div className="text-emerald-600 font-bold">
-                  ✓ doc.boko01 @ ORG-BOKO → Isolated Boko PHC Cohort
-                </div>
-                <div className="text-red-600 font-bold">
-                  ✗ Cross-Tenant Read Attempt → HTTP 403 Blocked + SHA-256 Logged
-                </div>
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 font-mono text-xs space-y-1.5 border border-slate-200 dark:border-white/10">
+                <div className="text-emerald-600 font-bold">✓ ORG-SEVAK: 260 Patients (58 Assigned to Rina Devi)</div>
+                <div className="text-emerald-600 font-bold">✓ ORG-BOKO: Isolated Boko PHC Clinic Queue</div>
+                <div className="text-red-600 font-bold">✗ Cross-Tenant Breach: Blocked with HTTP 403 & SHA-256 Logged</div>
               </div>
             </div>
 
-            {/* Pillar 3: 30-Slot Clinic Capacity Isolation & Closed-Loop Reclamation */}
+            {/* Pillar 03: 30-Slot Clinic Matrix Simulator */}
             <div
-              className={`p-6 sm:p-8 rounded-3xl border ${
-                darkMode
-                  ? "bg-slate-900 border-slate-800"
-                  : "bg-white border-slate-200 shadow-xs"
+              className={`p-7 rounded-3xl border ${
+                darkMode ? "bg-slate-900 border-white/10" : "bg-white border-slate-200 shadow-sm"
               }`}
             >
               <div className="flex items-center justify-between mb-4">
-                <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 font-mono text-xs font-extrabold">
-                  PILLAR 03 • 30-SLOT ISOLATION (15 / 5 / 10)
+                <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 font-mono text-xs font-bold">
+                  PILLAR 03 • 30-SLOT CAPACITY MATRIX
                 </span>
                 <Users className="w-5 h-5 text-emerald-600" />
               </div>
-              <h3 className="text-xl font-extrabold mb-2">
-                30-Slot Clinic Matrix & Closed-Loop Slot Reclamation
+              <h3 className="text-xl font-bold mb-2">
+                Closed-Loop Slot Reclamation Simulator
               </h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
-                Every 30-slot PHC is partitioned into{" "}
-                <strong>15 System Follow-Up</strong>,{" "}
-                <strong>5 Reserved Critical</strong>, and{" "}
-                <strong className="text-emerald-600">
-                  10 Protected Walk-In Slots (100% Untouched)
-                </strong>
-                . Test the live slot reclamation loop below:
+                Every village clinic isolates 30 daily slots into 15 Follow-Up, 5 Critical, and 10 Protected Walk-In. Test the live slot reclamation loop below:
               </p>
-
-              {/* Interactive Slot Simulator */}
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3">
-                <div className="grid grid-cols-3 gap-2 text-center font-mono text-xs">
-                  <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30">
-                    <div className="font-extrabold text-amber-600 text-base">
-                      {simFollowUpUsed}/15
-                    </div>
-                    <div className="text-[10px]">System Follow-Up</div>
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-white/10 space-y-3 font-mono text-xs">
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600 font-bold">
+                    {simFollowUpUsed}/15 Follow-Up
                   </div>
-                  <div className="p-2 rounded-xl bg-red-500/10 border border-red-500/30">
-                    <div className="font-extrabold text-red-600 text-base">
-                      {simCriticalUsed}/5
-                    </div>
-                    <div className="text-[10px]">Reserved Critical</div>
+                  <div className="p-2 rounded-lg bg-red-500/10 text-red-600 font-bold">
+                    {simCriticalUsed}/5 Critical
                   </div>
-                  <div className="p-2 rounded-xl bg-emerald-500/15 border border-emerald-500/40">
-                    <div className="font-extrabold text-emerald-600 text-base">
-                      10/10 FREE
-                    </div>
-                    <div className="text-[10px] font-bold text-emerald-600">
-                      100% Untouched
-                    </div>
+                  <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-600 font-bold">
+                    10/10 Walk-In Free
                   </div>
                 </div>
-
-                <div className="flex flex-wrap gap-2">
+                <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={() =>
-                      setSimFollowUpUsed((v) => Math.min(15, v + 1))
-                    }
-                    className="px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-bold cursor-pointer"
+                    onClick={() => setSimFollowUpUsed((v) => Math.min(15, v + 1))}
+                    className="flex-1 py-2 rounded-lg bg-red-600 text-white font-bold cursor-pointer"
                   >
-                    + Register Patient (Book Slot)
+                    + Book Follow-Up
                   </button>
                   <button
                     type="button"
@@ -2123,259 +1549,11 @@ export default function SwasthyaLandingPage({
                       setSimFollowUpUsed((v) => Math.max(0, v - 1));
                       setSimCriticalUsed((v) => Math.max(0, v - 1));
                     }}
-                    className="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-bold cursor-pointer"
+                    className="flex-1 py-2 rounded-lg bg-emerald-600 text-white font-bold cursor-pointer"
                   >
-                    ✓ Clear / Stabilize Patient (Reclaim Slot)
+                    ✓ Clear & Free Slot
                   </button>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* PILLAR 2: 5-CATEGORY BIDIRECTIONAL CLINICAL ENGINE TABLE */}
-          <div
-            className={`p-6 sm:p-8 rounded-3xl border ${
-              darkMode
-                ? "bg-slate-900 border-slate-800"
-                : "bg-white border-slate-200 shadow-xs"
-            }`}
-          >
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-              <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-600 font-mono text-xs font-extrabold">
-                PILLAR 02 • 5-CATEGORY BIDIRECTIONAL ENGINE + QUICKSORT PIVOT = 100
-              </span>
-              <span className="font-mono text-xs font-bold text-emerald-600">
-                NEWS2 (Royal College of Physicians) + MEOWS Maternal Standards
-              </span>
-            </div>
-            <h3 className="text-xl sm:text-2xl font-extrabold mb-4">
-              Bidirectional Vital Thresholds (High ↑ & Low ↓) + 3-Visit Trajectory Bonus
-            </h3>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr
-                    className={`border-b font-mono uppercase ${
-                      darkMode
-                        ? "border-slate-800 text-slate-400"
-                        : "border-slate-200 text-slate-500"
-                    }`}
-                  >
-                    <th className="py-3 pr-4">Clinical Category</th>
-                    <th className="py-3 px-4">High Danger (↑)</th>
-                    <th className="py-3 px-4">Low Danger (↓)</th>
-                    <th className="py-3 pl-4">Trajectory / Hard Override</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200/60 dark:divide-slate-800 font-medium">
-                  <tr>
-                    <td className="py-3 pr-4 font-bold">
-                      1. Blood Pressure (Systolic / Diastolic)
-                    </td>
-                    <td className="py-3 px-4 text-red-600 font-mono">
-                      ≥160/110 Severe (+40) • MEOWS ≥140/90 (+25)
-                    </td>
-                    <td className="py-3 px-4 text-red-600 font-mono">
-                      &lt;90/60 Hypotensive Shock (+40)
-                    </td>
-                    <td className="py-3 pl-4 font-mono text-emerald-600 font-bold">
-                      3-Visit Rising (148→156→163): +28 pts + Override
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 pr-4 font-bold">2. Heart Rate (Pulse)</td>
-                    <td className="py-3 px-4 text-red-600 font-mono">
-                      &gt;130 Extreme (+35) • &gt;110 Tachycardia (+20)
-                    </td>
-                    <td className="py-3 px-4 text-red-600 font-mono">
-                      &lt;40 Severe Bradycardia • &lt;50 (+30)
-                    </td>
-                    <td className="py-3 pl-4 font-mono">
-                      NEWS2 Single-Parameter Red Flag → Score ≥ 100
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 pr-4 font-bold">
-                      3. Blood Glucose (Random / Capillary)
-                    </td>
-                    <td className="py-3 px-4 text-amber-600 font-mono">
-                      &gt;300 DKA Risk (+35) • &gt;240 Hyper (+20)
-                    </td>
-                    <td className="py-3 px-4 text-red-600 font-mono">
-                      &lt;54 Neuroglycopenia • &lt;70 Hypo (+35)
-                    </td>
-                    <td className="py-3 pl-4 font-mono text-emerald-600 font-bold">
-                      3-Visit Rising Glucose Trend: +18 pts
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 pr-4 font-bold">
-                      4. Temperature & Oxygen (SpO₂)
-                    </td>
-                    <td className="py-3 px-4 text-red-600 font-mono">
-                      ≥39.0°C High Fever (+30) • ≥38.0°C (+20)
-                    </td>
-                    <td className="py-3 px-4 text-red-600 font-mono">
-                      &lt;35.5°C Hypothermia • SpO₂ &lt;93% Hypoxia
-                    </td>
-                    <td className="py-3 pl-4 font-mono text-red-600 font-bold">
-                      Oncology + Fever ≥38°C → Neutropenic Override
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 pr-4 font-bold">
-                      5. Danger Symptoms & Overdue Gaps
-                    </td>
-                    <td className="py-3 px-4 font-mono">
-                      Blurred Vision, Chest Pain, Bleeding, Rigors
-                    </td>
-                    <td className="py-3 px-4 font-mono">
-                      &gt;14d Overdue (+20) • &gt;7d Overdue (+12)
-                    </td>
-                    <td className="py-3 pl-4 font-mono text-amber-600 font-bold">
-                      2× Missed Follow-Up = Automatic Amber Escalation
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* PILLAR 4 & PILLAR 5 ROW */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Pillar 4: Interactive 5-Hexagon Overflow & 108 Ambulance Bypass */}
-            <div
-              className={`p-6 sm:p-8 rounded-3xl border ${
-                darkMode
-                  ? "bg-slate-900 border-slate-800"
-                  : "bg-white border-slate-200 shadow-xs"
-              }`}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-600 font-mono text-xs font-extrabold">
-                  PILLAR 04 • 5-HEXAGON MESH & 108 BYPASS
-                </span>
-                <Radio className="w-5 h-5 text-red-600" />
-              </div>
-              <h3 className="text-xl font-extrabold mb-2">
-                H3 Hexagonal Overflow, 108 Bypass & eSanjeevani Fallback
-              </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-                Simulate what happens when the 31st critical patient arrives at a full clinic or when the local PHC doctor is off-duty:
-              </p>
-
-              <div className="flex flex-wrap gap-2 mb-4">
-                <button
-                  type="button"
-                  onClick={() => setHexOverflowState("locked_hex2")}
-                  className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold cursor-pointer"
-                >
-                  Simulate 31st Patient → HEX-2 Lock
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setHexOverflowState("ambulance_hex4")}
-                  className="px-3 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold cursor-pointer"
-                >
-                  🚑 Trigger 108 Bypass to HEX-4
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setDoctorUnavailablePreview((prev) => !prev)
-                  }
-                  className={`px-3 py-2 rounded-xl border text-xs font-bold cursor-pointer ${
-                    doctorUnavailablePreview
-                      ? "bg-amber-500 text-slate-950 border-amber-400"
-                      : "border-slate-300 dark:border-slate-700"
-                  }`}
-                >
-                  {doctorUnavailablePreview
-                    ? "Doctor Away: eSanjeevani Active"
-                    : "Toggle Doctor Unavailable"}
-                </button>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-xs space-y-2">
-                {hexOverflowState === "locked_hex2" ? (
-                  <div className="text-emerald-600 font-bold">
-                    ✓ HEX-0 (20/20) & HEX-1 (20/20) Full → Broadcast to Ring-1 → HEX-2 (Rani South-East) Accepted First & Atomically Locked! (10/10 Walk-In Untouched).
-                  </div>
-                ) : hexOverflowState === "ambulance_hex4" ? (
-                  <div className="text-red-600 font-bold">
-                    🚑 108 AMBULANCE BYPASS DISPATCHED: Severe Eclampsia / Neutropenic Fever routed directly to HEX-4 (GMCH & BBCI Tertiary Hub).
-                  </div>
-                ) : (
-                  <div className="text-slate-500">
-                    Mesh Status: Normal • HEX-0, HEX-1, HEX-2, HEX-3 connected to HEX-4 Tertiary Hub.
-                  </div>
-                )}
-                {doctorUnavailablePreview && (
-                  <div className="p-2 rounded-lg bg-amber-500/15 text-amber-700 dark:text-amber-300 font-bold">
-                    📡 Local PHC Doctor Off-Duty: Automated ANM Stabilization Checklist + eSanjeevani Tele-MO Handoff Activated!
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Pillar 5: 7 Regional Languages, 1/2/STOP Reply Loop & DPDP Consent */}
-            <div
-              className={`p-6 sm:p-8 rounded-3xl border ${
-                darkMode
-                  ? "bg-slate-900 border-slate-800"
-                  : "bg-white border-slate-200 shadow-xs"
-              }`}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 font-mono text-xs font-extrabold">
-                  PILLAR 05 • 7 LANGUAGES & DPDP CONSENT
-                </span>
-                <PhoneCall className="w-5 h-5 text-emerald-600" />
-              </div>
-              <h3 className="text-xl font-extrabold mb-2">
-                7 Regional Languages (`1 / 2 / STOP`) & DPDP Consent Gate
-              </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-                Staggered outreach in Assamese, Bengali, Hindi, Tamil, Telugu, Marathi, and English with zero-literacy{" "}
-                <code>1 / 2 / STOP</code> reply parsing:
-              </p>
-
-              <div className="flex gap-2 mb-3">
-                {(["1", "2", "STOP"] as const).map((code) => (
-                  <button
-                    key={code}
-                    type="button"
-                    onClick={() => setPreviewSmsReply(code)}
-                    className={`px-3 py-1.5 rounded-xl font-mono text-xs font-extrabold border cursor-pointer ${
-                      previewSmsReply === code
-                        ? code === "STOP"
-                          ? "bg-red-600 text-white border-red-600"
-                          : "bg-emerald-600 text-white border-emerald-600"
-                        : "border-slate-300 dark:border-slate-700"
-                    }`}
-                  >
-                    Reply &ldquo;{code}&rdquo;
-                  </button>
-                ))}
-              </div>
-
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-xs">
-                {previewSmsReply === "1" && (
-                  <div className="text-emerald-600 font-bold">
-                    Reply &ldquo;1&rdquo; (Confirm): Slot confirmed in staggered window (11:30–12:20) at Boko Central PHC.
-                  </div>
-                )}
-                {previewSmsReply === "2" && (
-                  <div className="text-amber-600 font-bold">
-                    Reply &ldquo;2&rdquo; (Reschedule): Automatically shifted to next-day afternoon window (14:00–15:30) without crowding morning clinic hours.
-                  </div>
-                )}
-                {previewSmsReply === "STOP" && (
-                  <div className="text-red-600 font-bold">
-                    Reply &ldquo;STOP&rdquo; (DPDP Act 2023 Withdrawal): Consent immediately revoked, AES-256-GCM phone masked to [LOCKED — CONSENT WITHDRAWN], all future outreach halted.
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -2383,23 +1561,21 @@ export default function SwasthyaLandingPage({
       </section>
 
       {/* ===================================================================
-          7. SECURITY, PRIVACY & CLINICAL SAFETY SECTION (6 BADGES)
+          7. SECURITY & DPDP ACT 2023 CERTIFICATION
       =================================================================== */}
       <section
         id="security-dpdp"
-        className={`py-16 border-b ${
-          darkMode
-            ? "bg-slate-900/40 border-slate-800"
-            : "bg-slate-50/80 border-slate-200/80"
+        className={`py-16 sm:py-20 border-y ${
+          darkMode ? "bg-slate-900/40 border-white/10" : "bg-slate-50/70 border-slate-200/80"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-10">
+          <div className="text-center max-w-3xl mx-auto mb-12">
             <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
-              CRYPTOGRAPHIC GOVERNANCE & SAFETY
+              TRUST, PRIVACY & SAFETY
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold mt-1">
-              DPDP Act 2023 Compliance & Non-Diagnostic Guardrails
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">
+              DPDP Act 2023 Compliance & Clinical Decision Support
             </h2>
           </div>
 
@@ -2407,54 +1583,50 @@ export default function SwasthyaLandingPage({
             {[
               {
                 title: "Non-Diagnostic Decision Support",
-                desc: "Displays 'DECISION-SUPPORT ONLY • NOT A DIAGNOSTIC DEVICE' across all clinician & ASHA views. Never prescribes medications.",
-                badge: "CDSCO / WHO Aligned",
+                desc: "Prominently displays DECISION-SUPPORT ONLY • NOT A DIAGNOSTIC DEVICE across all screens. Never prescribes medications.",
+                badge: "WHO / CDSCO Aligned",
               },
               {
-                title: "AES-256-GCM Phone PII Encryption",
-                desc: "Patient phone numbers are encrypted at rest using Node crypto AES-256-GCM with random IV and authentication tags.",
+                title: "AES-256-GCM Phone Encryption",
+                desc: "Frontline patient phone numbers are encrypted at rest with random IVs and authentication tags. Masked to all supervisors.",
                 badge: "AES-256-GCM",
               },
               {
-                title: "Strict RBAC & PostgreSQL RLS",
-                desc: "Supervisors, Clinicians, and Admins receive HTTP 403 Forbidden if they attempt to decrypt raw patient phone numbers.",
-                badge: "HTTP 403 Gate",
+                title: "PostgreSQL Row-Level Security",
+                desc: "Strict tenant barriers prevent cross-organization data leakage. Authenticated with cryptographic scrypt password hashes.",
+                badge: "Postgres RLS",
               },
               {
-                title: "SHA-256 Tamper-Evident Audit Chain",
-                desc: "Every read, check-in, 403 denial, and hex overflow links prevHash → entryHash in an immutable cryptographic ledger.",
-                badge: "SHA-256 Verified",
+                title: "SHA-256 Audit Trail Chain",
+                desc: "Every check-in, rule amendment, and 403 access denial is cryptographically hash-chained into a tamper-evident ledger.",
+                badge: "SHA-256 Ledger",
               },
               {
-                title: "DPDP Consent Gate (STOP Lock)",
-                desc: "One-step consent revocation locks the patient record to a minimal stub and blocks check-ins & outreach immediately.",
+                title: "DPDP Instant 'STOP' Revocation",
+                desc: "Replying 'STOP' to any SMS/WhatsApp message immediately locks the patient record to a minimal stub and blocks future outreach.",
                 badge: "DPDP Act 2023",
               },
               {
-                title: "4-Hour SLA Escalation Watchdog",
-                desc: "Idempotent background jobs monitor Upper Partition (≥100) cases and escalate unreviewed alerts to the Block Supervisor.",
+                title: "4-Hour SLA Watchdog",
+                desc: "Automated idempotent jobs inspect Upper Partition (≥100) patient alerts and escalate unreviewed cases to the Block Supervisor.",
                 badge: "4h SLA Watchdog",
               },
-            ].map((item) => (
+            ].map((card) => (
               <div
-                key={item.title}
-                className={`p-5 rounded-2xl border ${
-                  darkMode
-                    ? "bg-slate-900 border-slate-800"
-                    : "bg-white border-slate-200"
+                key={card.title}
+                className={`p-6 rounded-2xl border transition-all ${
+                  darkMode ? "bg-slate-900 border-white/10" : "bg-white border-slate-200 shadow-xs"
                 }`}
               >
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between mb-3">
                   <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                  <span className="font-mono text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                    {item.badge}
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                    {card.badge}
                   </span>
                 </div>
-                <h3 className="font-extrabold text-sm sm:text-base mb-1">
-                  {item.title}
-                </h3>
+                <h3 className="font-bold text-sm sm:text-base mb-1">{card.title}</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  {item.desc}
+                  {card.desc}
                 </p>
               </div>
             ))}
@@ -2463,24 +1635,20 @@ export default function SwasthyaLandingPage({
       </section>
 
       {/* ===================================================================
-          8. PROPER 4-COLUMN FOOTER + SIMULTANEOUS LIVE SESSIONS BAR
+          8. FOOTER WITH LIVE ACTIVE MULTI-TENANT SESSIONS BAR
       =================================================================== */}
-      <footer
-        className={`pt-14 pb-10 ${
-          darkMode ? "bg-slate-950 text-slate-400" : "bg-slate-900 text-slate-300"
-        }`}
-      >
+      <footer className={`pt-14 pb-10 ${darkMode ? "bg-slate-950 text-slate-400" : "bg-slate-900 text-slate-300"}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          {/* Simultaneous Active Multi-Tenant Sessions Bar */}
-          <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          {/* Live Multi-Tenant Sessions Bar */}
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
               <div>
-                <div className="text-xs font-extrabold text-white uppercase tracking-wider">
-                  Live Multi-Tenant Sessions ({activeSessions.length} Simultaneous Active Tenants)
+                <div className="text-xs font-bold text-white uppercase tracking-wider">
+                  Live Multi-Tenant Sessions ({activeSessions.length} Active Tenants)
                 </div>
                 <div className="text-[11px] text-slate-400">
-                  Independent HMAC-SHA256 session tokens • No single-session lock • Instant demo switching
+                  Independent tokens per tab • No single-session lock
                 </div>
               </div>
             </div>
@@ -2489,144 +1657,351 @@ export default function SwasthyaLandingPage({
               {activeSessions.map((ses) => (
                 <div
                   key={`${ses.orgId}-${ses.userId}`}
-                  className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs flex items-center gap-2"
+                  className="px-3 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs flex items-center gap-2"
                 >
                   <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                  <span className="font-mono font-bold text-white">
-                    {ses.userId}
-                  </span>
+                  <span className="font-mono font-bold text-white">{ses.userId}</span>
                   <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 font-mono">
                     {ses.orgId}
                   </span>
-                  <span className="text-[11px] text-emerald-400 hidden sm:inline">
-                    {ses.roleBadge}
-                  </span>
+                  <span className="text-[11px] text-emerald-400 hidden sm:inline">{ses.roleBadge}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* 4-Column Footer Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Col 1: Brand & Mission */}
+          {/* Footer 4-Column Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-xs">
             <div className="space-y-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center text-white">
-                  <HeartPulse className="w-4 h-4" />
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center text-white font-bold">
+                  S
                 </div>
                 <span className="font-extrabold text-white text-base">
                   Swasthya<span className="text-red-500">Sense</span>
                 </span>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Non-diagnostic clinical early-warning, ~242µs QuickSort queue partitioning, and 5-Hexagon clinic load-balancing for rural and semi-urban healthcare teams.
+              <p className="text-slate-400 leading-relaxed">
+                Non-diagnostic early-warning and hexagonal clinic load-balancing platform for rural frontline health teams.
               </p>
-              <div className="p-2.5 rounded-xl bg-red-950/50 border border-red-800/50 text-[11px] text-red-300 font-semibold">
+              <div className="text-[11px] text-red-300 font-semibold p-2 rounded-lg bg-red-950/60 border border-red-800/50">
                 DECISION-SUPPORT ONLY • NOT A DIAGNOSTIC DEVICE
               </div>
             </div>
 
-            {/* Col 2: Product Architecture */}
-            <div className="space-y-2 text-xs">
-              <div className="font-extrabold text-white uppercase tracking-wider mb-2">
-                Clinical Platform
-              </div>
-              <div>
-                <a href="#how-it-works" className="hover:text-white">
-                  5-Category Bidirectional Engine
-                </a>
-              </div>
-              <div>
-                <a href="#how-it-works" className="hover:text-white">
-                  QuickSort Pivot = 100 (~242µs)
-                </a>
-              </div>
-              <div>
-                <a href="#patient-journey-3d" className="hover:text-white">
-                  Scroll-Driven 3D Patient Journey
-                </a>
-              </div>
-              <div>
-                <a href="#hexagon-architecture" className="hover:text-white">
-                  30-Slot Matrix (15 / 5 / 10)
-                </a>
-              </div>
-              <div>
-                <a href="#hexagon-architecture" className="hover:text-white">
-                  5-Hexagon Overflow & 108 Bypass
-                </a>
-              </div>
+            <div className="space-y-2">
+              <div className="font-bold text-white uppercase tracking-wider mb-2">Capabilities</div>
+              <div>5-Category Bidirectional Vitals</div>
+              <div>QuickSort Pivot = 100 Engine (~242µs)</div>
+              <div>30-Slot Clinic Protection Matrix</div>
+              <div>5-Village Spatial Hex Mesh</div>
+              <div>108 Rapid Ambulance Bypass</div>
             </div>
 
-            {/* Col 3: Governance & Standards */}
-            <div className="space-y-2 text-xs">
-              <div className="font-extrabold text-white uppercase tracking-wider mb-2">
-                Governance & Compliance
-              </div>
-              <div>DPDP Act 2023 Consent Gate</div>
-              <div>AES-256-GCM Phone PII Encryption</div>
-              <div>SHA-256 Hash-Chained Audit Ledger</div>
-              <div>PostgreSQL Row-Level Security (RLS)</div>
-              <div>NEWS2 & MEOWS Clinical Protocols</div>
+            <div className="space-y-2">
+              <div className="font-bold text-white uppercase tracking-wider mb-2">Compliance</div>
+              <div>DPDP Act 2023 Consent Revocation</div>
+              <div>AES-256-GCM Phone Encryption</div>
+              <div>SHA-256 Cryptographic Audit Ledger</div>
+              <div>NEWS2 & MEOWS Maternal Guidelines</div>
+              <div>PostgreSQL Row-Level Security</div>
             </div>
 
-            {/* Col 4: Quick Launch & Theme/Language */}
-            <div className="space-y-3 text-xs">
-              <div className="font-extrabold text-white uppercase tracking-wider mb-2">
-                Portal Access
-              </div>
+            <div className="space-y-3">
+              <div className="font-bold text-white uppercase tracking-wider mb-2">Portal Access</div>
               <button
                 type="button"
                 onClick={() => {
                   setAuthTab("signin");
                   setLoginModalOpen(true);
                 }}
-                className="w-full py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer"
               >
                 <KeyRound className="w-3.5 h-3.5" />
-                Sign In to Clinical Portal
+                Organization Sign-In
               </button>
               <button
                 type="button"
                 onClick={onEnterWorkspace}
-                className="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-                Open Interactive Scenario Lab
+                Open Scenario Lab
               </button>
             </div>
           </div>
 
-          <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
-            <div>
-              © 2026 SwasthyaSense Clinical Mesh • Kamrup Rural & Guwahati Tertiary Network
-            </div>
-            <div className="font-mono">
-              300 Synthetic Patients • Zero Real PII • 15/15 Automated Verification Suite
-            </div>
+          <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+            <div>© 2026 SwasthyaSense Clinical Mesh • Kamrup Rural & Guwahati</div>
+            <div className="font-mono">300 Synthetic Patients • Zero Real PII</div>
           </div>
         </div>
       </footer>
 
       {/* ===================================================================
-          MODAL: ORGANIZATION SIGN-IN / ONBOARD NEW HEALTHCARE ORG
+          MODAL: SLEEK MODERN ORGANIZATION SIGN-IN & ONBOARDING SHEET
       =================================================================== */}
       {loginModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="relative w-full max-w-lg">
-            <button
-              type="button"
-              onClick={() => setLoginModalOpen(false)}
-              aria-label="Close Sign-In Modal"
-              className="absolute -top-3 -right-3 z-10 w-8 h-8 rounded-full bg-slate-900 text-white border border-slate-700 flex items-center justify-center hover:bg-red-600 cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            {renderAuthCardContent()}
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div
+            className={`relative w-full max-w-lg rounded-3xl border shadow-2xl overflow-hidden ${
+              darkMode ? "bg-slate-900 border-white/10 text-white" : "bg-white border-slate-200 text-slate-900"
+            }`}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-200/80 dark:border-white/10">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-red-600 text-white flex items-center justify-center shadow-md shadow-red-600/30">
+                  <KeyRound className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base">Organization Portal Sign-In</h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Postgres Row-Level Security & Scrypt Password Verification
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setLoginModalOpen(false)}
+                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex border-b border-slate-200/80 dark:border-white/10 px-6 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthTab("signin");
+                  setAuthError(null);
+                }}
+                className={`pb-2.5 px-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
+                  authTab === "signin"
+                    ? "border-red-600 text-red-600"
+                    : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                }`}
+              >
+                Sign In to Existing Tenant
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthTab("onboard");
+                  setAuthError(null);
+                }}
+                className={`pb-2.5 px-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
+                  authTab === "onboard"
+                    ? "border-emerald-600 text-emerald-600"
+                    : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                }`}
+              >
+                + Onboard New Organization
+              </button>
+            </div>
+
+            {/* Form Body */}
+            {authTab === "signin" ? (
+              <form onSubmit={handleSignInSubmit} className="p-6 space-y-4">
+                {/* 1-Click Demo Accounts Chips */}
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                    Quick-Autofill Demo Personas:
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {LANDING_DEMO_PRESETS.map((p) => (
+                      <button
+                        key={p.userId}
+                        type="button"
+                        onClick={() => {
+                          setOrgIdInput(p.organizationId);
+                          setUserIdInput(p.userId);
+                          setPasswordInput(p.passwordPlain);
+                        }}
+                        className={`p-2 rounded-xl border text-left text-xs transition-all cursor-pointer ${
+                          orgIdInput === p.organizationId && userIdInput === p.userId
+                            ? "bg-red-500/10 border-red-500 text-red-600"
+                            : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-white/5"
+                        }`}
+                      >
+                        <div className="font-bold truncate">{p.userName}</div>
+                        <div className="text-[10px] opacity-75 truncate">{p.organizationId}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold mb-1">Organization ID</label>
+                  <input
+                    type="text"
+                    value={orgIdInput}
+                    onChange={(e) => setOrgIdInput(e.target.value)}
+                    placeholder="e.g. ORG-BOKO"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                      darkMode ? "bg-slate-950 border-white/10 text-white" : "bg-slate-50 border-slate-300"
+                    }`}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold mb-1">Staff User ID</label>
+                    <input
+                      type="text"
+                      value={userIdInput}
+                      onChange={(e) => setUserIdInput(e.target.value)}
+                      placeholder="e.g. doc.boko01"
+                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                        darkMode ? "bg-slate-950 border-white/10 text-white" : "bg-slate-50 border-slate-300"
+                      }`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold mb-1">Password</label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={passwordInput}
+                        onChange={(e) => setPasswordInput(e.target.value)}
+                        placeholder="••••••••"
+                        className={`w-full pl-3.5 pr-10 py-2.5 rounded-xl border text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                          darkMode ? "bg-slate-950 border-white/10 text-white" : "bg-slate-50 border-slate-300"
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((v) => !v)}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 p-1"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {authError && (
+                  <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 text-xs font-bold flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    <span>{authError}</span>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={authLoading}
+                  className="w-full py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                >
+                  {authLoading ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" /> Verifying Credentials...
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-4 h-4" /> Sign In & Launch Portal
+                    </>
+                  )}
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleOnboardSubmit} className="p-6 space-y-3.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold mb-1">Organization Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={newOrgName}
+                      onChange={(e) => setNewOrgName(e.target.value)}
+                      placeholder="e.g. Gramin Swasthya Trust"
+                      className={`w-full px-3 py-2 rounded-xl border text-xs font-semibold ${
+                        darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-300"
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold mb-1">Short Name</label>
+                    <input
+                      type="text"
+                      value={newOrgShort}
+                      onChange={(e) => setNewOrgShort(e.target.value)}
+                      placeholder="e.g. Gramin Care"
+                      className={`w-full px-3 py-2 rounded-xl border text-xs font-semibold ${
+                        darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-300"
+                      }`}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold mb-1">District</label>
+                    <input
+                      type="text"
+                      value={newOrgDistrict}
+                      onChange={(e) => setNewOrgDistrict(e.target.value)}
+                      className={`w-full px-3 py-2 rounded-xl border text-xs font-semibold ${
+                        darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-300"
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold mb-1">Passcode</label>
+                    <input
+                      type="text"
+                      value={newOrgPasscode}
+                      onChange={(e) => setNewOrgPasscode(e.target.value)}
+                      className={`w-full px-3 py-2 rounded-xl border text-xs font-mono font-bold ${
+                        darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-300"
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold mb-1">Team Size</label>
+                    <input
+                      type="number"
+                      value={newOrgTeamSize}
+                      onChange={(e) => setNewOrgTeamSize(Number(e.target.value) || 15)}
+                      className={`w-full px-3 py-2 rounded-xl border text-xs font-bold ${
+                        darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-300"
+                      }`}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold mb-1">Lead Frontline Worker Name</label>
+                  <input
+                    type="text"
+                    value={newOrgLead}
+                    onChange={(e) => setNewOrgLead(e.target.value)}
+                    className={`w-full px-3 py-2 rounded-xl border text-xs font-semibold ${
+                      darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-300"
+                    }`}
+                  />
+                </div>
+
+                {authError && (
+                  <div className="p-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 text-xs font-bold">
+                    {authError}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={authLoading}
+                  className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <UserPlus className="w-4 h-4" /> Provision Isolated Tenant & Enter
+                </button>
+              </form>
+            )}
           </div>
         </div>
       )}
     </div>
   );
 }
-
