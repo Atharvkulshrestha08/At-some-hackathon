@@ -1,22 +1,25 @@
 /**
  * SWASTHYA SENSE — External API & Database Integration Layer
  *
- * Automatically detects which real-world credentials / endpoints are configured
- * in `.env.local` (Supabase PostgreSQL, WhatsApp Cloud API / Twilio SMS,
- * 108 Ambulance Dispatch Webhook, ABDM / FHIR Health Registry) and routes
- * requests to live APIs when present, or falls back cleanly to the embedded
- * PostgreSQL (PGlite) engine when unconfigured.
+ * Automatically detects configured credentials in `.env.local`
+ * (`SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`,
+ * `SUPABASE_JWKS_URL`, WhatsApp/Twilio, 108 Ambulance Webhook) and provides
+ * live cloud synchronization alongside the embedded PostgreSQL 16 (PGlite) engine.
  */
 
 export interface ExternalIntegrationStatus {
   supabasePostgres: {
     configured: boolean;
     url: string | null;
-    mode: "LIVE_SUPABASE_POSTGRES" | "LOCAL_PGLITE_POSTGRES_16";
+    jwksUrl: string | null;
+    mode: "LIVE_SUPABASE_CONNECTED" | "LOCAL_PGLITE_POSTGRES_16";
   };
   messagingGateway: {
     configured: boolean;
-    provider: "META_WHATSAPP_CLOUD" | "TWILIO_SMS_WHATSAPP" | "SIMULATED_SANDBOX";
+    provider:
+      | "META_WHATSAPP_CLOUD"
+      | "TWILIO_SMS_WHATSAPP"
+      | "WA_ME_DEEPLINK_AND_SANDBOX";
   };
   ambulance108Dispatch: {
     configured: boolean;
@@ -26,16 +29,24 @@ export interface ExternalIntegrationStatus {
   facilityRegistryApi: {
     configured: boolean;
     endpoint: string | null;
-    mode: "LIVE_HFR_API" | "DATABASE_FACILITY_TABLE";
+    mode: "LIVE_HFR_API" | "SUPABASE_FACILITY_MESH";
   };
 }
 
 export function getExternalIntegrationStatus(): ExternalIntegrationStatus {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || null;
+  const supabaseUrl =
+    process.env.SUPABASE_URL ||
+    process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    "https://givuusaxvalgcjaveobx.supabase.co";
   const supabaseKey =
+    process.env.SUPABASE_SECRET_KEY ||
     process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_PUBLISHABLE_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
     null;
+  const supabaseJwksUrl =
+    process.env.SUPABASE_JWKS_URL ||
+    (supabaseUrl ? `${supabaseUrl}/auth/v1/.well-known/jwks.json` : null);
 
   const whatsappToken = process.env.WHATSAPP_CLOUD_API_TOKEN || null;
   const twilioSid = process.env.TWILIO_ACCOUNT_SID || null;
@@ -46,9 +57,10 @@ export function getExternalIntegrationStatus(): ExternalIntegrationStatus {
     supabasePostgres: {
       configured: Boolean(supabaseUrl && supabaseKey),
       url: supabaseUrl,
+      jwksUrl: supabaseJwksUrl,
       mode:
         supabaseUrl && supabaseKey
-          ? "LIVE_SUPABASE_POSTGRES"
+          ? "LIVE_SUPABASE_CONNECTED"
           : "LOCAL_PGLITE_POSTGRES_16",
     },
     messagingGateway: {
@@ -57,7 +69,7 @@ export function getExternalIntegrationStatus(): ExternalIntegrationStatus {
         ? "META_WHATSAPP_CLOUD"
         : twilioSid
         ? "TWILIO_SMS_WHATSAPP"
-        : "SIMULATED_SANDBOX",
+        : "WA_ME_DEEPLINK_AND_SANDBOX",
     },
     ambulance108Dispatch: {
       configured: Boolean(ambulanceWebhook),
@@ -65,11 +77,47 @@ export function getExternalIntegrationStatus(): ExternalIntegrationStatus {
       mode: ambulanceWebhook ? "LIVE_108_WEBHOOK" : "SIMULATED_108_DISPATCH",
     },
     facilityRegistryApi: {
-      configured: Boolean(facilityApiUrl),
-      endpoint: facilityApiUrl,
-      mode: facilityApiUrl ? "LIVE_HFR_API" : "DATABASE_FACILITY_TABLE",
+      configured: Boolean(facilityApiUrl || supabaseUrl),
+      endpoint: facilityApiUrl || supabaseUrl,
+      mode: facilityApiUrl ? "LIVE_HFR_API" : "SUPABASE_FACILITY_MESH",
     },
   };
+}
+
+/**
+ * Non-blocking Cloud Sync to Supabase REST API (`https://givuusaxvalgcjaveobx.supabase.co/rest/v1/<table>`)
+ * Whenever a check-in, escalation, message, or SHA-256 audit log entry is recorded,
+ * this replicates the row to Supabase Cloud if the table exists, while keeping
+ * the local PostgreSQL 16 (PGlite) transaction 100% resilient.
+ */
+export async function syncRowToSupabaseCloud(
+  table: string,
+  row: Record<string, unknown>
+): Promise<void> {
+  const supabaseUrl =
+    process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const apiKey =
+    process.env.SUPABASE_SECRET_KEY ||
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !apiKey) return;
+
+  try {
+    await fetch(`${supabaseUrl}/rest/v1/${table}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: apiKey,
+        Authorization: `Bearer ${apiKey}`,
+        Prefer: "resolution=merge-duplicates,return=minimal",
+      },
+      body: JSON.stringify(row),
+    });
+  } catch {
+    // Graceful fallback to embedded PostgreSQL (PGlite) when offline or inside restricted network sandbox
+  }
 }
 
 export interface DangerSymptomDefinition {
@@ -123,4 +171,3 @@ export const CLINICAL_SYMPTOM_CATALOG: DangerSymptomDefinition[] = [
     defaultWeight: 45,
   },
 ];
-

@@ -947,6 +947,19 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                         <span>{m.status}</span>
                       </div>
                       <p className="leading-relaxed text-sm">{m.body}</p>
+                      <div className="mt-2 pt-1.5 border-t border-slate-100 flex items-center justify-between">
+                        <span className="text-[11px] text-slate-400">
+                          Simulated + Direct Link Ready
+                        </span>
+                        <a
+                          href={`https://wa.me/?text=${encodeURIComponent(m.body)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[11px] font-bold text-emerald-700 hover:underline"
+                        >
+                          Open in Real WhatsApp (wa.me) ↗
+                        </a>
+                      </div>
                     </div>
 
                     {m.replyText && (

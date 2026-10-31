@@ -19,6 +19,7 @@ import { MESSAGE_TEMPLATES_I18N } from "./i18n.ts";
 import {
   getExternalIntegrationStatus,
   CLINICAL_SYMPTOM_CATALOG,
+  syncRowToSupabaseCloud,
 } from "./external-integrations.ts";
 
 // ============================================================================
@@ -1306,6 +1307,19 @@ export function appendAuditEntry(
     currHash,
   };
   state.auditLog.push(entry);
+  void syncRowToSupabaseCloud("audit_log", {
+    id: entry.id,
+    timestamp: entry.timestamp,
+    actor_id: entry.actorId,
+    actor_role: entry.actorRole,
+    action: entry.action,
+    patient_pseudonym: entry.patientPseudonym,
+    object_ref: entry.objectRef,
+    result: entry.result,
+    reason: entry.reason,
+    prev_hash: entry.prevHash,
+    curr_hash: entry.currHash,
+  });
   return entry;
 }
 

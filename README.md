@@ -97,3 +97,4 @@ FACILITY_REGISTRY_API_KEY=""
 ## 6. Safety & Non-Diagnostic Disclaimer
 
 **SwasthyaSense is a non-diagnostic clinical decision-support and follow-up coordination prototype.** It does not diagnose disease, prescribe medication, or replace a qualified medical practitioner. All clinical alerts use transparent, clinician-authored rules and require human clinician oversight.
+
