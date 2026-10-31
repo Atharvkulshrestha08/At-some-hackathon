@@ -25,15 +25,15 @@ export default function ClinicianPage() {
   return (
     <div className="space-y-10">
       {/* Page Header */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-3">
-        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-red-50 border border-red-200 text-red-700 text-sm font-bold">
+      <div className="bg-gradient-to-br from-rose-100/90 via-teal-100/60 to-emerald-100/70 rounded-2xl border-2 border-rose-300 p-6 sm:p-8 shadow-xs space-y-3">
+        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-rose-200 border border-rose-300 text-rose-800 text-sm font-bold">
           <Stethoscope className="w-4 h-4 text-red-600" />
           Clinician Review & Emergency Transport Console
         </span>
-        <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 leading-snug">
+        <h1 className="text-2xl sm:text-4xl font-bold text-slate-950 leading-snug">
           Doctor Review & 108 Rapid Ambulance Handover
         </h1>
-        <p className="text-base text-slate-600 leading-relaxed max-w-3xl">
+        <p className="text-base text-slate-800 leading-relaxed max-w-3xl font-medium">
           Per data minimization, doctors view pseudonymous IDs, 5-category vital
           trajectories, and rule explanations—patient contact numbers remain masked.
         </p>
@@ -80,17 +80,17 @@ export default function ClinicianPage() {
       )}
 
       {/* Section 1: 108 Rapid Ambulance Dispatches */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
+      <section className="bg-rose-50/90 rounded-2xl border-2 border-rose-300 p-6 sm:p-8 shadow-xs space-y-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-red-50 border border-red-200 text-red-600 flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-red-100 border border-red-300 text-red-600 flex items-center justify-center shrink-0">
               <Ambulance className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
                 108 Rapid Ambulance &amp; Paramedic Handover Tracker
               </h2>
-              <p className="text-base text-slate-600">
+              <p className="text-base text-slate-700 font-medium">
                 Webhook Mode:{" "}
                 <strong>
                   {snapshot.integrations?.ambulance108Dispatch.mode ??
@@ -150,11 +150,11 @@ export default function ClinicianPage() {
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-white border border-red-200 font-mono text-base font-bold text-red-700">
+              <div className="p-3.5 rounded-xl bg-rose-100/90 border border-rose-300 font-mono text-base font-bold text-rose-800">
                 {amb.vitalsSnapshot}
               </div>
 
-              <p className="text-base text-slate-700 leading-relaxed">
+              <p className="text-base text-slate-800 leading-relaxed font-medium">
                 {amb.paramedicSummary}
               </p>
 
@@ -196,12 +196,12 @@ export default function ClinicianPage() {
       </section>
 
       {/* Section 2: Escalated Clinical Cases */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
+      <section className="bg-teal-50/90 rounded-2xl border-2 border-teal-300 p-6 sm:p-8 shadow-xs space-y-6">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
             Escalated Clinical Cases ({snapshot.escalations.length})
           </h2>
-          <p className="text-base text-slate-600">
+          <p className="text-base text-teal-900 font-medium">
             Every escalation has a 4-hour acknowledgement SLA and 24-hour review SLA.
           </p>
         </div>
@@ -213,18 +213,18 @@ export default function ClinicianPage() {
               className={`p-6 rounded-2xl border space-y-4 ${
                 esc.slaBreached
                   ? "bg-red-50/60 border-red-300"
-                  : "bg-slate-50 border-slate-200"
+                  : "bg-teal-100/60 border-teal-300"
               }`}
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <span className="font-mono font-bold text-slate-900 text-lg">
+                  <span className="font-mono font-bold text-slate-950 text-lg">
                     {esc.id} • {esc.pseudonym}
                   </span>
-                  <span className="px-3 py-1 rounded-md bg-white border border-slate-300 text-slate-800 text-sm font-bold">
+                  <span className="px-3 py-1 rounded-md bg-teal-200 border border-teal-400 text-teal-950 text-sm font-bold">
                     Age {esc.ageBand} • {esc.cohort.toUpperCase()} • {esc.hexagonId}
                   </span>
-                  <span className="px-3 py-1 rounded-md bg-red-100 text-red-800 font-mono text-sm font-bold">
+                  <span className="px-3 py-1 rounded-md bg-red-100 text-red-800 font-mono text-sm font-bold border border-red-300">
                     {esc.ruleId} v{esc.ruleVersion} • Score {esc.priorityScore}
                   </span>
                 </div>
@@ -241,7 +241,7 @@ export default function ClinicianPage() {
                 </span>
               </div>
 
-              <div className="p-4 rounded-xl bg-white border border-slate-200 font-mono text-base font-bold text-slate-900">
+              <div className="p-4 rounded-xl bg-teal-100/90 border border-teal-300 font-mono text-base font-bold text-teal-950">
                 {esc.latestVitalsSummary}
               </div>
 
@@ -318,7 +318,7 @@ export default function ClinicianPage() {
                           "Reviewed remotely: No clinic trip needed today; assigned worker to re-check vitals in 48h.",
                       })
                     }
-                    className="min-h-[44px] px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-base font-bold"
+                    className="min-h-[44px] px-4 py-2.5 rounded-xl bg-teal-100 hover:bg-teal-200 border border-teal-300 text-teal-950 text-base font-bold"
                   >
                     3. Return to Worker (Remote Care)
                   </button>

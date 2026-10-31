@@ -143,15 +143,15 @@ export default function SimulatorPage() {
   return (
     <div className="space-y-10">
       {/* Header */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-gradient-to-br from-cyan-100/90 via-teal-100/70 to-emerald-100/80 rounded-3xl border-2 border-cyan-300 p-6 sm:p-8 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-2">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cyan-200 border border-cyan-400 text-cyan-950 text-sm font-bold">
             Interactive Verification & API Connector Lab
           </span>
-          <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 leading-snug">
+          <h1 className="text-2xl sm:text-4xl font-bold text-slate-950 leading-snug">
             Live Scenario & Integration Center
           </h1>
-          <p className="text-base text-slate-600 leading-relaxed max-w-2xl">
+          <p className="text-base text-slate-800 leading-relaxed max-w-2xl font-medium">
             Inspect active API connectors and verify clinical, spatial, and privacy
             workflows in one tap.
           </p>
@@ -160,7 +160,7 @@ export default function SimulatorPage() {
         <button
           disabled={busyAction}
           onClick={() => executeAction({ action: "RESET_DEMO" })}
-          className="min-h-[48px] px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-base font-bold flex items-center gap-2 self-start sm:self-auto"
+          className="min-h-[48px] px-5 py-3 rounded-xl bg-teal-200 hover:bg-teal-300 text-teal-950 border border-teal-400 text-base font-bold flex items-center gap-2 self-start sm:self-auto shadow-2xs"
         >
           <RefreshCw className="w-5 h-5" />
           <span>Reset Database State ({snapshot.stats.totalPatients} Records)</span>
@@ -169,7 +169,7 @@ export default function SimulatorPage() {
 
       {/* Live API & Database Integration Status Grid */}
       {snapshot.integrations && (
-        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-5">
+        <div className="bg-teal-50/90 rounded-3xl border-2 border-teal-300 p-6 sm:p-8 shadow-xs space-y-5">
           <div className="flex items-center gap-2.5">
             <Database className="w-5 h-5 text-emerald-600" />
             <h2 className="text-xl font-bold text-slate-900">
@@ -237,7 +237,7 @@ export default function SimulatorPage() {
           return (
             <div
               key={scen.id}
-              className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-6"
+              className="bg-teal-100/70 rounded-2xl border-2 border-teal-300 p-6 shadow-xs flex flex-col justify-between space-y-6 hover:bg-teal-100/90 transition-all"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-2">

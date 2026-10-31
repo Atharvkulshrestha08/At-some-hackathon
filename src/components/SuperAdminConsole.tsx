@@ -225,19 +225,19 @@ export default function SuperAdminConsole() {
 
           {/* Quick Metrics Bento */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-slate-900/90 border border-slate-800 p-3 rounded-2xl text-center">
+            <div className="bg-teal-200/90 border border-teal-300 p-3 rounded-2xl text-center">
               <div className="text-[10px] text-slate-400 font-bold uppercase">Organizations</div>
               <div className="text-xl font-black text-white mt-0.5">{allOrganizations.length}</div>
             </div>
-            <div className="bg-slate-900/90 border border-slate-800 p-3 rounded-2xl text-center">
+            <div className="bg-teal-200/90 border border-teal-300 p-3 rounded-2xl text-center">
               <div className="text-[10px] text-slate-400 font-bold uppercase">Clinics / Hubs</div>
               <div className="text-xl font-black text-emerald-400 mt-0.5">{allFacilities.length}</div>
             </div>
-            <div className="bg-slate-900/90 border border-slate-800 p-3 rounded-2xl text-center">
+            <div className="bg-teal-200/90 border border-teal-300 p-3 rounded-2xl text-center">
               <div className="text-[10px] text-slate-400 font-bold uppercase">Total Staff</div>
               <div className="text-xl font-black text-cyan-400 mt-0.5">{allUsers.length}</div>
             </div>
-            <div className="bg-slate-900/90 border border-slate-800 p-3 rounded-2xl text-center">
+            <div className="bg-teal-200/90 border border-teal-300 p-3 rounded-2xl text-center">
               <div className="text-[10px] text-slate-400 font-bold uppercase">SHA-256 Ledger</div>
               <div className="text-xl font-black text-amber-400 mt-0.5">
                 {snapshot?.auditIntegrity?.totalEntries || auditLogs.length}
@@ -253,7 +253,7 @@ export default function SuperAdminConsole() {
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === "staff_mgmt"
                 ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
-                : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+                : "bg-teal-200 text-teal-950 hover:bg-teal-300"
             }`}
           >
             <Users className="w-3.5 h-3.5" />
@@ -264,7 +264,7 @@ export default function SuperAdminConsole() {
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === "patient_restrict"
                 ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
-                : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+                : "bg-teal-200 text-teal-950 hover:bg-teal-300"
             }`}
           >
             <AlertOctagon className="w-3.5 h-3.5" />
@@ -275,7 +275,7 @@ export default function SuperAdminConsole() {
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === "clinic_mesh"
                 ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
-                : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+                : "bg-teal-200 text-teal-950 hover:bg-teal-300"
             }`}
           >
             <Hexagon className="w-3.5 h-3.5" />
@@ -286,7 +286,7 @@ export default function SuperAdminConsole() {
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === "services"
                 ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
-                : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+                : "bg-teal-200 text-teal-950 hover:bg-teal-300"
             }`}
           >
             <Server className="w-3.5 h-3.5" />
@@ -297,7 +297,7 @@ export default function SuperAdminConsole() {
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === "audit_ledger"
                 ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
-                : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+                : "bg-teal-200 text-teal-950 hover:bg-teal-300"
             }`}
           >
             <FileCheck2 className="w-3.5 h-3.5" />
@@ -308,10 +308,10 @@ export default function SuperAdminConsole() {
 
       {/* TAB 1: STAFF MANAGEMENT (USER MANAGEMENT) */}
       {activeTab === "staff_mgmt" && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+        <div className="bg-teal-50/90 border border-teal-300 rounded-3xl p-6 shadow-sm space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
             <div>
-              <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+              <h2 className="text-lg font-black text-slate-900 text-slate-950 flex items-center gap-2">
                 <Users className="w-5 h-5 text-red-600" />
                 Staff Directory &amp; User Provisioning
               </h2>
@@ -330,7 +330,7 @@ export default function SuperAdminConsole() {
           </div>
 
           {/* Filters Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50 dark:bg-slate-950 p-3 rounded-2xl border border-slate-200 dark:border-slate-800">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-teal-100/70 p-3 rounded-2xl border border-teal-300">
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <Filter className="w-4 h-4 text-slate-400" />
               <label className="text-xs font-bold text-slate-600 dark:text-slate-400">
@@ -339,7 +339,7 @@ export default function SuperAdminConsole() {
               <select
                 value={tenantScopeFilter}
                 onChange={(e) => setTenantScopeFilter(e.target.value)}
-                className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold text-slate-800 dark:text-slate-200"
+                className="px-3 py-1.5 rounded-xl border border-teal-300 bg-teal-50/90 text-xs font-bold text-slate-800 dark:text-slate-200"
               >
                 <option value="ALL">All Organizations (Global Master)</option>
                 {allOrganizations.map((o) => (
@@ -357,7 +357,7 @@ export default function SuperAdminConsole() {
                 placeholder="Search staff by name or ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-200"
+                className="w-full pl-9 pr-3 py-1.5 rounded-xl border border-teal-300 bg-teal-50/90 text-xs text-slate-800 dark:text-slate-200"
               />
             </div>
           </div>
@@ -365,7 +365,7 @@ export default function SuperAdminConsole() {
           {/* Staff Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 uppercase tracking-wider font-bold">
+              <thead className="bg-teal-100/70 text-slate-500 uppercase tracking-wider font-bold">
                 <tr>
                   <th className="py-2.5 px-3">Staff ID</th>
                   <th className="py-2.5 px-3">Name &amp; Title</th>
@@ -378,12 +378,12 @@ export default function SuperAdminConsole() {
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
                 {filteredUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-950/50">
+                  <tr key={u.id} className="hover:bg-slate-50 ">
                     <td className="py-3 px-3 font-mono font-bold text-slate-800 dark:text-slate-200">
                       {u.id}
                     </td>
                     <td className="py-3 px-3">
-                      <div className="font-extrabold text-slate-900 dark:text-white">{u.name}</div>
+                      <div className="font-extrabold text-slate-900 text-slate-950">{u.name}</div>
                       <div className="text-[10px] text-slate-500">{u.title}</div>
                     </td>
                     <td className="py-3 px-3">
@@ -436,8 +436,8 @@ export default function SuperAdminConsole() {
       {/* TAB 2: PATIENT RESTRICTIONS & CLINICAL HOLD */}
       {activeTab === "patient_restrict" && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
-            <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+          <div className="lg:col-span-5 bg-teal-50/90 border border-teal-300 rounded-3xl p-6 shadow-sm space-y-4">
+            <h2 className="text-lg font-black text-slate-900 text-slate-950 flex items-center gap-2">
               <AlertOctagon className="w-5 h-5 text-red-600" />
               Place Clinical / Medico-Legal Hold
             </h2>
@@ -455,7 +455,7 @@ export default function SuperAdminConsole() {
                 <select
                   value={selectedPatientForHold}
                   onChange={(e) => setSelectedPatientForHold(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-bold"
+                  className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-50 text-teal-950 font-bold focus:outline-none focus:ring-2 focus:ring-teal-500"
                 >
                   <option value="">-- Choose Patient --</option>
                   {(snapshot?.quickSortResult?.combinedRanked || []).map((pt) => (
@@ -474,7 +474,7 @@ export default function SuperAdminConsole() {
                   rows={3}
                   value={restrictionReason}
                   onChange={(e) => setRestrictionReason(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-medium"
+                  className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-50 text-teal-950 font-medium focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
@@ -493,8 +493,8 @@ export default function SuperAdminConsole() {
             </div>
           </div>
 
-          <div className="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
-            <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+          <div className="lg:col-span-7 bg-teal-50/90 border border-teal-300 rounded-3xl p-6 shadow-sm space-y-4">
+            <h3 className="text-base font-extrabold text-slate-900 text-slate-950">
               Active Restricted &amp; Held Patients
             </h3>
             <p className="text-xs text-slate-500">
@@ -506,7 +506,7 @@ export default function SuperAdminConsole() {
                 <div key={pt.patientId} className="py-3 flex items-start justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-extrabold text-sm text-slate-900 dark:text-white">
+                      <span className="font-extrabold text-sm text-slate-900 text-slate-950">
                         {pt.pseudonym}
                       </span>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300">
@@ -537,10 +537,10 @@ export default function SuperAdminConsole() {
 
       {/* TAB 3: CLINIC MESH & PROVISIONING */}
       {activeTab === "clinic_mesh" && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+        <div className="bg-teal-50/90 border border-teal-300 rounded-3xl p-6 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b pb-4">
             <div>
-              <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+              <h2 className="text-lg font-black text-slate-900 text-slate-950 flex items-center gap-2">
                 <Hexagon className="w-5 h-5 text-red-600" />
                 5-Hexagon Clinic Mesh &amp; Spatial Node Provisioning
               </h2>
@@ -561,32 +561,32 @@ export default function SuperAdminConsole() {
             {allFacilities.map((fac) => (
               <div
                 key={fac.id}
-                className="p-4 rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 space-y-3"
+                className="p-4 rounded-3xl border border-teal-300 bg-teal-100/70 space-y-3"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs font-black text-red-600 dark:text-red-400">
                     {fac.hexagonId}
                   </span>
-                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-teal-50/90 text-slate-700 dark:text-slate-300 border">
                     {fac.tier}
                   </span>
                 </div>
                 <div>
-                  <div className="font-extrabold text-sm text-slate-900 dark:text-white">
+                  <div className="font-extrabold text-sm text-slate-900 text-slate-950">
                     {fac.name}
                   </div>
                   <div className="text-xs text-slate-500">{fac.village}, {fac.district}</div>
                 </div>
                 <div className="grid grid-cols-3 gap-2 pt-2 border-t font-mono text-center text-xs">
-                  <div className="p-1.5 rounded bg-white dark:bg-slate-900 border">
+                  <div className="p-1.5 rounded bg-teal-50/90 border">
                     <div className="text-[9px] text-slate-400">System</div>
                     <div className="font-bold">{fac.systemSlots}</div>
                   </div>
-                  <div className="p-1.5 rounded bg-white dark:bg-slate-900 border">
+                  <div className="p-1.5 rounded bg-teal-50/90 border">
                     <div className="text-[9px] text-red-500 font-bold">Critical</div>
                     <div className="font-bold text-red-600">{fac.criticalSlots}</div>
                   </div>
-                  <div className="p-1.5 rounded bg-white dark:bg-slate-900 border">
+                  <div className="p-1.5 rounded bg-teal-50/90 border">
                     <div className="text-[9px] text-emerald-500 font-bold">Walk-In</div>
                     <div className="font-bold text-emerald-600">{fac.walkInSlots}</div>
                   </div>
@@ -599,10 +599,10 @@ export default function SuperAdminConsole() {
 
       {/* TAB 4: OPEN-SOURCE MICROSERVICES & INTEGRATIONS */}
       {activeTab === "services" && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+        <div className="bg-teal-50/90 border border-teal-300 rounded-3xl p-6 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b pb-4">
             <div>
-              <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+              <h2 className="text-lg font-black text-slate-900 text-slate-950 flex items-center gap-2">
                 <Server className="w-5 h-5 text-red-600" />
                 Open-Source Infrastructure &amp; Hardware Gateways
               </h2>
@@ -612,7 +612,7 @@ export default function SuperAdminConsole() {
             </div>
             <button
               onClick={() => setShowAddServiceModal(true)}
-              className="px-4 py-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs flex items-center gap-2 cursor-pointer shadow-md"
+              className="px-4 py-2.5 rounded-2xl bg-teal-700 hover:bg-teal-800 text-white text-white dark:text-slate-900 font-bold text-xs flex items-center gap-2 cursor-pointer shadow-md"
             >
               <PlusCircle className="w-4 h-4 text-red-500" />
               + Register Microservice
@@ -623,7 +623,7 @@ export default function SuperAdminConsole() {
             {openSourceServices.map((svc) => (
               <div
                 key={svc.id}
-                className="p-5 rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 space-y-3"
+                className="p-5 rounded-3xl border border-teal-300 bg-teal-100/70 space-y-3"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -635,14 +635,14 @@ export default function SuperAdminConsole() {
                   </span>
                 </div>
                 <div>
-                  <h4 className="font-extrabold text-sm text-slate-900 dark:text-white">
+                  <h4 className="font-extrabold text-sm text-slate-900 text-slate-950">
                     {svc.name}
                   </h4>
                   <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
                     {svc.description}
                   </p>
                 </div>
-                <div className="font-mono text-[11px] text-slate-500 bg-white dark:bg-slate-900 p-2 rounded-xl border truncate">
+                <div className="font-mono text-[11px] text-slate-500 bg-teal-50/90 p-2 rounded-xl border truncate">
                   {svc.endpointUrl}
                 </div>
               </div>
@@ -653,10 +653,10 @@ export default function SuperAdminConsole() {
 
       {/* TAB 5: IMMUTABLE SHA-256 AUDIT LEDGER */}
       {activeTab === "audit_ledger" && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+        <div className="bg-teal-50/90 border border-teal-300 rounded-3xl p-6 shadow-sm space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4">
             <div>
-              <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+              <h2 className="text-lg font-black text-slate-900 text-slate-950 flex items-center gap-2">
                 <FileCheck2 className="w-5 h-5 text-emerald-600" />
                 Immutable SHA-256 Cryptographic Audit Ledger
               </h2>
@@ -673,7 +673,7 @@ export default function SuperAdminConsole() {
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 uppercase tracking-wider font-bold">
+              <thead className="bg-teal-100/70 text-slate-500 uppercase tracking-wider font-bold">
                 <tr>
                   <th className="py-2.5 px-3">Entry ID</th>
                   <th className="py-2.5 px-3">Timestamp</th>
@@ -685,7 +685,7 @@ export default function SuperAdminConsole() {
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
                 {auditLogs.slice(0, 30).map((log) => (
-                  <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-950/50">
+                  <tr key={log.id} className="hover:bg-slate-50 ">
                     <td className="py-3 px-3 font-mono font-bold text-slate-800 dark:text-slate-200">
                       {log.id}
                     </td>
@@ -693,7 +693,7 @@ export default function SuperAdminConsole() {
                       {log.timestamp.slice(0, 19).replace("T", " ")}
                     </td>
                     <td className="py-3 px-3">
-                      <div className="font-bold text-slate-900 dark:text-white">{log.actorName}</div>
+                      <div className="font-bold text-slate-900 text-slate-950">{log.actorName}</div>
                       <div className="text-[10px] text-slate-400">{log.actorRole}</div>
                     </td>
                     <td className="py-3 px-3">
@@ -726,7 +726,7 @@ export default function SuperAdminConsole() {
       {/* PROVISION STAFF MODAL */}
       {showAddStaffModal && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="relative w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 text-slate-900 dark:text-white space-y-4">
+          <div className="relative w-full max-w-md rounded-3xl bg-teal-50/90 border border-teal-300 shadow-2xl p-6 text-slate-900 text-slate-950 space-y-4">
             <h3 className="font-extrabold text-base flex items-center gap-2">
               <UserPlus className="w-5 h-5 text-red-600" />
               Provision Healthcare Professional
@@ -740,7 +740,7 @@ export default function SuperAdminConsole() {
                   placeholder="e.g. Dr. Himanta Sarma"
                   value={newStaffForm.name}
                   onChange={(e) => setNewStaffForm({ ...newStaffForm, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-bold"
+                  className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-bold"
                 />
               </div>
 
@@ -750,7 +750,7 @@ export default function SuperAdminConsole() {
                   <select
                     value={newStaffForm.role}
                     onChange={(e) => setNewStaffForm({ ...newStaffForm, role: e.target.value as UserRole })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-bold"
+                    className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-bold"
                   >
                     <option value="clinician">Clinician (Doctor)</option>
                     <option value="worker">Frontline Worker</option>
@@ -763,7 +763,7 @@ export default function SuperAdminConsole() {
                   <select
                     value={newStaffForm.subRole}
                     onChange={(e) => setNewStaffForm({ ...newStaffForm, subRole: e.target.value as any })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-bold"
+                    className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-bold"
                   >
                     <option value="doctor">Doctor</option>
                     <option value="nurse">Nurse / ANM</option>
@@ -779,7 +779,7 @@ export default function SuperAdminConsole() {
                   <select
                     value={newStaffForm.organizationId}
                     onChange={(e) => setNewStaffForm({ ...newStaffForm, organizationId: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-bold"
+                    className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-bold"
                   >
                     {allOrganizations.map((o) => (
                       <option key={o.id} value={o.id}>
@@ -793,7 +793,7 @@ export default function SuperAdminConsole() {
                   <select
                     value={newStaffForm.facilityId}
                     onChange={(e) => setNewStaffForm({ ...newStaffForm, facilityId: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-bold"
+                    className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-bold"
                   >
                     {allFacilities.map((f) => (
                       <option key={f.id} value={f.id}>
@@ -811,7 +811,7 @@ export default function SuperAdminConsole() {
                   type="password"
                   value={newStaffForm.passcode}
                   onChange={(e) => setNewStaffForm({ ...newStaffForm, passcode: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-mono font-bold"
+                  className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-mono font-bold"
                 />
               </div>
 
@@ -839,7 +839,7 @@ export default function SuperAdminConsole() {
       {/* PROVISION CLINIC MODAL */}
       {showAddClinicModal && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="relative w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 text-slate-900 dark:text-white space-y-4">
+          <div className="relative w-full max-w-md rounded-3xl bg-teal-50/90 border border-teal-300 shadow-2xl p-6 text-slate-900 text-slate-950 space-y-4">
             <h3 className="font-extrabold text-base flex items-center gap-2">
               <Hexagon className="w-5 h-5 text-red-600" />
               Add Clinic to Hexagonal Mesh
@@ -852,7 +852,7 @@ export default function SuperAdminConsole() {
                   type="text"
                   value={newClinicForm.name}
                   onChange={(e) => setNewClinicForm({ ...newClinicForm, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-bold"
+                  className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-bold"
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -863,7 +863,7 @@ export default function SuperAdminConsole() {
                     type="text"
                     value={newClinicForm.village}
                     onChange={(e) => setNewClinicForm({ ...newClinicForm, village: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-medium"
+                    className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-medium"
                   />
                 </div>
                 <div>
@@ -873,7 +873,7 @@ export default function SuperAdminConsole() {
                     type="text"
                     value={newClinicForm.hexagonId}
                     onChange={(e) => setNewClinicForm({ ...newClinicForm, hexagonId: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-bold font-mono"
+                    className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-bold font-mono"
                   />
                 </div>
               </div>
@@ -931,7 +931,7 @@ export default function SuperAdminConsole() {
       {/* REGISTER OPEN SERVICE MODAL */}
       {showAddServiceModal && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="relative w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 text-slate-900 dark:text-white space-y-4">
+          <div className="relative w-full max-w-md rounded-3xl bg-teal-50/90 border border-teal-300 shadow-2xl p-6 text-slate-900 text-slate-950 space-y-4">
             <h3 className="font-extrabold text-base flex items-center gap-2">
               <Server className="w-5 h-5 text-red-600" />
               Register Open-Source Service
@@ -944,7 +944,7 @@ export default function SuperAdminConsole() {
                   type="text"
                   value={newServiceForm.name}
                   onChange={(e) => setNewServiceForm({ ...newServiceForm, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-bold"
+                  className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-bold"
                 />
               </div>
               <div>
@@ -954,7 +954,7 @@ export default function SuperAdminConsole() {
                   type="text"
                   value={newServiceForm.category}
                   onChange={(e) => setNewServiceForm({ ...newServiceForm, category: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-medium"
+                  className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-medium"
                 />
               </div>
               <div>
@@ -964,7 +964,7 @@ export default function SuperAdminConsole() {
                   type="text"
                   value={newServiceForm.endpointUrl}
                   onChange={(e) => setNewServiceForm({ ...newServiceForm, endpointUrl: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-mono font-medium"
+                  className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-mono font-medium"
                 />
               </div>
               <div>
@@ -973,7 +973,7 @@ export default function SuperAdminConsole() {
                   rows={2}
                   value={newServiceForm.description}
                   onChange={(e) => setNewServiceForm({ ...newServiceForm, description: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-medium"
+                  className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-medium"
                 />
               </div>
 
@@ -1000,4 +1000,6 @@ export default function SuperAdminConsole() {
     </div>
   );
 }
+
+
 

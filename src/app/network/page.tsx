@@ -96,23 +96,23 @@ export default function NetworkPage() {
       {/* =================================================================== */}
       {/* PAGE HEADER & LIVE NETWORK TELEMETRY STRIP (100% API-DRIVEN)        */}
       {/* =================================================================== */}
-      <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-xs">
+      <div className="bg-gradient-to-br from-teal-100/90 via-emerald-100/70 to-cyan-100/80 rounded-3xl border-2 border-teal-300 p-6 sm:p-8 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold">
-              <Hexagon className="w-4 h-4 text-emerald-600" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-200 border border-teal-400 text-teal-950 text-sm font-bold">
+              <Hexagon className="w-4 h-4 text-teal-700" />
               <span>
                 H3 Spatial Mesh • {totalClinics} Connected Village Clinics •{" "}
                 {totalNetworkSlots} Total Daily Slots
               </span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 tracking-tight leading-snug">
+            <h1 className="text-2xl sm:text-4xl font-bold text-slate-950 tracking-tight leading-snug">
               {t.hexMeshTitle}
             </h1>
-            <p className="text-base text-slate-600 leading-relaxed">
+            <p className="text-base text-slate-800 leading-relaxed font-medium">
               When any village clinic reaches <strong>100% critical capacity</strong>, incoming
               high-risk patients are{" "}
-              <strong className="text-slate-900">
+              <strong className="text-slate-950">
                 equally broadcasted across all adjacent Hexagon ring clinics
               </strong>
               . Whichever neighbor clinic accepts first immediately locks the case and receives
@@ -122,38 +122,38 @@ export default function NetworkPage() {
 
           {/* Live Mesh Summary Pills */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 shrink-0">
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90">
-              <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <div className="p-4 rounded-2xl bg-teal-100/90 border border-teal-300">
+              <div className="text-xs font-bold uppercase tracking-wider text-teal-800">
                 Active Clinics
               </div>
-              <div className="text-2xl font-bold font-mono text-slate-900 mt-1">
+              <div className="text-2xl font-bold font-mono text-slate-950 mt-1">
                 {totalClinics} Hexagons
               </div>
-              <div className="text-xs font-semibold text-emerald-700 mt-0.5">
+              <div className="text-xs font-bold text-teal-900 mt-0.5">
                 Ring Connected
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-red-50/70 border border-red-200">
-              <div className="text-xs font-bold uppercase tracking-wider text-red-700">
+            <div className="p-4 rounded-2xl bg-rose-100/90 border border-rose-300">
+              <div className="text-xs font-bold uppercase tracking-wider text-rose-800">
                 Ring Broadcasts
               </div>
-              <div className="text-2xl font-bold font-mono text-red-600 mt-1">
+              <div className="text-2xl font-bold font-mono text-rose-700 mt-1">
                 {snapshot.stats.activeHexBroadcasts} Live
               </div>
-              <div className="text-xs font-semibold text-red-700 mt-0.5">
+              <div className="text-xs font-bold text-rose-800 mt-0.5">
                 Awaiting Claim
               </div>
             </div>
 
-            <div className="col-span-2 sm:col-span-1 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200">
+            <div className="col-span-2 sm:col-span-1 p-4 rounded-2xl bg-emerald-100/90 border border-emerald-300">
               <div className="text-xs font-bold uppercase tracking-wider text-emerald-800">
                 Walk-In Shield
               </div>
-              <div className="text-2xl font-bold font-mono text-emerald-700 mt-1">
+              <div className="text-2xl font-bold font-mono text-emerald-800 mt-1">
                 {totalProtectedWalkIns} / {totalProtectedWalkIns}
               </div>
-              <div className="text-xs font-semibold text-emerald-800 mt-0.5">
+              <div className="text-xs font-bold text-emerald-900 mt-0.5">
                 100% Untouched
               </div>
             </div>
@@ -166,7 +166,7 @@ export default function NetworkPage() {
       {/* =================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
         {/* Left 7 Cols: Interactive Honeycomb Spatial Radar */}
-        <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-xs flex flex-col justify-between space-y-6">
+        <div className="lg:col-span-7 bg-teal-50/90 rounded-3xl border-2 border-teal-300 p-6 sm:p-8 shadow-xs flex flex-col justify-between space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
@@ -420,8 +420,8 @@ export default function NetworkPage() {
                     onClick={() => setSelectedFacilityId(fac.id)}
                     className={`min-h-[40px] px-3.5 py-1.5 rounded-xl text-sm font-bold border transition-all ${
                       active
-                        ? "bg-emerald-600 border-emerald-600 text-white shadow-xs"
-                        : "bg-white border-slate-300 text-slate-700 hover:bg-slate-100"
+                        ? "bg-teal-700 border-teal-800 text-white shadow-xs"
+                        : "bg-teal-100/80 border-teal-300 text-teal-950 hover:bg-teal-200/80"
                     }`}
                   >
                     {fac.hexagonId} • {fac.village}
@@ -432,19 +432,19 @@ export default function NetworkPage() {
           </div>
 
           {/* Selected Facility Control Bar */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="p-4 sm:p-5 rounded-2xl bg-teal-100/70 border border-teal-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-md bg-emerald-600 text-white font-mono text-xs font-bold">
+                <span className="px-2.5 py-0.5 rounded-md bg-teal-700 text-white font-mono text-xs font-bold">
                   {selectedFacility.hexagonId}
                 </span>
-                <h3 className="text-base font-bold text-slate-900">
+                <h3 className="text-base font-bold text-slate-950">
                   {selectedFacility.name}
                 </h3>
               </div>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-teal-950 font-medium">
                 Adjacent Ring Neighbors:{" "}
-                <strong className="font-mono text-emerald-700">
+                <strong className="font-mono text-teal-800 font-extrabold">
                   {selectedFacility.adjacentHexagons.join(", ")}
                 </strong>{" "}
                 • Total Slots:{" "}
@@ -466,8 +466,8 @@ export default function NetworkPage() {
               }
               className={`min-h-[44px] px-4 py-2.5 rounded-xl border text-sm font-bold transition-colors shrink-0 flex items-center gap-2 ${
                 selectedFacility.clinicianOnDuty
-                  ? "bg-emerald-50 border-emerald-300 text-emerald-800 hover:bg-emerald-100"
-                  : "bg-red-50 border-red-300 text-red-700 hover:bg-red-100"
+                  ? "bg-emerald-100 border-emerald-400 text-emerald-950 hover:bg-emerald-200"
+                  : "bg-rose-100 border-rose-400 text-rose-950 hover:bg-rose-200"
               }`}
             >
               <Stethoscope className="w-4 h-4" />
@@ -482,23 +482,23 @@ export default function NetworkPage() {
         </div>
 
         {/* Right 5 Cols: Equal Neighbor-Ring Broadcast Queue */}
-        <div className="lg:col-span-5 bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-xs flex flex-col justify-between space-y-6">
+        <div className="lg:col-span-5 bg-rose-50/90 rounded-3xl border-2 border-rose-300 p-6 sm:p-8 shadow-xs flex flex-col justify-between space-y-6">
           <div className="space-y-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-700 text-xs font-bold uppercase tracking-wider">
-                <Radio className="w-3.5 h-3.5 text-red-600" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-200 border border-rose-300 text-rose-900 text-xs font-bold uppercase tracking-wider">
+                <Radio className="w-3.5 h-3.5 text-rose-700" />
                 Equal Neighbor-Ring Broadcasts
               </span>
-              <span className="font-mono text-xs font-bold text-slate-500">
+              <span className="font-mono text-xs font-bold text-rose-800">
                 FIRST-ACCEPT LOCK
               </span>
             </div>
 
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
                 Incoming Overflow Handovers
               </h2>
-              <p className="text-base text-slate-600 mt-1 leading-relaxed">
+              <p className="text-base text-slate-800 mt-1 leading-relaxed font-medium">
                 When a village clinic is 100% full, its critical patient query broadcasts
                 simultaneously to every adjacent Hexagon clinic below.
               </p>
@@ -512,16 +512,16 @@ export default function NetworkPage() {
                     key={bc.id}
                     className={`p-5 rounded-2xl border transition-all space-y-4 ${
                       isBroadcasting
-                        ? "bg-red-50/60 border-red-300 shadow-xs"
-                        : "bg-emerald-50/60 border-emerald-300"
+                        ? "bg-rose-100/90 border-rose-300 shadow-xs"
+                        : "bg-emerald-100/90 border-emerald-300"
                     }`}
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-slate-900 text-lg">
+                        <span className="font-mono font-bold text-slate-950 text-lg">
                           {bc.pseudonym}
                         </span>
-                        <span className="px-2.5 py-0.5 rounded-md bg-slate-900 text-white font-mono text-xs font-bold">
+                        <span className="px-2.5 py-0.5 rounded-md bg-rose-700 text-white font-mono text-xs font-bold">
                           Score {bc.priorityScore}
                         </span>
                       </div>
@@ -539,14 +539,14 @@ export default function NetworkPage() {
                       </span>
                     </div>
 
-                    <div className="text-sm text-slate-700 flex flex-wrap items-center gap-2">
+                    <div className="text-sm text-slate-800 font-medium flex flex-wrap items-center gap-2">
                       <span>Origin Clinic:</span>
-                      <strong className="text-slate-900">
+                      <strong className="text-slate-950">
                         {bc.originFacilityName} ({bc.originHexagonId})
                       </strong>
                     </div>
 
-                    <div className="p-3.5 rounded-xl bg-white border border-red-200 font-mono text-sm font-bold text-red-700">
+                    <div className="p-3.5 rounded-xl bg-rose-200/80 border border-rose-300 font-mono text-sm font-bold text-rose-900">
                       {bc.vitalsSummary}
                     </div>
 
@@ -626,7 +626,7 @@ export default function NetworkPage() {
       {/* =================================================================== */}
       {/* BOTTOM SECTION: CLINIC CAPACITY ISOLATOR (DYNAMIC SLOTS FROM API)    */}
       {/* =================================================================== */}
-      <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-xs space-y-6">
+      <div className="bg-emerald-50/90 rounded-3xl border-2 border-emerald-300 p-6 sm:p-8 shadow-xs space-y-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2">
             <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-700">

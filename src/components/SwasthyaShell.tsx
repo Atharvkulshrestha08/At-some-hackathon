@@ -759,11 +759,11 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         openPhoneDrawer,
       }}
     >
-      <div className="min-h-screen bg-[#FAFAFA] text-slate-900 flex flex-col">
+      <div className="min-h-screen bg-gradient-to-b from-emerald-100/40 via-teal-50/50 to-sky-100/40 text-slate-900 flex flex-col">
         {/* ================================================================= */}
         {/* SINGLE ULTRA-CLEAN 21ST.DEV FLOATING HEADER BAR                   */}
         {/* ================================================================= */}
-        <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200/80">
+        <header className="sticky top-0 z-40 bg-teal-100/90 backdrop-blur-xl border-b border-teal-300/80 shadow-xs">
           <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2.5">
             {/* Left: Crisp Medical Brand + Active Multi-Tenant Organization Pill */}
             <div className="flex items-center gap-2 shrink-0">
@@ -771,11 +771,11 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                 href="/"
                 className="min-h-[44px] flex items-center gap-2 shrink-0 whitespace-nowrap"
               >
-                <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-center shadow-xs ring-1 ring-emerald-200">
                   <Cross className="w-4 h-4" />
                 </div>
-                <span className="text-base font-bold tracking-tight text-slate-900">
-                  Swasthya<span className="text-emerald-700">Sense</span>
+                <span className="text-base font-extrabold tracking-tight text-slate-950">
+                  Swasthya<span className="text-teal-700">Sense</span>
                 </span>
               </Link>
 
@@ -784,7 +784,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                 type="button"
                 onClick={() => setShowLandingPage(true)}
                 title="View Product Landing Page & 3D Patient Journey"
-                className="min-h-[38px] px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1 whitespace-nowrap transition-colors cursor-pointer"
+                className="min-h-[38px] px-2.5 py-1 rounded-xl bg-teal-200/80 hover:bg-teal-300 border border-teal-400 text-teal-950 text-xs font-bold flex items-center gap-1 whitespace-nowrap transition-colors cursor-pointer"
               >
                 <span>Landing Page</span>
               </button>
@@ -794,14 +794,14 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                 type="button"
                 onClick={openSignInModal}
                 title="Switch Organization or Sign In with Organization Credentials"
-                className="min-h-[38px] px-2.5 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-1.5 whitespace-nowrap transition-colors cursor-pointer"
+                className="min-h-[38px] px-2.5 py-1 rounded-xl bg-emerald-200/80 hover:bg-emerald-300 border border-emerald-400 text-emerald-950 text-xs font-bold flex items-center gap-1.5 whitespace-nowrap transition-colors cursor-pointer"
               >
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                <Building2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse shrink-0" />
+                <Building2 className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                 <span className="max-w-[120px] sm:max-w-[160px] truncate">
                   {snapshot?.activeOrganization?.shortName ?? "Sevak Health"}
                 </span>
-                <span className="hidden md:inline-block px-1.5 py-0.5 rounded bg-emerald-600 text-white text-[10px] font-mono">
+                <span className="hidden md:inline-block px-1.5 py-0.5 rounded bg-teal-700 text-white text-[10px] font-mono">
                   {currentStaffObj?.title || `${snapshot?.activeOrganization?.teamSize ?? 15} Staff`}
                 </span>
               </button>
@@ -810,7 +810,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
             {/* Center (xl+): 21st.dev Floating Segmented Pill Nav */}
             <nav
               aria-label="Primary Navigation"
-              className="hidden xl:flex items-center bg-slate-100/90 p-1 rounded-full border border-slate-200/70"
+              className="hidden xl:flex items-center bg-teal-200/60 p-1 rounded-full border border-teal-300"
             >
               {navItems.map((item) => {
                 const Icon = item.icon;
@@ -823,15 +823,15 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`min-h-[38px] px-3 py-1.5 rounded-full text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all ${
+                    className={`min-h-[38px] px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-1.5 whitespace-nowrap transition-all ${
                       isActive
-                        ? "bg-white text-slate-900 shadow-xs border border-slate-200/60"
-                        : "text-slate-600 hover:text-slate-900"
+                        ? "bg-teal-700 text-white shadow-xs"
+                        : "text-teal-950 hover:bg-teal-100/80"
                     }`}
                   >
                     <Icon
                       className={`w-4 h-4 shrink-0 ${
-                        isActive ? "text-emerald-600" : "text-slate-400"
+                        isActive ? "text-emerald-200" : "text-teal-700"
                       }`}
                     />
                     <span>{item.label}</span>
@@ -840,7 +840,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                         className={`px-1.5 py-0.2 rounded-full text-[11px] font-mono font-bold leading-tight ${
                           item.alertRed
                             ? "bg-rose-600 text-white"
-                            : "bg-emerald-100 text-emerald-800"
+                            : "bg-emerald-200 text-emerald-950"
                         }`}
                       >
                         {item.count}
@@ -857,7 +857,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={openRegisterPatientModal}
-                className="min-h-[40px] px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 whitespace-nowrap shadow-xs transition-colors cursor-pointer"
+                className="min-h-[40px] px-3 py-1.5 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 whitespace-nowrap shadow-xs transition-colors cursor-pointer"
               >
                 <UserPlus className="w-4 h-4 shrink-0" />
                 <span className="hidden sm:inline">+ Register Patient</span>
@@ -931,22 +931,22 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         {/* RESPONSIVE SLIDE-OVER DRAWER FOR MOBILE / TABLET (< xl)           */}
         {/* ================================================================= */}
         {mobileMenuOpen && (
-          <div className="xl:hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex justify-end">
-            <div className="w-full max-w-sm bg-white h-full p-6 flex flex-col justify-between overflow-y-auto shadow-2xl">
+          <div className="xl:hidden fixed inset-0 z-50 bg-teal-950/40 backdrop-blur-xs flex justify-end">
+            <div className="w-full max-w-sm bg-gradient-to-b from-teal-100 to-emerald-100 border-l border-teal-300 h-full p-6 flex flex-col justify-between overflow-y-auto shadow-2xl">
               <div className="space-y-6">
-                <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+                <div className="flex items-center justify-between pb-4 border-b border-teal-300">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+                    <div className="w-9 h-9 rounded-xl bg-teal-700 text-white flex items-center justify-center">
                       <Cross className="w-4 h-4" />
                     </div>
-                    <span className="text-lg font-bold text-slate-900">
-                      Swasthya<span className="text-emerald-700">Sense</span>
+                    <span className="text-lg font-bold text-slate-950">
+                      Swasthya<span className="text-teal-700">Sense</span>
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="min-h-[44px] min-w-[44px] rounded-xl bg-slate-100 flex items-center justify-center"
+                    className="min-h-[44px] min-w-[44px] rounded-xl bg-teal-200 text-teal-950 flex items-center justify-center"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -960,9 +960,9 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                       setMobileMenuOpen(false);
                       openSignInModal();
                     }}
-                    className="min-h-[44px] px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold flex items-center justify-center gap-1.5"
+                    className="min-h-[44px] px-3 py-2 rounded-xl bg-teal-200 border border-teal-400 text-teal-950 text-sm font-bold flex items-center justify-center gap-1.5"
                   >
-                    <Building2 className="w-4 h-4" />
+                    <Building2 className="w-4 h-4 text-teal-700" />
                     <span>Org Sign-In</span>
                   </button>
                   <button
@@ -971,7 +971,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                       setMobileMenuOpen(false);
                       openRegisterPatientModal();
                     }}
-                    className="min-h-[44px] px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold flex items-center justify-center gap-1.5"
+                    className="min-h-[44px] px-3 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-sm font-bold flex items-center justify-center gap-1.5 shadow-md shadow-teal-700/20"
                   >
                     <UserPlus className="w-4 h-4" />
                     <span>+ Register Pt</span>
@@ -991,10 +991,10 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`min-h-[48px] px-4 py-3 rounded-xl text-base font-semibold flex items-center justify-between ${
+                        className={`min-h-[48px] px-4 py-3 rounded-xl text-base font-semibold flex items-center justify-between transition-colors ${
                           isActive
-                            ? "bg-emerald-600 text-white"
-                            : "text-slate-700 hover:bg-slate-100"
+                            ? "bg-teal-700 text-white shadow-md shadow-teal-700/20"
+                            : "text-teal-950 hover:bg-teal-200/70"
                         }`}
                       >
                         <span className="flex items-center gap-3">
@@ -1005,7 +1005,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                           <span
                             className={`px-2 py-0.5 rounded-full text-xs font-bold ${
                               isActive
-                                ? "bg-white text-emerald-800"
+                                ? "bg-teal-100 text-teal-900"
                                 : "bg-red-600 text-white"
                             }`}
                           >
@@ -1131,14 +1131,14 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         {/* ================================================================= */}
         {/* SUBTLE COMPLIANCE & LIVE API CONNECTOR FOOTER                     */}
         {/* ================================================================= */}
-        <footer className="bg-white border-t border-slate-200/80 py-4 mt-12">
-          <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-slate-500">
+        <footer className="bg-teal-100/90 border-t border-teal-300/80 py-4 mt-12">
+          <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-teal-950 font-medium">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2 py-0.5 rounded bg-red-50 text-red-700 font-semibold text-xs border border-red-200">
+              <span className="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-xs border border-rose-300">
                 DECISION-SUPPORT ONLY • NOT A DIAGNOSTIC DEVICE
               </span>
-              <span className="inline-flex items-center gap-1 text-xs font-mono text-slate-600">
-                <Database className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="inline-flex items-center gap-1 text-xs font-mono text-teal-900 font-semibold">
+                <Database className="w-3.5 h-3.5 text-teal-700" />
                 {snapshot?.integrations?.supabasePostgres.mode ??
                   snapshot?.postgresEngineStatus}{" "}
                 • Tenant: {snapshot?.activeOrganization?.shortName} (
@@ -1147,24 +1147,24 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <span className="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 font-semibold flex items-center gap-1.5 text-xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+              <span className="px-2.5 py-1 rounded-lg bg-emerald-200/80 border border-emerald-400 text-emerald-950 font-bold flex items-center gap-1.5 text-xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping" />
                 Live Sessions ({snapshot?.activeSessions?.length ?? 3} Active Tenants)
               </span>
-              <span className="text-emerald-700 font-medium flex items-center gap-1 text-xs sm:text-sm">
-                <ShieldCheck className="w-4 h-4" />
+              <span className="text-teal-900 font-bold flex items-center gap-1 text-xs sm:text-sm">
+                <ShieldCheck className="w-4 h-4 text-teal-700" />
                 SHA-256 Chain Verified ({snapshot?.auditIntegrity.totalEntries ?? 0})
               </span>
               <button
                 onClick={() => executeAction({ action: "RESET_DEMO" })}
-                className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium flex items-center gap-1 text-xs cursor-pointer"
+                className="px-2.5 py-1 rounded-lg bg-teal-200 hover:bg-teal-300 text-teal-950 font-bold flex items-center gap-1 text-xs cursor-pointer border border-teal-400"
               >
                 <RefreshCw className="w-3 h-3" />
                 Reset State
               </button>
               <button
                 onClick={handleSignOutToLanding}
-                className="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold flex items-center gap-1 text-xs cursor-pointer"
+                className="px-2.5 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-300 font-bold flex items-center gap-1 text-xs cursor-pointer"
               >
                 Sign Out
               </button>
@@ -1176,36 +1176,36 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         {/* MODAL 1: MULTI-ORGANIZATION SIGN-IN & LANDING PORTAL              */}
         {/* ================================================================= */}
         {signInModalOpen && snapshot && (
-          <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 overflow-y-auto">
-            <div className="w-full h-full sm:h-auto sm:max-w-2xl bg-white sm:rounded-2xl border border-slate-200 p-6 shadow-2xl space-y-5 overflow-y-auto max-h-[92vh]">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+          <div className="fixed inset-0 z-50 bg-teal-950/40 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 overflow-y-auto">
+            <div className="w-full h-full sm:h-auto sm:max-w-2xl bg-gradient-to-br from-emerald-50 via-teal-50 to-sky-50 sm:rounded-2xl border-2 border-teal-300 p-6 shadow-2xl space-y-5 overflow-y-auto max-h-[92vh]">
+              <div className="flex items-center justify-between border-b border-teal-200 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-teal-700 text-white flex items-center justify-center">
                     <Building2 className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-emerald-700 uppercase">
+                    <span className="text-xs font-bold text-teal-800 uppercase">
                       Strict Multi-Tenant Organization Isolation
                     </span>
-                    <h3 className="text-xl font-bold text-slate-900">
+                    <h3 className="text-xl font-bold text-slate-950">
                       Organization Sign-In & 15-Worker Team Portal
                     </h3>
                   </div>
                 </div>
                 <button
                   onClick={() => setSignInModalOpen(false)}
-                  className="min-h-[44px] min-w-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center"
+                  className="min-h-[44px] min-w-[44px] rounded-xl bg-teal-200 hover:bg-teal-300 text-teal-950 flex items-center justify-center"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="p-4 rounded-xl bg-emerald-50/80 border border-emerald-200 text-sm text-slate-800 space-y-1.5">
-                <p className="font-bold text-emerald-950 flex items-center gap-1.5">
-                  <Lock className="w-4 h-4 text-emerald-700" />
+              <div className="p-4 rounded-xl bg-teal-100/80 border border-teal-300 text-sm text-slate-900 space-y-1.5 font-medium">
+                <p className="font-bold text-teal-950 flex items-center gap-1.5">
+                  <Lock className="w-4 h-4 text-teal-700" />
                   Zero Cross-Organization Data Leakage (PostgreSQL RLS + API Gate)
                 </p>
-                <p className="text-slate-700 leading-relaxed">
+                <p className="text-slate-800 leading-relaxed">
                   When you sign into an organization (for example,{" "}
                   <strong>Sevak Health Foundation</strong> with its{" "}
                   <strong>15-person frontline worker team</strong>), you only
@@ -1217,14 +1217,14 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+              <div className="flex items-center gap-2 border-b border-teal-200 pb-3">
                 <button
                   type="button"
                   onClick={() => setSignInTab("signin")}
                   className={`min-h-[40px] px-4 py-2 rounded-xl text-sm font-bold ${
                     signInTab === "signin"
-                      ? "bg-slate-900 text-white"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                      ? "bg-teal-700 text-white shadow-md shadow-teal-700/20"
+                      : "bg-teal-100 text-teal-950 hover:bg-teal-200 border border-teal-300"
                   }`}
                 >
                   Sign Into Existing Organization ({snapshot.organizations.length})
@@ -1267,8 +1267,8 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                           className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
                             selectedOrgForLogin === preset.organizationId &&
                             selectedUserForLogin === preset.userId
-                              ? "bg-red-50 border-red-400 ring-2 ring-red-500/20"
-                              : "bg-white border-slate-200 hover:border-slate-300"
+                              ? "bg-rose-100 border-rose-400 ring-2 ring-rose-500/20"
+                              : "bg-teal-100/70 border-teal-300 hover:bg-teal-200/70"
                           }`}
                         >
                           <div className="font-mono font-bold text-red-600">
@@ -1308,8 +1308,8 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                             }}
                             className={`p-3.5 rounded-xl border text-left transition-all ${
                               selected
-                                ? "bg-emerald-50/70 border-emerald-600 ring-2 ring-emerald-500/20"
-                                : "bg-white border-slate-200 hover:border-slate-300"
+                                ? "bg-emerald-100/90 border-emerald-600 ring-2 ring-emerald-500/20"
+                                : "bg-teal-100/70 border-teal-300 hover:bg-teal-200/70"
                             }`}
                           >
                             <div className="flex items-center justify-between gap-2">
@@ -1537,8 +1537,8 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         {/* MODAL 2: + REGISTER NEW PATIENT INTO ACTIVE ORGANIZATION          */}
         {/* ================================================================= */}
         {registerModalOpen && snapshot && (
-          <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 overflow-y-auto">
-            <div className="w-full h-full sm:h-auto sm:max-w-2xl bg-white sm:rounded-2xl border border-slate-200 p-6 shadow-2xl space-y-5 overflow-y-auto max-h-[92vh]">
+          <div className="fixed inset-0 z-50 bg-teal-950/40 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 overflow-y-auto">
+            <div className="w-full h-full sm:h-auto sm:max-w-2xl bg-gradient-to-br from-emerald-50 via-teal-50 to-sky-50 sm:rounded-2xl border-2 border-teal-300 p-6 shadow-2xl space-y-5 overflow-y-auto max-h-[92vh]">
               <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
@@ -1756,7 +1756,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                           systolicBp: Number(e.target.value),
                         })
                       }
-                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-white border border-slate-300 text-sm font-mono font-bold"
+                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-teal-50 border border-teal-300 text-teal-950 focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm font-mono font-bold"
                     />
                   </div>
                   <div>
@@ -1772,7 +1772,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                           diastolicBp: Number(e.target.value),
                         })
                       }
-                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-white border border-slate-300 text-sm font-mono font-bold"
+                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-teal-50 border border-teal-300 text-teal-950 focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm font-mono font-bold"
                     />
                   </div>
                   <div>
@@ -1788,7 +1788,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                           heartRate: Number(e.target.value),
                         })
                       }
-                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-white border border-slate-300 text-sm font-mono font-bold"
+                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-teal-50 border border-teal-300 text-teal-950 focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm font-mono font-bold"
                     />
                   </div>
                   <div>
@@ -1804,7 +1804,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                           bloodGlucose: Number(e.target.value),
                         })
                       }
-                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-white border border-slate-300 text-sm font-mono font-bold"
+                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-teal-50 border border-teal-300 text-teal-950 focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm font-mono font-bold"
                     />
                   </div>
                   <div>
@@ -1821,7 +1821,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                           temperature: Number(e.target.value),
                         })
                       }
-                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-white border border-slate-300 text-sm font-mono font-bold"
+                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-teal-50 border border-teal-300 text-teal-950 focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm font-mono font-bold"
                     />
                   </div>
                   <div>
@@ -1837,7 +1837,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                           spo2: Number(e.target.value),
                         })
                       }
-                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-white border border-slate-300 text-sm font-mono font-bold"
+                      className="w-full min-h-[40px] px-3 py-1 rounded-lg bg-teal-50 border border-teal-300 text-teal-950 focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm font-mono font-bold"
                     />
                   </div>
                 </div>
@@ -1877,8 +1877,8 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         {/* MODAL 3: 5-VITAL CHECK-IN (DYNAMICALLY POPULATED FROM API CATALOG)*/}
         {/* ================================================================= */}
         {checkinModalPatient && snapshot && (
-          <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 overflow-y-auto">
-            <div className="w-full h-full sm:h-auto sm:max-w-xl bg-white sm:rounded-2xl border border-slate-200 p-6 shadow-2xl space-y-5 overflow-y-auto">
+          <div className="fixed inset-0 z-50 bg-teal-950/40 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 overflow-y-auto">
+            <div className="w-full h-full sm:h-auto sm:max-w-xl bg-gradient-to-br from-emerald-50 via-teal-50 to-sky-50 sm:rounded-2xl border-2 border-teal-300 p-6 shadow-2xl space-y-5 overflow-y-auto">
               <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
                   <span className="text-xs font-bold text-emerald-700 uppercase">
@@ -2082,18 +2082,18 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
         {/* SLIDE-OVER DRAWER: PATIENT WHATSAPP SIMULATOR (API-POPULATED)     */}
         {/* ================================================================= */}
         {phoneDrawerOpen && snapshot && (
-          <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex justify-end">
-            <div className="w-full sm:max-w-md bg-white h-full shadow-2xl border-l border-slate-200 p-6 flex flex-col justify-between">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+          <div className="fixed inset-0 z-50 bg-teal-950/40 backdrop-blur-xs flex justify-end">
+            <div className="w-full sm:max-w-md bg-gradient-to-b from-teal-50 to-emerald-50 h-full shadow-2xl border-l-2 border-teal-300 p-6 flex flex-col justify-between">
+              <div className="flex items-center justify-between pb-4 border-b border-teal-200">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-teal-700 text-white flex items-center justify-center">
                     <MessageSquare className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-slate-900">
+                    <h3 className="text-base font-bold text-slate-950">
                       Patient WhatsApp / SMS Handset
                     </h3>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-teal-800">
                       Gateway:{" "}
                       {snapshot.integrations?.messagingGateway.provider ??
                         "SIMULATED_SANDBOX"}
@@ -2102,7 +2102,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                 </div>
                 <button
                   onClick={() => setPhoneDrawerOpen(false)}
-                  className="min-h-[44px] min-w-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center"
+                  className="min-h-[44px] min-w-[44px] rounded-xl bg-teal-200 hover:bg-teal-300 text-teal-950 flex items-center justify-center"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -2115,7 +2115,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                 <select
                   value={selectedSimPatientId}
                   onChange={(e) => setSelectedSimPatientId(e.target.value)}
-                  className="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900"
+                  className="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-teal-100/90 border border-teal-300 text-sm font-semibold text-teal-950"
                 >
                   {snapshot.quickSortResult.combinedRanked
                     .slice(0, 25)
@@ -2127,10 +2127,10 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                 </select>
               </div>
 
-              <div className="flex-1 bg-[#EFEAE2] rounded-2xl border border-slate-200 p-4 overflow-y-auto space-y-3">
+              <div className="flex-1 bg-teal-100/50 rounded-2xl border border-teal-300 p-4 overflow-y-auto space-y-3">
                 {snapshot.messages.map((m) => (
                   <div key={m.id} className="space-y-1.5">
-                    <div className="p-3 rounded-2xl rounded-tl-xs bg-white shadow-xs text-slate-800 border border-slate-200/60">
+                    <div className="p-3 rounded-2xl rounded-tl-xs bg-emerald-50/95 shadow-xs text-slate-900 border border-teal-200">
                       <div className="flex items-center justify-between text-[11px] font-mono font-bold text-emerald-700 mb-1">
                         <span>
                           To: {m.pseudonym} ({m.language.toUpperCase()})

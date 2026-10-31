@@ -332,7 +332,7 @@ export default function PostOpRecoveryBridge() {
   return (
     <div className="space-y-6">
       {/* Top Header Strip */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+      <div className="bg-teal-50/90 border border-teal-300 rounded-3xl p-6 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2.5 mb-1.5">
@@ -345,7 +345,7 @@ export default function PostOpRecoveryBridge() {
                 QuickSort Pivot Priority Integrated
               </span>
             </div>
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl font-black text-slate-900 text-slate-950 tracking-tight">
               Post-Surgical Bedside Bridge & Ward OCR Digitizer
             </h1>
             <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-3xl">
@@ -361,7 +361,7 @@ export default function PostOpRecoveryBridge() {
               onClick={() => setActiveTab("wired_monitor")}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === "wired_monitor"
-                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                  ? "bg-teal-50/90 text-slate-900 text-slate-950 shadow-xs"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
               }`}
             >
@@ -372,7 +372,7 @@ export default function PostOpRecoveryBridge() {
               onClick={() => setActiveTab("ocr_register")}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === "ocr_register"
-                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                  ? "bg-teal-50/90 text-slate-900 text-slate-950 shadow-xs"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
               }`}
             >
@@ -383,7 +383,7 @@ export default function PostOpRecoveryBridge() {
               onClick={() => setActiveTab("historical_reports")}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === "historical_reports"
-                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                  ? "bg-teal-50/90 text-slate-900 text-slate-950 shadow-xs"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
               }`}
             >
@@ -395,7 +395,7 @@ export default function PostOpRecoveryBridge() {
       </div>
 
       {/* Target Patient Selector & Active Status Pill */}
-      <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-teal-100/70 border border-teal-300 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/80 text-red-600 flex items-center justify-center font-black">
             OT
@@ -404,7 +404,7 @@ export default function PostOpRecoveryBridge() {
             <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               Assigned Surgical Patient
             </div>
-            <div className="font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <div className="font-extrabold text-slate-900 text-slate-950 flex items-center gap-2">
               <span>{selectedPtObj?.pseudonym || "PT-MAT-204"}</span>
               <span className="text-xs font-normal text-slate-500">
                 ({selectedPtObj?.ageBand || "26-32 yrs"}, {selectedPtObj?.village || "Boko Central"})
@@ -420,7 +420,7 @@ export default function PostOpRecoveryBridge() {
           <select
             value={selectedPatientId}
             onChange={(e) => setSelectedPatientId(e.target.value)}
-            className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold text-slate-800 dark:text-slate-200"
+            className="px-3 py-1.5 rounded-xl border border-teal-300 bg-teal-50/90 text-xs font-bold text-slate-800 dark:text-slate-200"
           >
             {availablePatients.slice(0, 15).map((pt) => (
               <option key={pt.patientId} value={pt.patientId}>
@@ -480,7 +480,7 @@ export default function PostOpRecoveryBridge() {
                 <div className={`p-3 rounded-2xl border ${
                   liveSystolic < 90
                     ? "bg-red-950/60 border-red-800 text-red-400"
-                    : "bg-slate-900/80 border-slate-800 text-emerald-400"
+                    : "bg-teal-200/80 border-teal-300 text-emerald-400"
                 }`}>
                   <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                     NIBP (mmHg)
@@ -499,7 +499,7 @@ export default function PostOpRecoveryBridge() {
                 <div className={`p-3 rounded-2xl border ${
                   liveHeartRate > 110
                     ? "bg-red-950/60 border-red-800 text-red-400"
-                    : "bg-slate-900/80 border-slate-800 text-emerald-400"
+                    : "bg-teal-200/80 border-teal-300 text-emerald-400"
                 }`}>
                   <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                     Heart Rate (BPM)
@@ -516,7 +516,7 @@ export default function PostOpRecoveryBridge() {
                 <div className={`p-3 rounded-2xl border ${
                   liveSpO2 < 93
                     ? "bg-red-950/60 border-red-800 text-red-400"
-                    : "bg-slate-900/80 border-slate-800 text-cyan-400"
+                    : "bg-teal-200/80 border-teal-300 text-cyan-400"
                 }`}>
                   <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                     SpO2 (%)
@@ -533,7 +533,7 @@ export default function PostOpRecoveryBridge() {
                 <div className={`p-3 rounded-2xl border ${
                   liveTemp >= 38.0
                     ? "bg-red-950/60 border-red-800 text-red-400"
-                    : "bg-slate-900/80 border-slate-800 text-amber-400"
+                    : "bg-teal-200/80 border-teal-300 text-amber-400"
                 }`}>
                   <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                     Temp (°C)
@@ -547,7 +547,7 @@ export default function PostOpRecoveryBridge() {
                 </div>
 
                 {/* Respiration Rate */}
-                <div className="p-3 rounded-2xl border bg-slate-900/80 border-slate-800 text-purple-400">
+                <div className="p-3 rounded-2xl border bg-teal-200/80 border-teal-300 text-purple-400">
                   <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                     Resp Rate (/min)
                   </div>
@@ -563,7 +563,7 @@ export default function PostOpRecoveryBridge() {
                 <div className={`p-3 rounded-2xl border ${
                   isHemorrhagicShock
                     ? "bg-red-950/90 border-red-600 text-red-200 animate-pulse"
-                    : "bg-slate-900/80 border-slate-800 text-emerald-400"
+                    : "bg-teal-200/80 border-teal-300 text-emerald-400"
                 }`}>
                   <div className="text-[10px] text-slate-300 font-bold uppercase tracking-wider flex items-center justify-between">
                     <span>Shock Index</span>
@@ -629,9 +629,9 @@ export default function PostOpRecoveryBridge() {
           </div>
 
           {/* Right Column: Structured Handover Form */}
-          <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-4">
+          <div className="lg:col-span-5 bg-teal-50/90 border border-teal-300 rounded-3xl p-5 shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <h3 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+              <h3 className="text-base font-extrabold text-slate-900 text-slate-950 flex items-center gap-2">
                 <FileText className="w-4 h-4 text-red-600" />
                 Structured Surgical Handover
               </h3>
@@ -653,7 +653,7 @@ export default function PostOpRecoveryBridge() {
                   type="text"
                   value={surgeryType}
                   onChange={(e) => setSurgeryType(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-medium text-slate-900 dark:text-white"
+                  className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-medium text-slate-900 text-slate-950"
                 />
               </div>
 
@@ -666,7 +666,7 @@ export default function PostOpRecoveryBridge() {
                     type="text"
                     value={surgeonName}
                     onChange={(e) => setSurgeonName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-medium text-slate-900 dark:text-white"
+                    className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-medium text-slate-900 text-slate-950"
                   />
                 </div>
                 <div>
@@ -677,7 +677,7 @@ export default function PostOpRecoveryBridge() {
                     type="text"
                     value={anesthetistName}
                     onChange={(e) => setAnesthetistName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-medium text-slate-900 dark:text-white"
+                    className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-medium text-slate-900 text-slate-950"
                   />
                 </div>
               </div>
@@ -691,7 +691,7 @@ export default function PostOpRecoveryBridge() {
                     type="number"
                     value={drainOutputMl}
                     onChange={(e) => setDrainOutputMl(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-bold text-slate-900 dark:text-white"
+                    className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-bold text-slate-900 text-slate-950"
                   />
                 </div>
                 <div>
@@ -702,7 +702,7 @@ export default function PostOpRecoveryBridge() {
                     type="number"
                     value={urineOutputMl}
                     onChange={(e) => setUrineOutputMl(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-bold text-slate-900 dark:text-white"
+                    className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-bold text-slate-900 text-slate-950"
                   />
                 </div>
                 <div>
@@ -712,7 +712,7 @@ export default function PostOpRecoveryBridge() {
                   <select
                     value={consciousness}
                     onChange={(e) => setConsciousness(e.target.value as any)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-bold text-slate-900 dark:text-white"
+                    className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-bold text-slate-900 text-slate-950"
                   >
                     <option value="Alert">Alert</option>
                     <option value="Voice">Voice</option>
@@ -730,7 +730,7 @@ export default function PostOpRecoveryBridge() {
                   type="text"
                   value={woundStatus}
                   onChange={(e) => setWoundStatus(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-medium text-slate-900 dark:text-white"
+                  className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-medium text-slate-900 text-slate-950"
                 />
               </div>
 
@@ -742,7 +742,7 @@ export default function PostOpRecoveryBridge() {
                   rows={2}
                   value={clinicalNotes}
                   onChange={(e) => setClinicalNotes(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-medium text-slate-900 dark:text-white"
+                  className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-100/70 font-medium text-slate-900 text-slate-950"
                 />
               </div>
             </div>
@@ -797,7 +797,7 @@ export default function PostOpRecoveryBridge() {
                 className={`p-4 rounded-3xl border-2 transition-all cursor-pointer text-left ${
                   selectedPresetIndex === idx
                     ? "border-red-500 bg-red-50/50 dark:bg-red-950/30 shadow-md"
-                    : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300"
+                    : "border-teal-300 bg-teal-50/90 hover:border-slate-300"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
@@ -809,7 +809,7 @@ export default function PostOpRecoveryBridge() {
                     {sheet.ocrConfidence}% OCR Conf
                   </span>
                 </div>
-                <div className="font-extrabold text-sm text-slate-900 dark:text-white">
+                <div className="font-extrabold text-sm text-slate-900 text-slate-950">
                   {sheet.title}
                 </div>
                 <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">
@@ -825,7 +825,7 @@ export default function PostOpRecoveryBridge() {
           </div>
 
           {/* Active Clipboard Scanner Workspace */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+          <div className="bg-teal-50/90 border border-teal-300 rounded-3xl p-6 shadow-sm">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
               {/* Simulated Paper Clipboard Graphic with Bounding Boxes */}
               <div className="relative rounded-2xl bg-[#FFFDF8] dark:bg-[#121620] border-2 border-amber-200 dark:border-slate-700 p-5 shadow-inner overflow-hidden font-mono text-xs">
@@ -879,7 +879,7 @@ export default function PostOpRecoveryBridge() {
               {/* Extraction Preview & Ingestion Trigger */}
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                  <h3 className="text-lg font-black text-slate-900 text-slate-950">
                     Physical Register Pad Digitization
                   </h3>
                   <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
@@ -893,7 +893,7 @@ export default function PostOpRecoveryBridge() {
                   <button
                     disabled={isScanningOCR}
                     onClick={handleTriggerOcrScan}
-                    className="px-5 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs flex items-center gap-2 cursor-pointer shadow-md"
+                    className="px-5 py-3 rounded-2xl bg-teal-700 hover:bg-teal-800 text-white dark:bg-teal-100/70 dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs flex items-center gap-2 cursor-pointer shadow-md"
                   >
                     {isScanningOCR ? (
                       <RefreshCw className="w-4 h-4 animate-spin text-red-500" />
@@ -912,18 +912,18 @@ export default function PostOpRecoveryBridge() {
                 </div>
 
                 {ocrScanComplete && (
-                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3">
+                  <div className="p-4 rounded-2xl bg-teal-100/70 border border-teal-300 space-y-3">
                     <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
                       Digitized Parameters:
                     </div>
                     <div className="grid grid-cols-3 gap-2 font-mono text-xs">
-                      <div className="p-2 rounded bg-white dark:bg-slate-900 border">
+                      <div className="p-2 rounded bg-teal-50/90 border">
                         BP: {PRESET_REGISTER_SHEETS[selectedPresetIndex].vitals.systolicBp}/{PRESET_REGISTER_SHEETS[selectedPresetIndex].vitals.diastolicBp}
                       </div>
-                      <div className="p-2 rounded bg-white dark:bg-slate-900 border">
+                      <div className="p-2 rounded bg-teal-50/90 border">
                         HR: {PRESET_REGISTER_SHEETS[selectedPresetIndex].vitals.heartRate} bpm
                       </div>
-                      <div className="p-2 rounded bg-white dark:bg-slate-900 border">
+                      <div className="p-2 rounded bg-teal-50/90 border">
                         Drain: {PRESET_REGISTER_SHEETS[selectedPresetIndex].drainOutputMl} mL
                       </div>
                     </div>
@@ -946,10 +946,10 @@ export default function PostOpRecoveryBridge() {
 
       {/* TAB 3: IMMUTABLE HISTORICAL REPORTS */}
       {activeTab === "historical_reports" && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+        <div className="bg-teal-50/90 border border-teal-300 rounded-3xl p-6 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
             <div>
-              <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+              <h3 className="text-base font-extrabold text-slate-900 text-slate-950">
                 Post-Operative Clinical Ledger
               </h3>
               <p className="text-xs text-slate-500">
@@ -963,7 +963,7 @@ export default function PostOpRecoveryBridge() {
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 uppercase tracking-wider font-bold">
+              <thead className="bg-teal-100/70 text-slate-500 uppercase tracking-wider font-bold">
                 <tr>
                   <th className="py-2.5 px-3">Report ID</th>
                   <th className="py-2.5 px-3">Patient</th>
@@ -976,12 +976,12 @@ export default function PostOpRecoveryBridge() {
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
                 {postOpReportsList.map((rep) => (
-                  <tr key={rep.id} className="hover:bg-slate-50 dark:hover:bg-slate-950/50">
+                  <tr key={rep.id} className="hover:bg-slate-50 ">
                     <td className="py-3 px-3 font-mono font-bold text-slate-800 dark:text-slate-200">
                       {rep.id}
                     </td>
                     <td className="py-3 px-3">
-                      <div className="font-extrabold text-slate-900 dark:text-white">
+                      <div className="font-extrabold text-slate-900 text-slate-950">
                         {rep.patientPseudonym}
                       </div>
                       <div className="text-[10px] text-slate-500">{rep.createdAt.slice(0, 10)}</div>
@@ -1036,7 +1036,7 @@ export default function PostOpRecoveryBridge() {
       {/* FORMAL SURGICAL HANDOVER MODAL (PRINTABLE / EXPORTABLE) */}
       {previewModalReport && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="relative w-full max-w-2xl rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 text-slate-900 dark:text-white space-y-4">
+          <div className="relative w-full max-w-2xl rounded-3xl bg-teal-50/90 border border-teal-300 shadow-2xl p-6 text-slate-900 text-slate-950 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
               <div className="flex items-center gap-2">
                 <FileCheck2 className="w-5 h-5 text-red-600" />
@@ -1052,7 +1052,7 @@ export default function PostOpRecoveryBridge() {
               </button>
             </div>
 
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border text-xs space-y-3 font-mono">
+            <div className="p-4 rounded-2xl bg-teal-100/70 border text-xs space-y-3 font-mono">
               <div className="flex justify-between border-b pb-2">
                 <span>DOCUMENT REF: {previewModalReport.id}</span>
                 <span>DATE: {previewModalReport.createdAt.slice(0, 16)}</span>
@@ -1065,7 +1065,7 @@ export default function PostOpRecoveryBridge() {
                 <div>SOURCE GATEWAY: {previewModalReport.source}</div>
                 <div>CONSCIOUSNESS: {previewModalReport.consciousness}</div>
               </div>
-              <div className="p-2.5 rounded bg-white dark:bg-slate-900 border">
+              <div className="p-2.5 rounded bg-teal-50/90 border">
                 <div>VITALS: BP {previewModalReport.vitals.systolicBp}/{previewModalReport.vitals.diastolicBp} mmHg | HR {previewModalReport.vitals.heartRate} bpm | SpO2 {previewModalReport.vitals.spo2}% | Temp {previewModalReport.vitals.temperature}°C</div>
                 <div className="mt-1 font-bold text-red-600">
                   SHOCK INDEX: {previewModalReport.shockIndex} • RISK: {previewModalReport.riskLevel} • ROUTED: {previewModalReport.quickSortRoutedPartition}
@@ -1103,4 +1103,6 @@ export default function PostOpRecoveryBridge() {
     </div>
   );
 }
+
+
 

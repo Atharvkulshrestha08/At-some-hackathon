@@ -24,15 +24,15 @@ export default function GovernancePage() {
   return (
     <div className="space-y-10">
       {/* Page Header */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-3">
-        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold">
-          <ShieldCheck className="w-4 h-4 text-emerald-600" />
+      <div className="bg-gradient-to-br from-indigo-100/90 via-teal-100/60 to-emerald-100/70 rounded-2xl border-2 border-indigo-300 p-6 sm:p-8 shadow-xs space-y-3">
+        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-indigo-200 border border-indigo-300 text-indigo-950 text-sm font-bold">
+          <ShieldCheck className="w-4 h-4 text-indigo-700" />
           Clinical Governance, Consent Gate & Audit Trail
         </span>
-        <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 leading-snug">
+        <h1 className="text-2xl sm:text-4xl font-bold text-slate-950 leading-snug">
           Rule Governance & SHA-256 Audit Log
         </h1>
-        <p className="text-base text-slate-600 leading-relaxed max-w-3xl">
+        <p className="text-base text-slate-800 leading-relaxed max-w-3xl font-medium">
           Every rule change requires a qualified doctor&apos;s sign-off before activation,
           every STOP withdrawal locks the patient record immediately, and every access
           attempt is hash-chained in PostgreSQL.
@@ -42,7 +42,7 @@ export default function GovernancePage() {
       {/* Top Grid: Rule Editor + Consent Lock Registry */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
         {/* Left 6 Cols: Rule Threshold Form (16px inputs, >=44px height) */}
-        <div className="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
+        <div className="lg:col-span-6 bg-teal-50/90 rounded-2xl border-2 border-teal-300 p-6 sm:p-8 shadow-xs space-y-6">
           <div>
             <span className="text-sm font-bold uppercase text-emerald-700">
               Clinician-Owned Rule Configuration
@@ -137,7 +137,7 @@ export default function GovernancePage() {
                     ...ruleForm,
                   })
                 }
-                className="w-full sm:w-auto min-h-[44px] px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-base font-bold"
+                className="w-full sm:w-auto min-h-[44px] px-5 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-base font-bold shadow-md shadow-teal-700/20"
               >
                 1. Stage Rule Update (Admin)
               </button>
@@ -164,15 +164,15 @@ export default function GovernancePage() {
         </div>
 
         {/* Right 6 Cols: Consent Withdrawn Stubs */}
-        <div className="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-5">
+        <div className="lg:col-span-6 bg-rose-50/90 rounded-2xl border-2 border-rose-300 p-6 sm:p-8 shadow-xs space-y-5">
           <div>
-            <span className="text-sm font-bold uppercase text-red-600">
+            <span className="text-sm font-bold uppercase text-rose-800">
               Consent Gate Enforcement
             </span>
-            <h2 className="text-xl font-bold text-slate-900 mt-1">
+            <h2 className="text-xl font-bold text-slate-950 mt-1">
               Locked Patient Records (Withdrawn via STOP)
             </h2>
-            <p className="text-base text-slate-600 mt-1 leading-relaxed">
+            <p className="text-base text-slate-800 mt-1 leading-relaxed font-medium">
               Messaging and data entry are immediately blocked when consent is withdrawn:
             </p>
           </div>
@@ -181,15 +181,15 @@ export default function GovernancePage() {
             {snapshot.withdrawnPatients.map((wp) => (
               <div
                 key={wp.id}
-                className="p-4 rounded-xl bg-red-50/60 border border-red-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                className="p-4 rounded-xl bg-rose-100/80 border border-rose-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
                 <div className="flex items-center gap-3">
                   <Lock className="w-5 h-5 text-red-600 shrink-0" />
                   <div>
-                    <span className="font-mono font-bold text-base text-slate-900">
+                    <span className="font-mono font-bold text-base text-slate-950">
                       {wp.pseudonym}
                     </span>{" "}
-                    <span className="text-base text-slate-600">
+                    <span className="text-base text-slate-800 font-medium">
                       • {wp.village} • {wp.cohort}
                     </span>
                   </div>
@@ -202,7 +202,7 @@ export default function GovernancePage() {
                       patientId: wp.id,
                     })
                   }
-                  className="min-h-[44px] px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-800 font-bold text-base"
+                  className="min-h-[44px] px-4 py-2 rounded-xl bg-rose-200 hover:bg-rose-300 border border-rose-400 text-rose-950 font-bold text-base"
                 >
                   Restore Consent
                 </button>
@@ -213,7 +213,7 @@ export default function GovernancePage() {
       </div>
 
       {/* Responsive SHA-256 Audit Trail (Cards on Mobile, Table on Desktop) */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
+      <div className="bg-emerald-50/90 rounded-2xl border-2 border-emerald-300 p-6 sm:p-8 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <span className="text-sm font-bold uppercase text-emerald-700">

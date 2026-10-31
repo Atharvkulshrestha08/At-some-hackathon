@@ -80,12 +80,12 @@ export default function WorklistPage() {
   return (
     <div className="space-y-8">
       {/* Page Header, Multi-Tenant Organization Scope & Filter Controls */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
+      <div className="bg-gradient-to-br from-teal-100/90 via-emerald-100/70 to-cyan-100/80 rounded-2xl border-2 border-teal-300 p-6 sm:p-8 shadow-xs space-y-6">
         {/* Top Tenant & Registration Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-teal-200">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-bold">
-              <Building2 className="w-4 h-4 text-emerald-600" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-teal-200 border border-teal-400 text-teal-950 text-xs sm:text-sm font-bold">
+              <Building2 className="w-4 h-4 text-teal-700" />
               <span>
                 Tenant: {snapshot.activeOrganization.name} (
                 {snapshot.stats.organizationPatients} Org Patients)
@@ -93,7 +93,7 @@ export default function WorklistPage() {
             </span>
 
             {activeRole === "worker" && (
-              <div className="inline-flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200">
+              <div className="inline-flex items-center rounded-xl bg-teal-200/60 p-1 border border-teal-300">
                 <button
                   type="button"
                   onClick={() => {
@@ -102,8 +102,8 @@ export default function WorklistPage() {
                   }}
                   className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
                     workerScope === "assigned"
-                      ? "bg-white text-slate-900 shadow-xs"
-                      : "text-slate-600 hover:text-slate-900"
+                      ? "bg-teal-700 text-white shadow-xs"
+                      : "text-teal-950 hover:text-teal-850"
                   }`}
                 >
                   My Assigned Patients
@@ -197,7 +197,7 @@ export default function WorklistPage() {
                     ? f.id === "immediate"
                       ? "bg-red-600 border-red-600 text-white"
                       : "bg-emerald-600 border-emerald-600 text-white"
-                    : "bg-white border-slate-300 text-slate-700 hover:bg-slate-50"
+                    : "bg-teal-100/80 border-teal-300 text-teal-950 hover:bg-teal-200/80"
                 }`}
               >
                 {f.label}
@@ -210,7 +210,7 @@ export default function WorklistPage() {
                 setCohortFilter(e.target.value);
                 setPage(1);
               }}
-              className="min-h-[44px] px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-base font-semibold text-slate-900"
+              className="min-h-[44px] px-4 py-2.5 rounded-xl bg-teal-100/90 border border-teal-300 text-base font-semibold text-teal-950"
             >
               <option value="all">All Conditions</option>
               <option value="post_illness">{t.cohortPostIllness}</option>
@@ -249,7 +249,7 @@ export default function WorklistPage() {
           return (
             <article
               key={pt.patientId}
-              className={`bg-white rounded-2xl border border-slate-200 border-l-4 ${borderLeft} p-6 shadow-xs space-y-5`}
+              className={`bg-teal-50/90 rounded-2xl border-2 border-teal-300 border-l-4 ${borderLeft} p-6 shadow-xs space-y-5`}
             >
               {/* Top Header Row */}
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -326,7 +326,7 @@ export default function WorklistPage() {
                     {slotWindowLabel}
                   </span>
 
-                  <span className="min-h-[44px] px-4 py-2 rounded-xl bg-slate-900 text-white text-base font-mono font-bold flex items-center">
+                  <span className="min-h-[44px] px-4 py-2 rounded-xl bg-teal-800 text-white text-base font-mono font-bold flex items-center shadow-md shadow-teal-800/20">
                     Score: {pt.totalScore} ({pt.primaryRuleId})
                   </span>
 
@@ -334,7 +334,7 @@ export default function WorklistPage() {
                     onClick={() =>
                       setExpandedPatientId(isExpanded ? null : pt.patientId)
                     }
-                    className="min-h-[44px] px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-base font-semibold text-slate-800 flex items-center gap-2"
+                    className="min-h-[44px] px-4 py-2 rounded-xl bg-teal-200/80 hover:bg-teal-300 text-base font-bold text-teal-950 flex items-center gap-2 border border-teal-300"
                   >
                     <span>5-Vital Breakdown</span>
                     {isExpanded ? (
@@ -347,13 +347,13 @@ export default function WorklistPage() {
               </div>
 
               {/* Concise Explanation Box */}
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
-                <p className="text-base text-slate-800 leading-relaxed font-medium">
+              <div className="p-4 rounded-xl bg-teal-100/70 border border-teal-300 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <p className="text-base text-teal-950 leading-relaxed font-medium">
                   {pt.whyFlagged}
                 </p>
                 {pt.bpTrendValues.length >= 2 && (
-                  <span className="shrink-0 px-3 py-1.5 rounded-lg bg-white border border-slate-300 font-mono text-sm font-bold text-slate-900 inline-flex items-center gap-1.5 self-start md:self-auto">
-                    <TrendingUp className="w-4 h-4 text-red-600" />
+                  <span className="shrink-0 px-3 py-1.5 rounded-lg bg-teal-200/90 border border-teal-400 font-mono text-sm font-bold text-teal-950 inline-flex items-center gap-1.5 self-start md:self-auto">
+                    <TrendingUp className="w-4 h-4 text-rose-700" />
                     BP Trend: {pt.bpTrendValues.join(" → ")} mmHg
                   </span>
                 )}
@@ -518,8 +518,8 @@ export default function WorklistPage() {
       </div>
 
       {/* Pagination Bar (44px+ buttons) */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-base text-slate-700 font-medium">
+      <div className="bg-teal-100/80 rounded-2xl border-2 border-teal-300 p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="text-base text-teal-950 font-bold">
           Showing{" "}
           <strong>
             {(safePage - 1) * ITEMS_PER_PAGE + 1}–
@@ -532,18 +532,18 @@ export default function WorklistPage() {
           <button
             disabled={safePage <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            className="min-h-[44px] px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 text-base font-bold text-slate-800 flex items-center gap-2"
+            className="min-h-[44px] px-5 py-2.5 rounded-xl bg-teal-200/90 hover:bg-teal-300 border border-teal-400 disabled:opacity-40 text-base font-bold text-teal-950 flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Previous</span>
           </button>
-          <span className="font-mono text-base font-bold text-slate-900 px-2">
+          <span className="font-mono text-base font-bold text-teal-950 px-2">
             Page {safePage} / {totalPages}
           </span>
           <button
             disabled={safePage >= totalPages}
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            className="min-h-[44px] px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-base font-bold text-white flex items-center gap-2"
+            className="min-h-[44px] px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-base font-bold text-white flex items-center gap-2 shadow-xs"
           >
             <span>Next</span>
             <ArrowRight className="w-4 h-4" />
@@ -553,13 +553,13 @@ export default function WorklistPage() {
 
       {/* Cleared / Stabilized Patients Section */}
       {snapshot.clearedPatients && snapshot.clearedPatients.length > 0 && (
-        <div className="bg-white rounded-2xl border border-emerald-200 p-6 sm:p-8 shadow-xs space-y-4">
+        <div className="bg-emerald-50/90 rounded-2xl border-2 border-emerald-300 p-6 sm:p-8 shadow-xs space-y-4">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <span className="text-xs font-bold text-emerald-700 uppercase">
+              <span className="text-xs font-bold text-emerald-800 uppercase">
                 Clinic Slot Freed &amp; Logged in SHA-256 Audit Trail
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
                 Cleared / Stabilized Patients Today ({snapshot.clearedPatients.length})
               </h2>
             </div>
@@ -569,19 +569,19 @@ export default function WorklistPage() {
             {snapshot.clearedPatients.map((cp) => (
               <div
                 key={cp.id}
-                className="p-4 rounded-xl bg-emerald-50/60 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                className="p-4 rounded-xl bg-emerald-100/70 border border-emerald-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span className="font-mono font-bold text-base text-slate-900">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <span className="font-mono font-bold text-base text-slate-950">
                       {cp.pseudonym} ({cp.initials})
                     </span>
-                    <span className="text-xs text-slate-600">
+                    <span className="text-xs text-slate-700 font-medium">
                       {cp.ageBand}y • {cp.village}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-700">
+                  <p className="text-xs text-slate-800 font-medium">
                     {cp.clearedNotes || "Cleared from active queue."}
                   </p>
                 </div>
@@ -589,7 +589,7 @@ export default function WorklistPage() {
                   type="button"
                   disabled={busyAction}
                   onClick={() => void restoreClearedPatient(cp.id)}
-                  className="min-h-[40px] px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-emerald-300 text-emerald-800 text-xs font-bold flex items-center gap-1.5 shrink-0"
+                  className="min-h-[40px] px-3.5 py-1.5 rounded-xl bg-emerald-200 hover:bg-emerald-300 border border-emerald-400 text-emerald-950 text-xs font-bold flex items-center gap-1.5 shrink-0"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Restore to Queue</span>

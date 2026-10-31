@@ -68,8 +68,8 @@ export const LANDING_DEMO_PRESETS: DemoAccountPreset[] = [
     roleBadge: "Super Admin • Platform Director",
     facilityHex: "GLOBAL",
     avatarText: "SA",
-    avatarBg: "bg-slate-900 text-white",
-    badgeBg: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200 border-slate-300",
+    avatarBg: "bg-teal-800 text-white",
+    badgeBg: "bg-teal-200 text-teal-950 border-teal-400",
   },
   {
     personRole: "Clinic Doctor",
@@ -532,66 +532,60 @@ export default function SwasthyaLandingPage({
 
   return (
     <div
-      className={`min-h-screen selection:bg-emerald-500/20 selection:text-emerald-800 font-sans transition-colors duration-300 ${
-        darkMode ? "dark bg-[#0A0E1A] text-slate-100" : "bg-[#F8FAFC] text-slate-900"
-      }`}
+      className="min-h-screen selection:bg-teal-600 selection:text-white font-sans bg-gradient-to-b from-teal-100 via-emerald-100/80 to-cyan-100 text-teal-950"
     >
       {/* ===================================================================
           1. ULTRA-POLISHED FLOATING GLASS NAVBAR
       =================================================================== */}
       <header className="sticky top-0 z-50 px-4 sm:px-6 lg:px-8 pt-3 pb-2">
         <div
-          className={`max-w-7xl mx-auto rounded-2xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4 border transition-all ${
-            darkMode
-              ? "bg-slate-900/80 border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl"
-              : "bg-white/90 border-slate-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.03)] backdrop-blur-xl"
-          }`}
+          className="max-w-7xl mx-auto rounded-2xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4 border border-teal-300/80 bg-teal-100/80 shadow-[0_4px_24px_rgba(13,148,136,0.1)] backdrop-blur-xl transition-all"
         >
           {/* Brand Logo & Clinical Sub-Badge */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 ring-1 ring-white/20 relative">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 text-white flex items-center justify-center shadow-md shadow-emerald-600/30 ring-2 ring-emerald-200 relative">
               <HeartPulse className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white dark:border-slate-900" />
+              <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white">
-                  Swasthya<span className="text-emerald-600">Sense</span>
+                <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-950">
+                  Swasthya<span className="text-teal-700">Sense</span>
                 </span>
-                <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/25">
+                <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-200/70 text-emerald-950 border border-emerald-400/50">
                   Clinical Mesh v2.5
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
+              <p className="text-[11px] text-teal-800 font-medium hidden sm:block">
                 Early-Warning • QuickSort Triage • Hexagonal Load-Balancing
               </p>
             </div>
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-7 text-xs font-semibold tracking-wide">
+          <nav className="hidden lg:flex items-center gap-7 text-xs font-bold tracking-wide">
             <a
               href="#how-it-works"
-              className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+              className="text-teal-900 hover:text-emerald-800 transition-colors"
             >
               {t.navHowItWorks}
             </a>
             <a
               href="#patient-journey-3d"
-              className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors flex items-center gap-1.5"
+              className="text-teal-900 hover:text-emerald-800 transition-colors flex items-center gap-1.5"
             >
               <Sparkles className="w-3.5 h-3.5 text-teal-600" />
               {t.navJourney3D}
             </a>
             <a
               href="#hexagon-mesh"
-              className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+              className="text-teal-900 hover:text-emerald-800 transition-colors"
             >
               {t.navHexArchitecture}
             </a>
             <a
               href="#security-dpdp"
-              className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+              className="text-teal-900 hover:text-emerald-800 transition-colors"
             >
               {t.navSecurity}
             </a>
@@ -601,16 +595,12 @@ export default function SwasthyaLandingPage({
           <div className="flex items-center gap-2.5">
             {/* 7-Language Selector */}
             <div className="relative flex items-center">
-              <Globe className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 pointer-events-none" />
+              <Globe className="w-3.5 h-3.5 text-teal-700 absolute left-2.5 pointer-events-none" />
               <select
                 aria-label="Select Language"
                 value={selectedLanguage}
                 onChange={(e) => onSelectLanguage(e.target.value as SupportedLanguage)}
-                className={`pl-8 pr-3 py-1.5 rounded-xl border text-xs font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500/50 ${
-                  darkMode
-                    ? "bg-slate-950 border-white/10 text-slate-200"
-                    : "bg-slate-100/80 border-slate-200 text-slate-800"
-                }`}
+                className="pl-8 pr-3 py-1.5 rounded-xl border border-teal-300 text-xs font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500/50 bg-teal-50 text-teal-950"
               >
                 {SUPPORTED_LANGUAGES.map((langObj) => (
                   <option key={langObj.code} value={langObj.code}>
@@ -620,38 +610,20 @@ export default function SwasthyaLandingPage({
               </select>
             </div>
 
-            {/* Dark Mode Toggle */}
-            <button
-              type="button"
-              onClick={() => setDarkMode((prev) => !prev)}
-              aria-label="Toggle Theme"
-              className={`p-2 rounded-xl border transition-colors cursor-pointer ${
-                darkMode
-                  ? "bg-slate-950 border-white/10 text-amber-400 hover:bg-slate-800"
-                  : "bg-slate-100/80 border-slate-200 text-slate-700 hover:bg-slate-200/60"
-              }`}
-            >
-              {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
-
             {/* If Authenticated: Show active user pill + Enter Workspace */}
             {isAuthenticated && currentUser && currentOrganization ? (
               <div className="hidden sm:flex items-center gap-2">
                 <div
-                  className={`px-3 py-1.5 rounded-xl border text-xs flex items-center gap-2 ${
-                    darkMode
-                      ? "bg-emerald-950/40 border-emerald-500/30 text-emerald-300"
-                      : "bg-emerald-50 border-emerald-200 text-emerald-900"
-                  }`}
+                  className="px-3 py-1.5 rounded-xl border border-emerald-300 text-xs flex items-center gap-2 bg-emerald-100/90 text-emerald-950 font-semibold"
                 >
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
                   <span className="font-bold">{currentUser.name.split(" ")[0]}</span>
-                  <span className="opacity-70 text-[11px]">• {currentOrganization.shortName}</span>
+                  <span className="opacity-75 text-[11px]">• {currentOrganization.shortName}</span>
                 </div>
                 <button
                   type="button"
                   onClick={onEnterWorkspace}
-                  className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-sm flex items-center gap-1.5 cursor-pointer transition-colors"
+                  className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white text-xs font-bold shadow-md shadow-teal-600/20 flex items-center gap-1.5 cursor-pointer transition-all"
                 >
                   Enter Workspace <ArrowRight className="w-3.5 h-3.5" />
                 </button>
@@ -659,7 +631,7 @@ export default function SwasthyaLandingPage({
                   type="button"
                   onClick={onSignOut}
                   title="Sign Out"
-                  className="p-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-500 hover:text-slate-900 cursor-pointer"
+                  className="p-2 rounded-xl border border-teal-300 text-teal-800 hover:text-teal-950 bg-teal-50 hover:bg-teal-100 cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -671,9 +643,9 @@ export default function SwasthyaLandingPage({
                   setAuthTab("signin");
                   setLoginModalOpen(true);
                 }}
-                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-md shadow-slate-900/10 transition-all cursor-pointer"
+                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-800 text-white text-xs font-bold shadow-md shadow-teal-700/20 transition-all cursor-pointer"
               >
-                <KeyRound className="w-3.5 h-3.5 text-emerald-400" />
+                <KeyRound className="w-3.5 h-3.5 text-emerald-200" />
                 {t.navLaunch}
               </button>
             )}
@@ -683,7 +655,7 @@ export default function SwasthyaLandingPage({
               type="button"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
               aria-label="Navigation Menu"
-              className="lg:hidden p-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300"
+              className="lg:hidden p-2 rounded-xl border border-teal-300 text-teal-900 bg-teal-50"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -693,17 +665,13 @@ export default function SwasthyaLandingPage({
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div
-            className={`lg:hidden mt-2 p-5 rounded-2xl border space-y-4 ${
-              darkMode
-                ? "bg-slate-900 border-white/10 text-slate-100"
-                : "bg-white border-slate-200 text-slate-900 shadow-xl"
-            }`}
+            className="lg:hidden mt-2 p-5 rounded-2xl border border-teal-300 bg-teal-100 text-teal-950 shadow-xl space-y-4"
           >
             <div className="flex flex-col space-y-3 font-semibold text-sm">
               <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>
                 {t.navHowItWorks}
               </a>
-              <a href="#patient-journey-3d" onClick={() => setMobileMenuOpen(false)} className="text-emerald-600">
+              <a href="#patient-journey-3d" onClick={() => setMobileMenuOpen(false)} className="text-emerald-700">
                 {t.navJourney3D}
               </a>
               <a href="#hexagon-mesh" onClick={() => setMobileMenuOpen(false)}>
@@ -719,9 +687,9 @@ export default function SwasthyaLandingPage({
                 setMobileMenuOpen(false);
                 setLoginModalOpen(true);
               }}
-              className="w-full py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center justify-center gap-2"
+              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md"
             >
-              <KeyRound className="w-4 h-4 text-emerald-400" />
+              <KeyRound className="w-4 h-4 text-emerald-200" />
               {t.navLaunch}
             </button>
           </div>
@@ -742,39 +710,33 @@ export default function SwasthyaLandingPage({
           {/* Live Micro-Telemetry Ribbon */}
           <div className="flex items-center justify-center mb-8">
             <div
-              className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-medium transition-all ${
-                darkMode
-                  ? "bg-slate-900/90 border-white/10 text-slate-300 shadow-md"
-                  : "bg-white/95 border-slate-200 text-slate-700 shadow-xs"
-              }`}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-300 bg-emerald-200/70 text-emerald-950 text-xs font-bold shadow-xs"
             >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-              <span className="font-bold text-emerald-700 dark:text-emerald-400 tracking-wide font-mono text-[11px]">
+              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse shrink-0" />
+              <span className="font-extrabold text-emerald-900 tracking-wide font-mono text-[11px]">
                 LIVE PROTOCOL
               </span>
-              <span className="text-slate-300 dark:text-slate-700">•</span>
+              <span className="text-emerald-400">•</span>
               <span className="hidden sm:inline">NEWS2 &amp; MEOWS Hard Overrides</span>
-              <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
-              <span className="font-mono text-emerald-700 dark:text-emerald-400 font-bold">~242µs QuickSort</span>
-              <span className="text-slate-300 dark:text-slate-700 hidden md:inline">•</span>
-              <span className="font-mono text-slate-600 dark:text-slate-400 hidden md:inline">10 Protected Walk-In Slots</span>
+              <span className="text-emerald-400 hidden sm:inline">•</span>
+              <span className="font-mono text-emerald-950 font-extrabold">~242µs QuickSort</span>
+              <span className="text-emerald-400 hidden md:inline">•</span>
+              <span className="font-mono text-teal-900 hidden md:inline">10 Protected Walk-In Slots</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             {/* Left 7 Columns: Editorial Headline, Mission, Dual CTA, and 1-Click Demo Launcher */}
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12] text-slate-900 dark:text-white">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12] text-slate-950">
                 {t.heroTitle1}{" "}
-                <span className="text-emerald-700 dark:text-emerald-400">
+                <span className="text-teal-700">
                   {t.heroTitleHighlight}
                 </span>
               </h1>
 
               <p
-                className={`text-base sm:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0 ${
-                  darkMode ? "text-slate-300" : "text-slate-600"
-                }`}
+                className="text-base sm:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0 text-slate-700 font-medium"
               >
                 {t.heroSubtitle}
               </p>
@@ -787,9 +749,9 @@ export default function SwasthyaLandingPage({
                     setAuthTab("signin");
                     setLoginModalOpen(true);
                   }}
-                  className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md shadow-slate-900/10 transition-all flex items-center justify-center gap-2 cursor-pointer group"
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-800 text-white font-bold text-sm shadow-lg shadow-teal-700/25 transition-all flex items-center justify-center gap-2 cursor-pointer group"
                 >
-                  <KeyRound className="w-4 h-4 text-emerald-400 group-hover:rotate-12 transition-transform" />
+                  <KeyRound className="w-4 h-4 text-emerald-200 group-hover:rotate-12 transition-transform" />
                   <span>{t.ctaSignIn}</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -800,31 +762,23 @@ export default function SwasthyaLandingPage({
                     setAuthTab("onboard");
                     setLoginModalOpen(true);
                   }}
-                  className={`w-full sm:w-auto px-6 py-3.5 rounded-2xl border font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                    darkMode
-                      ? "bg-slate-900 border-slate-800 text-slate-200 hover:bg-slate-800"
-                      : "bg-white border-slate-200 text-slate-800 hover:bg-slate-50 shadow-xs"
-                  }`}
+                  className="w-full sm:w-auto px-6 py-3.5 rounded-2xl border border-teal-300 bg-teal-100/90 hover:bg-teal-200 text-teal-950 font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                 >
-                  <Building2 className="w-4 h-4 text-emerald-600" />
+                  <Building2 className="w-4 h-4 text-teal-700" />
                   <span>{t.ctaOnboard}</span>
                 </button>
               </div>
 
               {/* 1-Click Instant Demo Launcher Ribbon */}
               <div
-                className={`p-4 rounded-2xl border transition-all ${
-                  darkMode
-                    ? "bg-slate-900/80 border-slate-800 backdrop-blur-md"
-                    : "bg-white border-slate-200 shadow-xs"
-                }`}
+                className="p-4 rounded-2xl border border-teal-300/80 bg-teal-100/70 shadow-sm"
               >
                 <div className="flex items-center justify-between mb-2.5">
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-teal-600" />
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-teal-900 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-teal-700" />
                     Instant 1-Click Multi-Tenant Demo Accounts
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-teal-200/80 text-teal-950 border border-teal-400/50">
                     SIMULTANEOUS ACCESS
                   </span>
                 </div>
@@ -836,11 +790,7 @@ export default function SwasthyaLandingPage({
                       type="button"
                       disabled={authLoading}
                       onClick={() => void handleDirectDemoLogin(preset)}
-                      className={`p-2.5 rounded-xl border text-left transition-all flex items-center gap-2.5 cursor-pointer group ${
-                        darkMode
-                          ? "bg-slate-950/80 border-slate-800/80 hover:border-emerald-500/50 hover:bg-slate-900"
-                          : "bg-slate-50/70 border-slate-200/80 hover:border-emerald-400 hover:bg-white hover:shadow-xs"
-                      }`}
+                      className="p-2.5 rounded-xl border border-emerald-300/80 bg-emerald-50/90 hover:bg-emerald-100/90 hover:border-emerald-400 text-left transition-all flex items-center gap-2.5 cursor-pointer group shadow-2xs"
                     >
                       <div
                         className={`w-8 h-8 rounded-lg ${preset.avatarBg} font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs`}
@@ -848,17 +798,17 @@ export default function SwasthyaLandingPage({
                         {preset.avatarText}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="font-bold text-xs truncate group-hover:text-emerald-700 transition-colors">
+                        <div className="font-bold text-xs truncate group-hover:text-teal-800 transition-colors text-slate-900">
                           {preset.userName}
                         </div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                        <div className="text-[10px] text-teal-800 truncate font-medium">
                           {preset.personRole}
                         </div>
-                        <div className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 font-semibold truncate">
+                        <div className="text-[10px] font-mono text-emerald-800 font-bold truncate">
                           {preset.organizationId}
                         </div>
                       </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 group-hover:text-emerald-600 transition-all shrink-0" />
+                      <ChevronRight className="w-3.5 h-3.5 text-teal-600 group-hover:translate-x-0.5 group-hover:text-teal-800 transition-all shrink-0" />
                     </button>
                   ))}
                 </div>
@@ -868,14 +818,10 @@ export default function SwasthyaLandingPage({
             {/* Right 5 Columns: Futuristic Real-Time Hologram & Hexagonal Command Radar */}
             <div className="lg:col-span-5 relative">
               <div
-                className={`relative rounded-3xl p-6 sm:p-7 border overflow-hidden ${
-                  darkMode
-                    ? "bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 border-white/10 shadow-2xl"
-                    : "bg-gradient-to-b from-slate-50 via-white to-white border-slate-200/90 shadow-2xl shadow-slate-900/5"
-                }`}
+                className="relative rounded-3xl p-6 sm:p-7 border-2 border-teal-300 bg-gradient-to-br from-teal-100/90 via-emerald-100/70 to-sky-100/80 shadow-xl overflow-hidden"
               >
                 {/* Header HUD Bar */}
-                <div className="flex items-center justify-between pb-4 border-b border-slate-200/60 dark:border-white/10 mb-5">
+                <div className="flex items-center justify-between pb-4 border-b border-teal-300 mb-5">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
                     <span className="font-mono text-xs font-extrabold uppercase tracking-wider text-emerald-600">
@@ -961,29 +907,25 @@ export default function SwasthyaLandingPage({
 
                 {/* Floating Telemetry Glass Card */}
                 <div
-                  className={`mt-4 p-3.5 rounded-2xl border text-xs font-mono space-y-1.5 transition-all ${
-                    darkMode
-                      ? "bg-slate-950/80 border-white/10 text-slate-300"
-                      : "bg-white border-slate-200 text-slate-800 shadow-sm"
-                  }`}
+                  className="mt-4 p-3.5 rounded-2xl border border-teal-300 bg-teal-50/95 text-xs font-mono space-y-1.5 shadow-sm text-slate-900"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-red-600 flex items-center gap-1.5">
+                    <span className="font-bold text-rose-700 flex items-center gap-1.5">
                       <TrendingUp className="w-3.5 h-3.5" />
                       PT-MAT-2001 (Boko PHC)
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-red-600 text-white text-[10px] font-extrabold">
+                    <span className="px-2 py-0.5 rounded bg-rose-600 text-white text-[10px] font-extrabold">
                       MEOWS OVERRIDE
                     </span>
                   </div>
-                  <div className="text-slate-600 dark:text-slate-400">
+                  <div className="text-teal-900 font-medium">
                     Systolic Trajectory: 148 → 156 → 163 mmHg (+28 pts)
                   </div>
-                  <div className="flex items-center justify-between pt-1 border-t border-slate-200/50 dark:border-white/5 text-[11px]">
-                    <span className="text-emerald-600 font-bold">
+                  <div className="flex items-center justify-between pt-1 border-t border-teal-200 text-[11px]">
+                    <span className="text-emerald-700 font-bold">
                       ✓ 10/10 Walk-In Slots Free
                     </span>
-                    <span className="text-slate-500">Score: 135 / Pivot: 100</span>
+                    <span className="text-teal-800 font-medium">Score: 135 / Pivot: 100</span>
                   </div>
                 </div>
               </div>
@@ -996,19 +938,17 @@ export default function SwasthyaLandingPage({
           3. THE PROBLEM BENTO GRID: WHY RURAL FOLLOW-UP CARE FAILS
       =================================================================== */}
       <section
-        className={`py-14 sm:py-18 border-y ${
-          darkMode ? "bg-slate-900/40 border-white/10" : "bg-slate-50/70 border-slate-200/80"
-        }`}
+        className="py-14 sm:py-18 border-y border-teal-300/80 bg-gradient-to-b from-teal-100/40 via-sky-100/50 to-emerald-100/40"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-10">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-teal-800">
               THE FRONTLINE CARE CRISIS
             </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1 text-slate-900 dark:text-white">
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1 text-slate-950">
               {t.problemHeading}
             </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+            <p className="text-sm text-slate-700 mt-2 font-medium">
               {t.problemSub}
             </p>
           </div>
@@ -1016,66 +956,54 @@ export default function SwasthyaLandingPage({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Problem 01 */}
             <div
-              className={`p-6 sm:p-7 rounded-3xl border transition-all ${
-                darkMode
-                  ? "bg-slate-900 border-white/10 hover:border-slate-700"
-                  : "bg-white border-slate-200 hover:border-slate-300 shadow-xs"
-              }`}
+              className="p-6 sm:p-7 rounded-3xl border border-rose-300/80 bg-rose-100/75 shadow-xs transition-all hover:border-rose-400"
             >
-              <div className="w-11 h-11 rounded-2xl bg-rose-500/10 text-rose-700 dark:text-rose-400 flex items-center justify-center font-extrabold text-base mb-4">
+              <div className="w-11 h-11 rounded-2xl bg-rose-200 text-rose-800 flex items-center justify-center font-extrabold text-base mb-4 shadow-2xs">
                 01
               </div>
-              <h3 className="text-base sm:text-lg font-bold mb-2 text-slate-900 dark:text-white">
+              <h3 className="text-base sm:text-lg font-bold mb-2 text-rose-950">
                 Silent Deterioration After Missed Visits
               </h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-xs sm:text-sm text-rose-900 leading-relaxed font-medium">
                 Rural patients miss follow-up visits due to river crossings, transport costs, and lost daily wages. When contact breaks down, manageable conditions turn into acute emergencies unnoticed.
               </p>
-              <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/5 font-mono text-xs text-rose-700 dark:text-rose-400 font-semibold">
+              <div className="mt-4 pt-3 border-t border-rose-200 font-mono text-xs text-rose-800 font-bold">
                 Result: Preventable ICU admissions
               </div>
             </div>
 
             {/* Problem 02 */}
             <div
-              className={`p-6 sm:p-7 rounded-3xl border transition-all ${
-                darkMode
-                  ? "bg-slate-900 border-white/10 hover:border-slate-700"
-                  : "bg-white border-slate-200 hover:border-slate-300 shadow-xs"
-              }`}
+              className="p-6 sm:p-7 rounded-3xl border border-amber-300/80 bg-amber-100/75 shadow-xs transition-all hover:border-amber-400"
             >
-              <div className="w-11 h-11 rounded-2xl bg-amber-500/10 text-amber-700 dark:text-amber-400 flex items-center justify-center font-extrabold text-base mb-4">
+              <div className="w-11 h-11 rounded-2xl bg-amber-200 text-amber-800 flex items-center justify-center font-extrabold text-base mb-4 shadow-2xs">
                 02
               </div>
-              <h3 className="text-base sm:text-lg font-bold mb-2 text-slate-900 dark:text-white">
+              <h3 className="text-base sm:text-lg font-bold mb-2 text-amber-950">
                 Fragmented Registers Hide Rising Trends
               </h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-xs sm:text-sm text-amber-900 leading-relaxed font-medium">
                 A 3-visit rising blood pressure trajectory looks like a routine absence in paper registers. The isolated visits fail to connect, concealing imminent eclampsia or stroke until it is too late.
               </p>
-              <div className="mt-4 p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/40 font-mono text-xs font-bold text-amber-800 dark:text-amber-300">
+              <div className="mt-4 p-2.5 rounded-xl bg-amber-200/70 border border-amber-300 font-mono text-xs font-bold text-amber-950">
                 148 → 156 → 163 mmHg (+28 pts)
               </div>
             </div>
 
             {/* Problem 03 */}
             <div
-              className={`p-6 sm:p-7 rounded-3xl border transition-all ${
-                darkMode
-                  ? "bg-slate-900 border-white/10 hover:border-slate-700"
-                  : "bg-white border-slate-200 hover:border-slate-300 shadow-xs"
-              }`}
+              className="p-6 sm:p-7 rounded-3xl border border-emerald-300/80 bg-emerald-100/75 shadow-xs transition-all hover:border-emerald-400"
             >
-              <div className="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-extrabold text-base mb-4">
+              <div className="w-11 h-11 rounded-2xl bg-emerald-200 text-emerald-800 flex items-center justify-center font-extrabold text-base mb-4 shadow-2xs">
                 03
               </div>
-              <h3 className="text-base sm:text-lg font-bold mb-2 text-slate-900 dark:text-white">
+              <h3 className="text-base sm:text-lg font-bold mb-2 text-emerald-950">
                 Bulk Reminders Overwhelm Local PHCs
               </h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-xs sm:text-sm text-emerald-900 leading-relaxed font-medium">
                 Automated reminders sent in uncoordinated blasts cause morning crowds at small 30-slot village clinics—overwhelming the lone Medical Officer and displacing regular walk-in villagers.
               </p>
-              <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/5 font-mono text-xs text-emerald-700 dark:text-emerald-400 font-bold">
+              <div className="mt-4 pt-3 border-t border-emerald-200 font-mono text-xs text-emerald-800 font-bold">
                 SwasthyaSense: 10 Walk-In Slots 100% Free
               </div>
             </div>
@@ -1090,14 +1018,14 @@ export default function SwasthyaLandingPage({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
             <div>
-              <span className="text-xs font-extrabold uppercase tracking-widest text-teal-700 dark:text-teal-400">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-teal-800">
                 HOW IT WORKS
               </span>
-              <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1 text-slate-900 dark:text-white">
+              <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1 text-slate-950">
                 The 4-Stage Clinical Coordination Pipeline
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-md">
+            <p className="text-xs sm:text-sm text-slate-700 max-w-md font-medium">
               From the rural home check-in to regional hospital bypass—explore each deterministic stage below.
             </p>
           </div>
@@ -1114,16 +1042,12 @@ export default function SwasthyaLandingPage({
                   onClick={() => setActivePipelineStep(idx)}
                   className={`p-4 sm:p-5 rounded-2xl border text-left transition-all cursor-pointer ${
                     isActive
-                      ? darkMode
-                        ? "bg-slate-900 border-emerald-500 shadow-md ring-1 ring-emerald-500/50"
-                        : "bg-white border-emerald-600 shadow-sm ring-1 ring-emerald-600/20"
-                      : darkMode
-                      ? "bg-slate-950/60 border-white/5 hover:border-white/20"
-                      : "bg-slate-50 border-slate-200/80 hover:border-slate-300"
+                      ? "bg-gradient-to-r from-teal-700 to-emerald-700 border-2 border-teal-800 text-white shadow-md ring-2 ring-teal-500/30"
+                      : "bg-teal-100/90 border border-teal-300 text-teal-950 hover:bg-teal-200/90 shadow-2xs"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2.5">
-                    <span className="font-mono text-xs font-extrabold text-slate-400">
+                    <span className={`font-mono text-xs font-extrabold ${isActive ? "text-teal-100" : "text-teal-800"}`}>
                       STEP {step.step}
                     </span>
                     <span
@@ -1132,8 +1056,8 @@ export default function SwasthyaLandingPage({
                       {step.tag}
                     </span>
                   </div>
-                  <h3 className="font-bold text-sm sm:text-base mb-1 text-slate-900 dark:text-white">{step.title}</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
+                  <h3 className={`font-bold text-sm sm:text-base mb-1 ${isActive ? "text-white" : "text-slate-950"}`}>{step.title}</h3>
+                  <p className={`text-xs line-clamp-2 ${isActive ? "text-teal-100" : "text-slate-700"}`}>
                     {step.summary}
                   </p>
                 </button>
@@ -1143,23 +1067,19 @@ export default function SwasthyaLandingPage({
 
           {/* Detailed Pipeline Stage Visualizer */}
           <div
-            className={`p-6 sm:p-8 rounded-3xl border transition-all ${
-              darkMode
-                ? "bg-slate-900/80 border-white/10"
-                : "bg-white border-slate-200 shadow-sm"
-            }`}
+            className="p-6 sm:p-8 rounded-3xl border-2 border-teal-300 bg-gradient-to-br from-teal-100/90 via-emerald-100/70 to-sky-100/80 shadow-md"
           >
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-6 space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-teal-200 text-teal-950 border border-teal-400">
                   <span>STAGE {PIPELINE_STEPS[activePipelineStep].step}</span>
                   <span>•</span>
                   <span>{PIPELINE_STEPS[activePipelineStep].tag}</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-950">
                   {PIPELINE_STEPS[activePipelineStep].title}
                 </h3>
-                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p className="text-sm sm:text-base text-slate-800 leading-relaxed font-medium">
                   {PIPELINE_STEPS[activePipelineStep].detail}
                 </p>
               </div>
@@ -1167,30 +1087,26 @@ export default function SwasthyaLandingPage({
               {/* Dynamic Stage Interactive Simulator */}
               <div className="lg:col-span-6">
                 {activePipelineStep === 0 && (
-                  <div
-                    className={`p-5 rounded-2xl border space-y-3 font-mono text-xs ${
-                      darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-200"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between font-bold text-slate-500">
+                  <div className="p-5 rounded-2xl border-2 border-teal-300 bg-teal-50/95 space-y-3 font-mono text-xs shadow-xs text-teal-950">
+                    <div className="flex items-center justify-between font-bold text-teal-800">
                       <span>INTERACTIVE 5-VITAL INPUT</span>
-                      <span className="text-red-500">Live Scoring</span>
+                      <span className="text-rose-600 font-extrabold">Live Scoring</span>
                     </div>
 
                     <div className="space-y-2">
-                      <div className="flex justify-between items-center p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 font-bold">
+                      <div className="flex justify-between items-center p-2 rounded-xl bg-rose-100 border border-rose-300 text-rose-800 font-bold">
                         <span>Systolic BP: {simVitals.bpSys} mmHg</span>
                         <span>{simVitals.bpSys >= 160 ? "Severe (+40 pts)" : "Normal"}</span>
                       </div>
-                      <div className="flex justify-between items-center p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 font-bold">
+                      <div className="flex justify-between items-center p-2 rounded-xl bg-amber-100 border border-amber-300 text-amber-900 font-bold">
                         <span>Heart Rate: {simVitals.heartRate} bpm</span>
                         <span>Tachycardia (+20 pts)</span>
                       </div>
-                      <div className="flex justify-between items-center p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 font-bold">
+                      <div className="flex justify-between items-center p-2 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold">
                         <span>Blood Glucose: {simVitals.glucose} mg/dL</span>
                         <span>Controlled</span>
                       </div>
-                      <div className="flex justify-between items-center p-2 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-700 dark:text-slate-300 font-bold">
+                      <div className="flex justify-between items-center p-2 rounded-xl bg-teal-100 border border-teal-300 text-teal-950 font-bold">
                         <span>SpO₂: {simVitals.spo2}% / Temp 37.1°C</span>
                         <span>Stable</span>
                       </div>
@@ -1199,23 +1115,19 @@ export default function SwasthyaLandingPage({
                 )}
 
                 {activePipelineStep === 1 && (
-                  <div
-                    className={`p-5 rounded-2xl border space-y-4 font-mono text-xs ${
-                      darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-200"
-                    }`}
-                  >
+                  <div className="p-5 rounded-2xl border-2 border-teal-300 bg-teal-50/95 space-y-4 font-mono text-xs shadow-xs text-teal-950">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold">QUICKSORT PIVOT = 100</span>
-                      <span className="text-emerald-500 font-bold">~242 µs Execution</span>
+                      <span className="font-bold text-teal-950">QUICKSORT PIVOT = 100</span>
+                      <span className="text-emerald-700 font-extrabold">~242 µs Execution</span>
                     </div>
-                    <div className="p-3 rounded-xl bg-red-600 text-white font-bold flex justify-between items-center shadow-md shadow-red-600/20">
+                    <div className="p-3 rounded-xl bg-rose-600 text-white font-bold flex justify-between items-center shadow-md shadow-rose-600/20">
                       <span>Upper Partition (Score ≥ 100)</span>
                       <span>4h Doctor SLA</span>
                     </div>
-                    <div className="text-center font-bold text-red-500 border-y-2 border-dashed border-red-500/40 py-1.5 text-[11px]">
+                    <div className="text-center font-bold text-rose-700 border-y-2 border-dashed border-rose-300 py-1.5 text-[11px]">
                       ▲ PIVOT BOUNDARY (SCORE 100) ▼
                     </div>
-                    <div className="p-3 rounded-xl bg-emerald-600 text-white font-bold flex justify-between items-center shadow-md shadow-emerald-600/20">
+                    <div className="p-3 rounded-xl bg-emerald-700 text-white font-bold flex justify-between items-center shadow-md shadow-emerald-700/20">
                       <span>Lower Partition (Score &lt; 100)</span>
                       <span>09:00–17:00 Staggered Slots</span>
                     </div>
@@ -1223,38 +1135,30 @@ export default function SwasthyaLandingPage({
                 )}
 
                 {activePipelineStep === 2 && (
-                  <div
-                    className={`p-5 rounded-2xl border space-y-4 text-xs ${
-                      darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-200"
-                    }`}
-                  >
+                  <div className="p-5 rounded-2xl border-2 border-teal-300 bg-teal-50/95 space-y-4 text-xs shadow-xs text-teal-950">
                     <div className="flex justify-between items-center font-bold">
-                      <span>30-Slot Clinic Daily Allocation</span>
-                      <span className="font-mono text-emerald-600">15 / 5 / 10 Isolation</span>
+                      <span className="text-teal-950">30-Slot Clinic Daily Allocation</span>
+                      <span className="font-mono text-emerald-700 font-extrabold">15 / 5 / 10 Isolation</span>
                     </div>
                     <div className="h-7 rounded-xl overflow-hidden flex font-mono text-[10px] font-extrabold text-white shadow-inner">
                       <div className="w-1/2 bg-amber-500 flex items-center justify-center">
                         15 FOLLOW-UP
                       </div>
-                      <div className="w-1/6 bg-red-600 flex items-center justify-center">
+                      <div className="w-1/6 bg-rose-600 flex items-center justify-center">
                         5 CRIT
                       </div>
                       <div className="w-1/3 bg-emerald-600 flex items-center justify-center animate-pulse">
                         10 WALK-IN (FREE)
                       </div>
                     </div>
-                    <p className="text-emerald-600 font-semibold text-center">
+                    <p className="text-emerald-800 font-bold text-center">
                       ✓ 10 Walk-In slots are 100% Protected for unannounced village walk-ins.
                     </p>
                   </div>
                 )}
 
                 {activePipelineStep === 3 && (
-                  <div
-                    className={`p-5 rounded-2xl border space-y-3 font-mono text-xs ${
-                      darkMode ? "bg-slate-950 border-white/10" : "bg-slate-50 border-slate-200"
-                    }`}
-                  >
+                  <div className="p-5 rounded-2xl border-2 border-teal-300 bg-teal-50/95 space-y-3 font-mono text-xs shadow-xs text-teal-950">
                     <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 font-bold">
                       HEX-0 Full (20/20) → 31st Patient Arrives
                     </div>
@@ -1274,24 +1178,22 @@ export default function SwasthyaLandingPage({
       </section>
 
       {/* ===================================================================
-          5. SIGNATURE 3D PATIENT JOURNEY (INTEGRATED MEDTECH CONSOLE)
+          5. SIGNATURE 3D PATIENT JOURNEY (ILLUMINATED MEDTECH CONSOLE)
       =================================================================== */}
       <section
         id="patient-journey-3d"
         ref={journeySectionRef}
-        className={`py-14 sm:py-20 border-y transition-colors ${
-          darkMode ? "bg-[#080C16] border-slate-800" : "bg-slate-100/70 border-slate-200/80"
-        }`}
+        className="py-14 sm:py-20 border-y border-teal-300/80 bg-gradient-to-b from-teal-100/30 via-emerald-100/40 to-sky-100/30"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl bg-slate-900 border border-slate-800 text-white p-6 sm:p-9 shadow-2xl overflow-hidden relative">
+          <div className="rounded-3xl border-2 border-teal-300 bg-gradient-to-br from-teal-100/90 via-emerald-100/70 to-cyan-100/80 text-slate-950 p-6 sm:p-9 shadow-lg overflow-hidden relative">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4 relative z-10">
               <div>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-xs font-bold uppercase tracking-wider mb-2 border border-emerald-500/30">
-                  <Compass className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-200/90 text-teal-950 font-mono text-xs font-bold uppercase tracking-wider mb-2 border border-teal-400">
+                  <Compass className="w-3.5 h-3.5 text-teal-700" />
                   SCROLL-DRIVEN 3D SPATIAL TELEMETRY
                 </span>
-                <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
+                <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
                   3D Patient Journey: From Silent Risk to Rescue
                 </h2>
               </div>
@@ -1299,15 +1201,15 @@ export default function SwasthyaLandingPage({
               <button
                 type="button"
                 onClick={() => setAutoPlayJourney((prev) => !prev)}
-                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold flex items-center gap-2 cursor-pointer transition-colors"
+                className="px-3.5 py-2 rounded-xl bg-teal-200/90 hover:bg-teal-300/90 border border-teal-400 text-xs font-bold flex items-center gap-2 cursor-pointer transition-colors text-teal-950"
               >
                 {autoPlayJourney ? (
                   <>
-                    <Pause className="w-3.5 h-3.5 text-emerald-400" /> Auto-Scrub Active
+                    <Pause className="w-3.5 h-3.5 text-teal-800" /> Auto-Scrub Active
                   </>
                 ) : (
                   <>
-                    <Play className="w-3.5 h-3.5 text-teal-400" /> Resume Auto-Scrub
+                    <Play className="w-3.5 h-3.5 text-teal-800" /> Resume Auto-Scrub
                   </>
                 )}
               </button>
@@ -1325,8 +1227,8 @@ export default function SwasthyaLandingPage({
                   }}
                   className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                     journeyBeat === idx
-                      ? "bg-emerald-600 border-emerald-500 text-white shadow-md shadow-emerald-600/30"
-                      : "bg-slate-950/70 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700"
+                      ? "bg-teal-700 border-teal-800 text-white shadow-md"
+                      : "bg-teal-50/90 border-teal-300 text-teal-950 hover:bg-teal-100"
                   }`}
                 >
                   <div className="font-mono text-[10px] font-extrabold uppercase opacity-80">
@@ -1341,7 +1243,7 @@ export default function SwasthyaLandingPage({
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
               {/* Visual Isometric Canvas */}
               <div
-                className="lg:col-span-7 relative rounded-2xl border border-slate-800 bg-[#070B14] p-5 sm:p-8 min-h-[360px] flex items-center justify-center overflow-hidden"
+                className="lg:col-span-7 relative rounded-2xl border-2 border-teal-300 bg-emerald-50/90 p-5 sm:p-8 min-h-[360px] flex items-center justify-center overflow-hidden shadow-inner"
                 style={{ perspective: "1000px" }}
               >
                 <div
@@ -1353,33 +1255,33 @@ export default function SwasthyaLandingPage({
                 >
                   {/* Floating Metric Badges */}
                   <div className="flex justify-between items-center mb-5 font-mono text-xs">
-                    <span className="px-3 py-1 rounded-xl bg-rose-950/80 border border-rose-500/60 text-rose-300 font-bold">
+                    <span className="px-3 py-1 rounded-xl bg-rose-100 border border-rose-300 text-rose-900 font-bold">
                       ● PT-MAT-2001 BP: 148 → 156 → 163
                     </span>
-                    <span className="px-3 py-1 rounded-xl bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 font-bold">
+                    <span className="px-3 py-1 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold">
                       ⚡ QuickSort: ~242µs
                     </span>
                   </div>
 
                   {/* Beat 02 QuickSort Laser Line */}
                   {journeyBeat === 1 && (
-                    <div className="mb-4 p-2.5 rounded-xl bg-rose-600/20 border-2 border-dashed border-rose-500 text-center font-mono text-xs font-bold text-rose-300 animate-pulse">
+                    <div className="mb-4 p-2.5 rounded-xl bg-rose-200/80 border-2 border-dashed border-rose-400 text-center font-mono text-xs font-bold text-rose-950 animate-pulse">
                       ═══ QUICKSORT PIVOT = 100 SPLIT (UPPER RED vs LOWER GREEN) ═══
                     </div>
                   )}
 
                   {/* Beat 03 30-Slot Bar */}
                   {journeyBeat === 2 && (
-                    <div className="mb-4 p-3 rounded-xl bg-slate-900 border border-emerald-500 space-y-1.5">
-                      <div className="flex justify-between text-xs font-mono">
-                        <span className="text-amber-400">15 Follow-Up</span>
-                        <span className="text-rose-400">5 Critical</span>
-                        <span className="text-emerald-400 font-bold">10 Walk-In (100% Free)</span>
+                    <div className="mb-4 p-3 rounded-xl bg-teal-100 border-2 border-emerald-400 space-y-1.5 shadow-xs">
+                      <div className="flex justify-between text-xs font-mono font-bold">
+                        <span className="text-amber-800">15 Follow-Up</span>
+                        <span className="text-rose-700">5 Critical</span>
+                        <span className="text-emerald-800">10 Walk-In (100% Free)</span>
                       </div>
                       <div className="h-5 rounded-lg overflow-hidden flex font-mono text-[9px] font-bold">
-                        <div className="w-1/2 bg-amber-500 text-slate-950 flex items-center justify-center">15 SYS</div>
-                        <div className="w-1/6 bg-rose-600 text-white flex items-center justify-center">5 CRIT</div>
-                        <div className="w-1/3 bg-emerald-500 text-slate-950 flex items-center justify-center animate-pulse">10 WALK-IN</div>
+                        <div className="w-1/2 bg-amber-400 text-amber-950 flex items-center justify-center">15 SYS</div>
+                        <div className="w-1/6 bg-rose-500 text-white flex items-center justify-center">5 CRIT</div>
+                        <div className="w-1/3 bg-emerald-500 text-white flex items-center justify-center animate-pulse">10 WALK-IN</div>
                       </div>
                     </div>
                   )}
@@ -1387,39 +1289,39 @@ export default function SwasthyaLandingPage({
                   {/* 5 Hexagon Clinic Nodes Grid */}
                   <div className="grid grid-cols-3 gap-3">
                     <div
-                      className={`p-3.5 rounded-2xl border transition-all ${
+                      className={`p-3.5 rounded-2xl border-2 transition-all ${
                         journeyBeat === 3
-                          ? "bg-rose-950/80 border-rose-500"
-                          : "bg-slate-900/90 border-slate-800"
+                          ? "bg-rose-200 border-rose-400"
+                          : "bg-rose-100/90 border-rose-300"
                       }`}
                     >
-                      <div className="text-[10px] font-mono font-bold text-rose-400">HEX-0 BOKO</div>
-                      <div className="font-bold text-xs mt-0.5">Boko Central PHC</div>
-                      <div className="text-[10px] text-emerald-400 mt-1 font-mono">10 Walk-In Free</div>
+                      <div className="text-[10px] font-mono font-extrabold text-rose-800">HEX-0 BOKO</div>
+                      <div className="font-bold text-xs mt-0.5 text-rose-950">Boko Central PHC</div>
+                      <div className="text-[10px] text-emerald-800 mt-1 font-mono font-bold">10 Walk-In Free</div>
                     </div>
 
                     <div
-                      className={`p-3.5 rounded-2xl border transition-all ${
+                      className={`p-3.5 rounded-2xl border-2 transition-all ${
                         journeyBeat === 3
-                          ? "bg-amber-950/80 border-amber-500"
-                          : "bg-slate-900/90 border-slate-800"
+                          ? "bg-amber-200 border-amber-400"
+                          : "bg-amber-100/90 border-amber-300"
                       }`}
                     >
-                      <div className="text-[10px] font-mono font-bold text-slate-300">HEX-1 CHHAY</div>
-                      <div className="font-bold text-xs mt-0.5">Chhaygaon North</div>
-                      <div className="text-[10px] text-emerald-400 mt-1 font-mono">10 Walk-In Free</div>
+                      <div className="text-[10px] font-mono font-extrabold text-amber-800">HEX-1 CHHAY</div>
+                      <div className="font-bold text-xs mt-0.5 text-amber-950">Chhaygaon North</div>
+                      <div className="text-[10px] text-emerald-800 mt-1 font-mono font-bold">10 Walk-In Free</div>
                     </div>
 
                     <div
-                      className={`p-3.5 rounded-2xl border transition-all ${
+                      className={`p-3.5 rounded-2xl border-2 transition-all ${
                         journeyBeat === 3
-                          ? "bg-emerald-950/90 border-emerald-400 ring-2 ring-emerald-500/50 scale-105"
-                          : "bg-slate-900/90 border-slate-800"
+                          ? "bg-emerald-200 border-emerald-500 ring-2 ring-emerald-400 scale-105"
+                          : "bg-emerald-100/90 border-emerald-300"
                       }`}
                     >
-                      <div className="text-[10px] font-mono font-bold text-emerald-400">HEX-2 RANI</div>
-                      <div className="font-bold text-xs mt-0.5">Rani East PHC</div>
-                      <div className="text-[10px] text-emerald-300 mt-1 font-mono">
+                      <div className="text-[10px] font-mono font-extrabold text-emerald-800">HEX-2 RANI</div>
+                      <div className="font-bold text-xs mt-0.5 text-emerald-950">Rani East PHC</div>
+                      <div className="text-[10px] text-emerald-900 mt-1 font-mono font-bold">
                         {journeyBeat === 3 ? "⚡ Locked 31st Pt" : "Ring-1 Standby"}
                       </div>
                     </div>
@@ -1427,17 +1329,17 @@ export default function SwasthyaLandingPage({
 
                   {/* Tertiary Care 108 Emergency Route */}
                   <div
-                    className={`mt-3 p-3.5 rounded-2xl border transition-all flex items-center justify-between ${
+                    className={`mt-3 p-3.5 rounded-2xl border-2 transition-all flex items-center justify-between ${
                       journeyBeat === 4
-                        ? "bg-rose-950 border-rose-400 ring-2 ring-rose-500/50 scale-105"
-                        : "bg-slate-900/90 border-slate-800"
+                        ? "bg-rose-200 border-rose-400 ring-2 ring-rose-400 scale-105"
+                        : "bg-rose-100/90 border-rose-300"
                     }`}
                   >
                     <div className="flex items-center gap-2">
-                      <Ambulance className="w-4 h-4 text-rose-400" />
+                      <Ambulance className="w-4 h-4 text-rose-700" />
                       <div>
-                        <div className="font-bold text-xs">HEX-4 • GMCH &amp; BBCI Tertiary Hub</div>
-                        <div className="text-[10px] text-rose-300 font-mono">24×7 ICU / Oncology Route</div>
+                        <div className="font-bold text-xs text-rose-950">HEX-4 • GMCH &amp; BBCI Tertiary Hub</div>
+                        <div className="text-[10px] text-rose-800 font-mono font-semibold">24×7 ICU / Oncology Route</div>
                       </div>
                     </div>
                     <span className="px-2 py-0.5 rounded bg-rose-600 text-white font-mono text-[10px] font-bold">
@@ -1449,32 +1351,32 @@ export default function SwasthyaLandingPage({
 
               {/* Narrative Info Card */}
               <div className="lg:col-span-5 space-y-4">
-                <div className="p-6 sm:p-7 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3.5 shadow-xl">
-                  <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-xs font-bold border border-emerald-500/30">
+                <div className="p-6 sm:p-7 rounded-2xl bg-teal-50/95 border-2 border-teal-300 space-y-3.5 shadow-sm">
+                  <span className="px-3 py-1 rounded-full bg-teal-200 text-teal-950 font-mono text-xs font-bold border border-teal-400">
                     {currentBeat.label}
                   </span>
-                  <h3 className="text-xl sm:text-2xl font-extrabold text-white">{currentBeat.title}</h3>
-                  <p className="text-sm text-slate-300 leading-relaxed">
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-slate-950">{currentBeat.title}</h3>
+                  <p className="text-sm text-slate-700 leading-relaxed font-medium">
                     {currentBeat.description}
                   </p>
-                  <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-emerald-400 font-bold">
+                  <div className="p-3 rounded-xl bg-teal-100 border border-teal-300 font-mono text-xs text-teal-950 font-bold">
                     {currentBeat.metric}
                   </div>
                   <div className="flex items-center justify-between pt-2">
                     <button
                       type="button"
                       onClick={() => setJourneyBeat((prev) => (prev - 1 + 5) % 5)}
-                      className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold cursor-pointer text-slate-200"
+                      className="px-3.5 py-2 rounded-xl bg-teal-200/90 hover:bg-teal-300 border border-teal-400 text-xs font-bold cursor-pointer text-teal-950"
                     >
                       ← Previous
                     </button>
-                    <span className="font-mono text-xs text-slate-400">
+                    <span className="font-mono text-xs text-teal-800 font-bold">
                       Beat {journeyBeat + 1} / 5
                     </span>
                     <button
                       type="button"
                       onClick={() => setJourneyBeat((prev) => (prev + 1) % 5)}
-                      className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-xs font-bold text-white cursor-pointer shadow-md shadow-emerald-600/30"
+                      className="px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-xs font-bold text-white cursor-pointer shadow-md shadow-teal-700/25"
                     >
                       Next Beat →
                     </button>
@@ -1489,13 +1391,13 @@ export default function SwasthyaLandingPage({
       {/* ===================================================================
           6. CORE CAPABILITIES (FIVE PILLARS BENTO GRID)
       =================================================================== */}
-      <section id="hexagon-mesh" className="py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section id="hexagon-mesh" className="py-14 sm:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="text-center max-w-3xl mx-auto">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-teal-700 dark:text-teal-400">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-teal-800">
               ARCHITECTURAL EXCELLENCE
             </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1 text-slate-900 dark:text-white">
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1 text-slate-950">
               Five Resilient Pillars of SwasthyaSense
             </h2>
           </div>
@@ -1503,56 +1405,52 @@ export default function SwasthyaLandingPage({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
             {/* Pillar 01: Multi-Tenant RLS */}
             <div
-              className={`p-7 rounded-3xl border ${
-                darkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200 shadow-xs"
-              }`}
+              className="p-7 rounded-3xl border-2 border-sky-300 bg-sky-100/75 shadow-xs"
             >
               <div className="flex items-center justify-between mb-4">
-                <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300 font-mono text-xs font-bold border border-slate-200 dark:border-slate-700">
+                <span className="px-3 py-1 rounded-full bg-sky-200 text-sky-950 font-mono text-xs font-bold border border-sky-400">
                   PILLAR 01 • MULTI-TENANT RLS
                 </span>
-                <Lock className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+                <Lock className="w-5 h-5 text-sky-800" />
               </div>
-              <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">
-                Multi-Organization Isolation & Frontline Collaboration
+              <h3 className="text-xl font-bold mb-2 text-sky-950">
+                Multi-Organization Isolation &amp; Frontline Collaboration
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              <p className="text-sm text-sky-900 leading-relaxed mb-4 font-medium">
                 Organizations like Sevak Health Foundation, Boko Central PHC, and Chhaygaon North sign in independently. Frontline workers collaborate internally across their 15-worker teams, while cross-organization reads are blocked with <code>HTTP 403 Not your organization</code> and logged.
               </p>
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 font-mono text-xs space-y-1.5 border border-slate-200 dark:border-slate-800">
-                <div className="text-emerald-700 dark:text-emerald-400 font-bold">✓ ORG-SEVAK: 260 Patients (58 Assigned to Rina Devi)</div>
-                <div className="text-emerald-700 dark:text-emerald-400 font-bold">✓ ORG-BOKO: Isolated Boko PHC Clinic Queue</div>
-                <div className="text-rose-700 dark:text-rose-400 font-bold">✗ Cross-Tenant Breach: Blocked with HTTP 403 &amp; SHA-256 Logged</div>
+              <div className="p-3.5 rounded-xl bg-sky-200/70 font-mono text-xs space-y-1.5 border border-sky-300">
+                <div className="text-emerald-900 font-bold">✓ ORG-SEVAK: 260 Patients (58 Assigned to Rina Devi)</div>
+                <div className="text-emerald-900 font-bold">✓ ORG-BOKO: Isolated Boko PHC Clinic Queue</div>
+                <div className="text-rose-800 font-bold">✗ Cross-Tenant Breach: Blocked with HTTP 403 &amp; SHA-256 Logged</div>
               </div>
             </div>
 
             {/* Pillar 03: 30-Slot Clinic Matrix Simulator */}
             <div
-              className={`p-7 rounded-3xl border ${
-                darkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200 shadow-xs"
-              }`}
+              className="p-7 rounded-3xl border-2 border-emerald-300 bg-emerald-100/75 shadow-xs"
             >
               <div className="flex items-center justify-between mb-4">
-                <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-mono text-xs font-bold border border-emerald-500/20">
+                <span className="px-3 py-1 rounded-full bg-emerald-200 text-emerald-950 font-mono text-xs font-bold border border-emerald-400">
                   PILLAR 03 • 30-SLOT CAPACITY MATRIX
                 </span>
-                <Users className="w-5 h-5 text-emerald-600" />
+                <Users className="w-5 h-5 text-emerald-700" />
               </div>
-              <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">
+              <h3 className="text-xl font-bold mb-2 text-emerald-950">
                 Closed-Loop Slot Reclamation Simulator
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              <p className="text-sm text-emerald-900 leading-relaxed mb-4 font-medium">
                 Every village clinic isolates 30 daily slots into 15 Follow-Up, 5 Critical, and 10 Protected Walk-In. Test the live slot reclamation loop below:
               </p>
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3 font-mono text-xs">
+              <div className="p-4 rounded-xl bg-emerald-200/70 border border-emerald-300 space-y-3 font-mono text-xs">
                 <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="p-2 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-bold">
+                  <div className="p-2 rounded-lg bg-amber-200 text-amber-950 border border-amber-300 font-bold">
                     {simFollowUpUsed}/15 Follow-Up
                   </div>
-                  <div className="p-2 rounded-lg bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 font-bold">
+                  <div className="p-2 rounded-lg bg-rose-200 text-rose-950 border border-rose-300 font-bold">
                     {simCriticalUsed}/5 Critical
                   </div>
-                  <div className="p-2 rounded-lg bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 font-bold">
+                  <div className="p-2 rounded-lg bg-emerald-300/80 text-emerald-950 border border-emerald-400 font-extrabold">
                     10/10 Walk-In Free
                   </div>
                 </div>
@@ -1560,7 +1458,7 @@ export default function SwasthyaLandingPage({
                   <button
                     type="button"
                     onClick={() => setSimFollowUpUsed((v) => Math.min(15, v + 1))}
-                    className="flex-1 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold cursor-pointer transition-colors"
+                    className="flex-1 py-2 rounded-lg bg-teal-700 hover:bg-teal-800 text-white font-bold cursor-pointer transition-colors shadow-xs"
                   >
                     + Book Follow-Up
                   </button>
@@ -1570,7 +1468,7 @@ export default function SwasthyaLandingPage({
                       setSimFollowUpUsed((v) => Math.max(0, v - 1));
                       setSimCriticalUsed((v) => Math.max(0, v - 1));
                     }}
-                    className="flex-1 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold cursor-pointer transition-colors"
+                    className="flex-1 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold cursor-pointer transition-colors shadow-xs"
                   >
                     ✓ Clear &amp; Free Slot
                   </button>
@@ -1586,17 +1484,15 @@ export default function SwasthyaLandingPage({
       =================================================================== */}
       <section
         id="security-dpdp"
-        className={`py-16 sm:py-20 border-y ${
-          darkMode ? "bg-slate-900/60 border-slate-800" : "bg-slate-50 border-slate-200"
-        }`}
+        className="py-14 sm:py-20 border-y border-teal-300 bg-gradient-to-b from-teal-100/40 via-sky-100/40 to-emerald-100/40"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
-              TRUST, PRIVACY & SAFETY
+          <div className="text-center max-w-3xl mx-auto mb-10">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-teal-800">
+              TRUST, PRIVACY &amp; SAFETY
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">
-              DPDP Act 2023 Compliance & Clinical Decision Support
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1 text-slate-950">
+              DPDP Act 2023 Compliance &amp; Clinical Decision Support
             </h2>
           </div>
 
@@ -1606,47 +1502,51 @@ export default function SwasthyaLandingPage({
                 title: "Non-Diagnostic Decision Support",
                 desc: "Prominently displays DECISION-SUPPORT ONLY • NOT A DIAGNOSTIC DEVICE across all screens. Never prescribes medications.",
                 badge: "WHO / CDSCO Aligned",
+                bg: "bg-teal-100/80 border-teal-300",
               },
               {
                 title: "AES-256-GCM Phone Encryption",
                 desc: "Frontline patient phone numbers are encrypted at rest with random IVs and authentication tags. Masked to all supervisors.",
                 badge: "AES-256-GCM",
+                bg: "bg-sky-100/80 border-sky-300",
               },
               {
                 title: "PostgreSQL Row-Level Security",
                 desc: "Strict tenant barriers prevent cross-organization data leakage. Authenticated with cryptographic scrypt password hashes.",
                 badge: "Postgres RLS",
+                bg: "bg-indigo-100/80 border-indigo-300",
               },
               {
                 title: "SHA-256 Audit Trail Chain",
                 desc: "Every check-in, rule amendment, and 403 access denial is cryptographically hash-chained into a tamper-evident ledger.",
                 badge: "SHA-256 Ledger",
+                bg: "bg-purple-100/80 border-purple-300",
               },
               {
                 title: "DPDP Instant 'STOP' Revocation",
                 desc: "Replying 'STOP' to any SMS/WhatsApp message immediately locks the patient record to a minimal stub and blocks future outreach.",
                 badge: "DPDP Act 2023",
+                bg: "bg-amber-100/80 border-amber-300",
               },
               {
                 title: "4-Hour SLA Watchdog",
                 desc: "Automated idempotent jobs inspect Upper Partition (≥100) patient alerts and escalate unreviewed cases to the Block Supervisor.",
                 badge: "4h SLA Watchdog",
+                bg: "bg-emerald-100/80 border-emerald-300",
               },
             ].map((card) => (
               <div
                 key={card.title}
-                className={`p-6 rounded-2xl border transition-all ${
-                  darkMode ? "bg-slate-900 border-slate-800 shadow-sm" : "bg-white border-slate-200 shadow-xs"
-                }`}
+                className={`p-6 rounded-2xl border-2 ${card.bg} transition-all shadow-2xs`}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  <ShieldCheck className="w-5 h-5 text-teal-800" />
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-200 text-teal-950 border border-teal-400">
                     {card.badge}
                   </span>
                 </div>
-                <h3 className="font-bold text-sm sm:text-base mb-1">{card.title}</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                <h3 className="font-bold text-sm sm:text-base mb-1 text-slate-950">{card.title}</h3>
+                <p className="text-xs text-slate-700 leading-relaxed font-medium">
                   {card.desc}
                 </p>
               </div>
@@ -1654,21 +1554,20 @@ export default function SwasthyaLandingPage({
           </div>
         </div>
       </section>
-
       {/* ===================================================================
           8. FOOTER WITH LIVE ACTIVE MULTI-TENANT SESSIONS BAR
       =================================================================== */}
-      <footer className={`pt-14 pb-10 border-t ${darkMode ? "bg-[#070B14] text-slate-400 border-slate-800" : "bg-slate-900 text-slate-300 border-slate-800"}`}>
+      <footer className="pt-14 pb-10 border-t border-teal-300 bg-gradient-to-b from-teal-100/70 via-emerald-100/80 to-teal-200/70 text-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           {/* Live Multi-Tenant Sessions Bar */}
-          <div className="p-4 rounded-2xl bg-white/5 border border-slate-800 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <div className="p-4 rounded-2xl bg-teal-200/70 border border-teal-300 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-ping" />
               <div>
-                <div className="text-xs font-bold text-white uppercase tracking-wider">
+                <div className="text-xs font-bold text-teal-950 uppercase tracking-wider">
                   Live Multi-Tenant Sessions ({activeSessions.length} Active Tenants)
                 </div>
-                <div className="text-[11px] text-slate-400">
+                <div className="text-[11px] text-teal-800 font-medium">
                   Independent tokens per tab • No single-session lock
                 </div>
               </div>
@@ -1678,14 +1577,14 @@ export default function SwasthyaLandingPage({
               {activeSessions.map((ses) => (
                 <div
                   key={`${ses.orgId}-${ses.userId}`}
-                  className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs flex items-center gap-2"
+                  className="px-3 py-1.5 rounded-xl bg-teal-50 border border-teal-300 text-xs flex items-center gap-2 text-teal-950 shadow-2xs font-bold"
                 >
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                  <span className="font-mono font-bold text-white">{ses.userId}</span>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 font-mono">
+                  <span className="w-2 h-2 rounded-full bg-emerald-600" />
+                  <span className="font-mono text-teal-950 font-bold">{ses.userId}</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-teal-200 text-teal-950 font-mono">
                     {ses.orgId}
                   </span>
-                  <span className="text-[11px] text-emerald-400 hidden sm:inline">{ses.roleBadge}</span>
+                  <span className="text-[11px] text-teal-800 hidden sm:inline">{ses.roleBadge}</span>
                 </div>
               ))}
             </div>
@@ -1695,23 +1594,23 @@ export default function SwasthyaLandingPage({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-xs">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold">
+                <div className="w-7 h-7 rounded-lg bg-teal-700 flex items-center justify-center text-white font-bold shadow-xs">
                   S
                 </div>
-                <span className="font-extrabold text-white text-base">
-                  Swasthya<span className="text-emerald-400">Sense</span>
+                <span className="font-extrabold text-slate-950 text-base">
+                  Swasthya<span className="text-teal-700">Sense</span>
                 </span>
               </div>
-              <p className="text-slate-400 leading-relaxed">
+              <p className="text-slate-700 font-medium leading-relaxed">
                 Non-diagnostic early-warning and hexagonal clinic load-balancing platform for rural frontline health teams.
               </p>
-              <div className="text-[11px] text-amber-300 font-semibold p-2 rounded-lg bg-amber-950/40 border border-amber-800/40">
+              <div className="text-[11px] text-amber-950 font-bold p-2.5 rounded-xl bg-amber-200/80 border border-amber-300 shadow-2xs">
                 DECISION-SUPPORT ONLY • NOT A DIAGNOSTIC DEVICE
               </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="font-bold text-white uppercase tracking-wider mb-2">Capabilities</div>
+            <div className="space-y-2 text-slate-700 font-medium">
+              <div className="font-bold text-teal-950 uppercase tracking-wider mb-2">Capabilities</div>
               <div>5-Category Bidirectional Vitals</div>
               <div>QuickSort Pivot = 100 Engine (~242µs)</div>
               <div>30-Slot Clinic Protection Matrix</div>
@@ -1719,8 +1618,8 @@ export default function SwasthyaLandingPage({
               <div>108 Rapid Ambulance Bypass</div>
             </div>
 
-            <div className="space-y-2">
-              <div className="font-bold text-white uppercase tracking-wider mb-2">Compliance</div>
+            <div className="space-y-2 text-slate-700 font-medium">
+              <div className="font-bold text-teal-950 uppercase tracking-wider mb-2">Compliance</div>
               <div>DPDP Act 2023 Consent Revocation</div>
               <div>AES-256-GCM Phone Encryption</div>
               <div>SHA-256 Cryptographic Audit Ledger</div>
@@ -1729,31 +1628,31 @@ export default function SwasthyaLandingPage({
             </div>
 
             <div className="space-y-3">
-              <div className="font-bold text-white uppercase tracking-wider mb-2">Portal Access</div>
+              <div className="font-bold text-teal-950 uppercase tracking-wider mb-2">Portal Access</div>
               <button
                 type="button"
                 onClick={() => {
                   setAuthTab("signin");
                   setLoginModalOpen(true);
                 }}
-                className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                className="w-full py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md shadow-teal-700/20"
               >
-                <KeyRound className="w-3.5 h-3.5" />
+                <KeyRound className="w-3.5 h-3.5 text-emerald-200" />
                 Organization Sign-In
               </button>
               <button
                 type="button"
                 onClick={onEnterWorkspace}
-                className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md shadow-emerald-600/20"
               >
-                <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                <Terminal className="w-3.5 h-3.5 text-emerald-200" />
                 Open Scenario Lab
               </button>
             </div>
           </div>
 
-          <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
-            <div>© 2026 SwasthyaSense Clinical Mesh • Kamrup Rural & Guwahati</div>
+          <div className="pt-6 border-t border-teal-300/80 flex flex-col sm:flex-row items-center justify-between text-xs text-teal-900 font-medium gap-2">
+            <div>© 2026 SwasthyaSense Clinical Mesh • Kamrup Rural &amp; Guwahati</div>
             <div className="font-mono">300 Synthetic Patients • Zero Real PII</div>
           </div>
         </div>
@@ -1763,21 +1662,19 @@ export default function SwasthyaLandingPage({
           MODAL: SLEEK MODERN ORGANIZATION SIGN-IN & ONBOARDING SHEET
       =================================================================== */}
       {loginModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-teal-950/40 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
           <div
-            className={`relative w-full max-w-lg rounded-3xl border shadow-2xl overflow-hidden ${
-              darkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-white border-slate-200 text-slate-900"
-            }`}
+            className="relative w-full max-w-lg rounded-3xl border-2 border-teal-300 bg-gradient-to-br from-emerald-50 via-teal-50 to-sky-50 shadow-2xl overflow-hidden text-slate-900"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+            <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-teal-300 bg-teal-100/70">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-xs">
-                  <KeyRound className="w-4 h-4 text-emerald-400" />
+                <div className="w-9 h-9 rounded-xl bg-teal-700 text-white flex items-center justify-center shadow-xs">
+                  <KeyRound className="w-4 h-4 text-emerald-300" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-base text-slate-900 dark:text-white">Organization Portal Sign-In</h3>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  <h3 className="font-bold text-base text-teal-950">Organization Portal Sign-In</h3>
+                  <p className="text-[11px] text-teal-800 font-medium">
                     Postgres Row-Level Security &amp; Scrypt Password Verification
                   </p>
                 </div>
@@ -1785,14 +1682,14 @@ export default function SwasthyaLandingPage({
               <button
                 type="button"
                 onClick={() => setLoginModalOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
+                className="p-1.5 rounded-lg hover:bg-teal-200/80 text-teal-800 hover:text-teal-950 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b border-slate-200 dark:border-slate-800 px-6 pt-2">
+            <div className="flex border-b border-teal-300 px-6 pt-2 bg-teal-50/50">
               <button
                 type="button"
                 onClick={() => {
@@ -1801,8 +1698,8 @@ export default function SwasthyaLandingPage({
                 }}
                 className={`pb-2.5 px-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
                   authTab === "signin"
-                    ? "border-emerald-600 text-emerald-700 dark:text-emerald-400"
-                    : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                    ? "border-teal-700 text-teal-950 font-extrabold"
+                    : "border-transparent text-teal-700 hover:text-teal-950"
                 }`}
               >
                 Sign In to Existing Tenant
@@ -1815,8 +1712,8 @@ export default function SwasthyaLandingPage({
                 }}
                 className={`pb-2.5 px-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
                   authTab === "onboard"
-                    ? "border-emerald-600 text-emerald-700 dark:text-emerald-400"
-                    : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                    ? "border-teal-700 text-teal-950 font-extrabold"
+                    : "border-transparent text-teal-700 hover:text-teal-950"
                 }`}
               >
                 + Onboard New Organization
@@ -1828,7 +1725,7 @@ export default function SwasthyaLandingPage({
               <form onSubmit={handleSignInSubmit} className="p-6 space-y-4">
                 {/* 1-Click Demo Accounts Chips */}
                 <div className="space-y-1.5">
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-teal-900">
                     Quick-Autofill Demo Personas:
                   </span>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -1843,8 +1740,8 @@ export default function SwasthyaLandingPage({
                         }}
                         className={`p-2 rounded-xl border text-left text-xs transition-all cursor-pointer ${
                           orgIdInput === p.organizationId && userIdInput === p.userId
-                            ? "bg-emerald-500/10 border-emerald-500 text-emerald-700 dark:text-emerald-300"
-                            : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800"
+                            ? "bg-teal-200 border-teal-500 text-teal-950 font-bold"
+                            : "bg-teal-50/80 border-teal-200 text-teal-900 hover:bg-teal-100"
                         }`}
                       >
                         <div className="font-bold truncate">{p.userName}</div>
@@ -1855,48 +1752,42 @@ export default function SwasthyaLandingPage({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold mb-1">Organization ID</label>
+                  <label className="block text-xs font-bold text-teal-950 mb-1">Organization ID</label>
                   <input
                     type="text"
                     value={orgIdInput}
                     onChange={(e) => setOrgIdInput(e.target.value)}
                     placeholder="e.g. ORG-BOKO"
-                    className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                      darkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-300"
-                    }`}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-teal-300 bg-teal-50/90 text-teal-950 text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold mb-1">Staff User ID</label>
+                    <label className="block text-xs font-bold text-teal-950 mb-1">Staff User ID</label>
                     <input
                       type="text"
                       value={userIdInput}
                       onChange={(e) => setUserIdInput(e.target.value)}
                       placeholder="e.g. doc.boko01"
-                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                        darkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-300"
-                      }`}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-teal-300 bg-teal-50/90 text-teal-950 text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold mb-1">Password</label>
+                    <label className="block text-xs font-bold text-teal-950 mb-1">Password</label>
                     <div className="relative">
                       <input
                         type={showPassword ? "text" : "password"}
                         value={passwordInput}
                         onChange={(e) => setPasswordInput(e.target.value)}
                         placeholder="••••••••"
-                        className={`w-full pl-3.5 pr-10 py-2.5 rounded-xl border text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                          darkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-300"
-                        }`}
+                        className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-teal-300 bg-teal-50/90 text-teal-950 text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-teal-500"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword((v) => !v)}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 p-1"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-teal-700 p-1"
                       >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
@@ -1905,7 +1796,7 @@ export default function SwasthyaLandingPage({
                 </div>
 
                 {authError && (
-                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-bold flex items-center gap-2">
+                  <div className="p-3 rounded-xl bg-rose-200 border border-rose-400 text-rose-950 text-xs font-bold flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 shrink-0" />
                     <span>{authError}</span>
                   </div>
@@ -1914,7 +1805,7 @@ export default function SwasthyaLandingPage({
                 <button
                   type="submit"
                   disabled={authLoading}
-                  className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-800 text-white font-bold text-xs shadow-md shadow-teal-700/25 flex items-center justify-center gap-2 cursor-pointer transition-all"
                 >
                   {authLoading ? (
                     <>
@@ -1931,77 +1822,65 @@ export default function SwasthyaLandingPage({
               <form onSubmit={handleOnboardSubmit} className="p-6 space-y-3.5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold mb-1">Organization Name</label>
+                    <label className="block text-xs font-bold mb-1 text-teal-950">Organization Name</label>
                     <input
                       type="text"
                       required
                       value={newOrgName}
                       onChange={(e) => setNewOrgName(e.target.value)}
                       placeholder="e.g. Gramin Swasthya Trust"
-                      className={`w-full px-3 py-2 rounded-xl border text-xs font-semibold ${
-                        darkMode ? "bg-slate-950 border-slate-800" : "bg-slate-50 border-slate-300"
-                      }`}
+                      className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-50/90 text-teal-950 placeholder:text-teal-700/60 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold mb-1">Short Name</label>
+                    <label className="block text-xs font-bold mb-1 text-teal-950">Short Name</label>
                     <input
                       type="text"
                       value={newOrgShort}
                       onChange={(e) => setNewOrgShort(e.target.value)}
                       placeholder="e.g. Gramin Care"
-                      className={`w-full px-3 py-2 rounded-xl border text-xs font-semibold ${
-                        darkMode ? "bg-slate-950 border-slate-800" : "bg-slate-50 border-slate-300"
-                      }`}
+                      className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-50/90 text-teal-950 placeholder:text-teal-700/60 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-xs font-bold mb-1">District</label>
+                    <label className="block text-xs font-bold mb-1 text-teal-950">District</label>
                     <input
                       type="text"
                       value={newOrgDistrict}
                       onChange={(e) => setNewOrgDistrict(e.target.value)}
-                      className={`w-full px-3 py-2 rounded-xl border text-xs font-semibold ${
-                        darkMode ? "bg-slate-950 border-slate-800" : "bg-slate-50 border-slate-300"
-                      }`}
+                      className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-50/90 text-teal-950 placeholder:text-teal-700/60 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold mb-1">Passcode</label>
+                    <label className="block text-xs font-bold mb-1 text-teal-950">Passcode</label>
                     <input
                       type="text"
                       value={newOrgPasscode}
                       onChange={(e) => setNewOrgPasscode(e.target.value)}
-                      className={`w-full px-3 py-2 rounded-xl border text-xs font-mono font-bold ${
-                        darkMode ? "bg-slate-950 border-slate-800" : "bg-slate-50 border-slate-300"
-                      }`}
+                      className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-50/90 text-teal-950 font-mono text-xs font-bold focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold mb-1">Team Size</label>
+                    <label className="block text-xs font-bold mb-1 text-teal-950">Team Size</label>
                     <input
                       type="number"
                       value={newOrgTeamSize}
                       onChange={(e) => setNewOrgTeamSize(Number(e.target.value) || 15)}
-                      className={`w-full px-3 py-2 rounded-xl border text-xs font-bold ${
-                        darkMode ? "bg-slate-950 border-slate-800" : "bg-slate-50 border-slate-300"
-                      }`}
+                      className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-50/90 text-teal-950 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold mb-1">Lead Frontline Worker Name</label>
+                  <label className="block text-xs font-bold mb-1 text-teal-950">Lead Frontline Worker Name</label>
                   <input
                     type="text"
                     value={newOrgLead}
                     onChange={(e) => setNewOrgLead(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-xl border text-xs font-semibold ${
-                      darkMode ? "bg-slate-950 border-slate-800" : "bg-slate-50 border-slate-300"
-                    }`}
+                    className="w-full px-3 py-2 rounded-xl border border-teal-300 bg-teal-50/90 text-teal-950 placeholder:text-teal-700/60 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
 
