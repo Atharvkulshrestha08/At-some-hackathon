@@ -771,11 +771,11 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                 href="/"
                 className="min-h-[44px] flex items-center gap-2 shrink-0 whitespace-nowrap"
               >
-                <div className="w-9 h-9 rounded-xl bg-red-600 text-white flex items-center justify-center shadow-xs">
+                <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs">
                   <Cross className="w-4 h-4" />
                 </div>
                 <span className="text-base font-bold tracking-tight text-slate-900">
-                  SwasthyaSense
+                  Swasthya<span className="text-emerald-700">Sense</span>
                 </span>
               </Link>
 
@@ -839,7 +839,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                       <span
                         className={`px-1.5 py-0.2 rounded-full text-[11px] font-mono font-bold leading-tight ${
                           item.alertRed
-                            ? "bg-red-600 text-white"
+                            ? "bg-rose-600 text-white"
                             : "bg-emerald-100 text-emerald-800"
                         }`}
                       >
@@ -857,7 +857,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={openRegisterPatientModal}
-                className="min-h-[40px] px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 whitespace-nowrap shadow-xs transition-colors"
+                className="min-h-[40px] px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 whitespace-nowrap shadow-xs transition-colors cursor-pointer"
               >
                 <UserPlus className="w-4 h-4 shrink-0" />
                 <span className="hidden sm:inline">+ Register Patient</span>
@@ -936,11 +936,11 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
               <div className="space-y-6">
                 <div className="flex items-center justify-between pb-4 border-b border-slate-200">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-red-600 text-white flex items-center justify-center">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
                       <Cross className="w-4 h-4" />
                     </div>
                     <span className="text-lg font-bold text-slate-900">
-                      SwasthyaSense
+                      Swasthya<span className="text-emerald-700">Sense</span>
                     </span>
                   </div>
                   <button
@@ -971,7 +971,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
                       setMobileMenuOpen(false);
                       openRegisterPatientModal();
                     }}
-                    className="min-h-[44px] px-3 py-2 rounded-xl bg-red-600 text-white text-sm font-bold flex items-center justify-center gap-1.5"
+                    className="min-h-[44px] px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold flex items-center justify-center gap-1.5"
                   >
                     <UserPlus className="w-4 h-4" />
                     <span>+ Register Pt</span>
@@ -1541,7 +1541,7 @@ export function SwasthyaShell({ children }: { children: React.ReactNode }) {
             <div className="w-full h-full sm:h-auto sm:max-w-2xl bg-white sm:rounded-2xl border border-slate-200 p-6 shadow-2xl space-y-5 overflow-y-auto max-h-[92vh]">
               <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
                     <UserPlus className="w-5 h-5" />
                   </div>
                   <div>

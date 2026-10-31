@@ -68,8 +68,8 @@ export const LANDING_DEMO_PRESETS: DemoAccountPreset[] = [
     roleBadge: "Super Admin • Platform Director",
     facilityHex: "GLOBAL",
     avatarText: "SA",
-    avatarBg: "bg-purple-600 text-white",
-    badgeBg: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
+    avatarBg: "bg-slate-900 text-white",
+    badgeBg: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200 border-slate-300",
   },
   {
     personRole: "Clinic Doctor",
@@ -81,8 +81,8 @@ export const LANDING_DEMO_PRESETS: DemoAccountPreset[] = [
     roleBadge: "Clinician • HEX-0 Boko Central PHC",
     facilityHex: "HEX-0",
     avatarText: "DR",
-    avatarBg: "bg-red-600 text-white",
-    badgeBg: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20",
+    avatarBg: "bg-teal-700 text-white",
+    badgeBg: "bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/20",
   },
   {
     personRole: "Frontline ASHA Worker",
@@ -532,7 +532,7 @@ export default function SwasthyaLandingPage({
 
   return (
     <div
-      className={`min-h-screen selection:bg-red-500/20 selection:text-red-700 font-sans transition-colors duration-300 ${
+      className={`min-h-screen selection:bg-emerald-500/20 selection:text-emerald-800 font-sans transition-colors duration-300 ${
         darkMode ? "bg-[#0A0E1A] text-slate-100" : "bg-[#F8FAFC] text-slate-900"
       }`}
     >
@@ -544,21 +544,21 @@ export default function SwasthyaLandingPage({
           className={`max-w-7xl mx-auto rounded-2xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4 border transition-all ${
             darkMode
               ? "bg-slate-900/80 border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl"
-              : "bg-white/85 border-slate-200/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] backdrop-blur-xl"
+              : "bg-white/90 border-slate-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.03)] backdrop-blur-xl"
           }`}
         >
           {/* Brand Logo & Clinical Sub-Badge */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 via-rose-600 to-red-700 text-white flex items-center justify-center shadow-lg shadow-red-600/30 ring-1 ring-white/20 relative">
-              <HeartPulse className="w-5 h-5 animate-pulse" />
-              <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 ring-1 ring-white/20 relative">
+              <HeartPulse className="w-5 h-5" />
+              <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white dark:border-slate-900" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-lg sm:text-xl tracking-tight">
-                  Swasthya<span className="text-red-600">Sense</span>
+                <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white">
+                  Swasthya<span className="text-emerald-600">Sense</span>
                 </span>
-                <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 border border-emerald-500/25">
+                <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/25">
                   Clinical Mesh v2.5
                 </span>
               </div>
@@ -572,26 +572,26 @@ export default function SwasthyaLandingPage({
           <nav className="hidden lg:flex items-center gap-7 text-xs font-semibold tracking-wide">
             <a
               href="#how-it-works"
-              className="text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+              className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
             >
               {t.navHowItWorks}
             </a>
             <a
               href="#patient-journey-3d"
-              className="text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors flex items-center gap-1.5"
+              className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors flex items-center gap-1.5"
             >
-              <Sparkles className="w-3.5 h-3.5 text-red-500" />
+              <Sparkles className="w-3.5 h-3.5 text-teal-600" />
               {t.navJourney3D}
             </a>
             <a
               href="#hexagon-mesh"
-              className="text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+              className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
             >
               {t.navHexArchitecture}
             </a>
             <a
               href="#security-dpdp"
-              className="text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+              className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
             >
               {t.navSecurity}
             </a>
@@ -606,7 +606,7 @@ export default function SwasthyaLandingPage({
                 aria-label="Select Language"
                 value={selectedLanguage}
                 onChange={(e) => onSelectLanguage(e.target.value as SupportedLanguage)}
-                className={`pl-8 pr-3 py-1.5 rounded-xl border text-xs font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500/50 ${
+                className={`pl-8 pr-3 py-1.5 rounded-xl border text-xs font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500/50 ${
                   darkMode
                     ? "bg-slate-950 border-white/10 text-slate-200"
                     : "bg-slate-100/80 border-slate-200 text-slate-800"
@@ -651,7 +651,7 @@ export default function SwasthyaLandingPage({
                 <button
                   type="button"
                   onClick={onEnterWorkspace}
-                  className="px-3.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-600/20 flex items-center gap-1.5 cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-sm flex items-center gap-1.5 cursor-pointer transition-colors"
                 >
                   Enter Workspace <ArrowRight className="w-3.5 h-3.5" />
                 </button>
@@ -659,7 +659,7 @@ export default function SwasthyaLandingPage({
                   type="button"
                   onClick={onSignOut}
                   title="Sign Out"
-                  className="p-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-500 hover:text-red-600 cursor-pointer"
+                  className="p-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-500 hover:text-slate-900 cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -671,9 +671,9 @@ export default function SwasthyaLandingPage({
                   setAuthTab("signin");
                   setLoginModalOpen(true);
                 }}
-                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-lg shadow-red-600/25 transition-all cursor-pointer"
+                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-md shadow-slate-900/10 transition-all cursor-pointer"
               >
-                <KeyRound className="w-3.5 h-3.5" />
+                <KeyRound className="w-3.5 h-3.5 text-emerald-400" />
                 {t.navLaunch}
               </button>
             )}
@@ -703,7 +703,7 @@ export default function SwasthyaLandingPage({
               <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>
                 {t.navHowItWorks}
               </a>
-              <a href="#patient-journey-3d" onClick={() => setMobileMenuOpen(false)} className="text-red-600">
+              <a href="#patient-journey-3d" onClick={() => setMobileMenuOpen(false)} className="text-emerald-600">
                 {t.navJourney3D}
               </a>
               <a href="#hexagon-mesh" onClick={() => setMobileMenuOpen(false)}>
@@ -719,9 +719,9 @@ export default function SwasthyaLandingPage({
                 setMobileMenuOpen(false);
                 setLoginModalOpen(true);
               }}
-              className="w-full py-2.5 rounded-xl bg-red-600 text-white text-xs font-bold flex items-center justify-center gap-2"
+              className="w-full py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center justify-center gap-2"
             >
-              <KeyRound className="w-4 h-4" />
+              <KeyRound className="w-4 h-4 text-emerald-400" />
               {t.navLaunch}
             </button>
           </div>
@@ -731,11 +731,11 @@ export default function SwasthyaLandingPage({
       {/* ===================================================================
           2. GRAND HERO: EDITORIAL IMPACT + REAL-TIME CLINICAL COMMAND RADAR
       =================================================================== */}
-      <section className="relative overflow-hidden pt-8 pb-16 lg:pt-16 lg:pb-24">
+      <section className="relative overflow-hidden pt-8 pb-16 lg:pt-14 lg:pb-20">
         {/* Subtle Ambient Radial Glows */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 pointer-events-none opacity-40 dark:opacity-20">
-          <div className="absolute -top-10 left-1/4 w-96 h-96 rounded-full bg-red-500/20 blur-3xl" />
-          <div className="absolute top-10 right-1/4 w-96 h-96 rounded-full bg-emerald-500/20 blur-3xl" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 pointer-events-none opacity-30 dark:opacity-20">
+          <div className="absolute -top-10 left-1/4 w-96 h-96 rounded-full bg-teal-500/15 blur-3xl" />
+          <div className="absolute top-10 right-1/4 w-96 h-96 rounded-full bg-emerald-500/15 blur-3xl" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -745,28 +745,28 @@ export default function SwasthyaLandingPage({
               className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-medium transition-all ${
                 darkMode
                   ? "bg-slate-900/90 border-white/10 text-slate-300 shadow-md"
-                  : "bg-white/90 border-slate-200/80 text-slate-700 shadow-xs"
+                  : "bg-white/95 border-slate-200 text-slate-700 shadow-xs"
               }`}
             >
-              <span className="w-2 h-2 rounded-full bg-red-600 animate-ping shrink-0" />
-              <span className="font-bold text-red-600 tracking-wide font-mono text-[11px]">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+              <span className="font-bold text-emerald-700 dark:text-emerald-400 tracking-wide font-mono text-[11px]">
                 LIVE PROTOCOL
               </span>
               <span className="text-slate-300 dark:text-slate-700">•</span>
-              <span className="hidden sm:inline">NEWS2 & MEOWS Maternal Overrides</span>
+              <span className="hidden sm:inline">NEWS2 &amp; MEOWS Hard Overrides</span>
               <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
-              <span className="font-mono text-emerald-600 font-bold">~242µs QuickSort</span>
+              <span className="font-mono text-emerald-700 dark:text-emerald-400 font-bold">~242µs QuickSort</span>
               <span className="text-slate-300 dark:text-slate-700 hidden md:inline">•</span>
-              <span className="font-mono text-slate-500 hidden md:inline">10 Protected Walk-In Slots</span>
+              <span className="font-mono text-slate-600 dark:text-slate-400 hidden md:inline">10 Protected Walk-In Slots</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             {/* Left 7 Columns: Editorial Headline, Mission, Dual CTA, and 1-Click Demo Launcher */}
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.08] text-slate-900 dark:text-white">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12] text-slate-900 dark:text-white">
                 {t.heroTitle1}{" "}
-                <span className="text-red-600 dark:text-red-500">
+                <span className="text-emerald-700 dark:text-emerald-400">
                   {t.heroTitleHighlight}
                 </span>
               </h1>
@@ -787,9 +787,9 @@ export default function SwasthyaLandingPage({
                     setAuthTab("signin");
                     setLoginModalOpen(true);
                   }}
-                  className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-xl shadow-red-600/25 transition-all flex items-center justify-center gap-2 cursor-pointer group"
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md shadow-slate-900/10 transition-all flex items-center justify-center gap-2 cursor-pointer group"
                 >
-                  <KeyRound className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                  <KeyRound className="w-4 h-4 text-emerald-400 group-hover:rotate-12 transition-transform" />
                   <span>{t.ctaSignIn}</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -800,7 +800,7 @@ export default function SwasthyaLandingPage({
                     setAuthTab("onboard");
                     setLoginModalOpen(true);
                   }}
-                  className={`w-full sm:w-auto px-6 py-4 rounded-2xl border font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  className={`w-full sm:w-auto px-6 py-3.5 rounded-2xl border font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     darkMode
                       ? "bg-slate-900 border-slate-800 text-slate-200 hover:bg-slate-800"
                       : "bg-white border-slate-200 text-slate-800 hover:bg-slate-50 shadow-xs"
@@ -816,12 +816,12 @@ export default function SwasthyaLandingPage({
                 className={`p-4 rounded-2xl border transition-all ${
                   darkMode
                     ? "bg-slate-900/80 border-slate-800 backdrop-blur-md"
-                    : "bg-white border-slate-200/90 shadow-xs backdrop-blur-md"
+                    : "bg-white border-slate-200 shadow-xs"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2.5">
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-red-600" />
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-teal-600" />
                     Instant 1-Click Multi-Tenant Demo Accounts
                   </span>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
@@ -838,8 +838,8 @@ export default function SwasthyaLandingPage({
                       onClick={() => void handleDirectDemoLogin(preset)}
                       className={`p-2.5 rounded-xl border text-left transition-all flex items-center gap-2.5 cursor-pointer group ${
                         darkMode
-                          ? "bg-slate-950/80 border-slate-800/80 hover:border-red-500/50 hover:bg-slate-900"
-                          : "bg-slate-50 border-slate-200/80 hover:border-red-400 hover:bg-white hover:shadow-sm"
+                          ? "bg-slate-950/80 border-slate-800/80 hover:border-emerald-500/50 hover:bg-slate-900"
+                          : "bg-slate-50/70 border-slate-200/80 hover:border-emerald-400 hover:bg-white hover:shadow-xs"
                       }`}
                     >
                       <div
@@ -848,17 +848,17 @@ export default function SwasthyaLandingPage({
                         {preset.avatarText}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="font-bold text-xs truncate group-hover:text-red-600 transition-colors">
+                        <div className="font-bold text-xs truncate group-hover:text-emerald-700 transition-colors">
                           {preset.userName}
                         </div>
                         <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
                           {preset.personRole}
                         </div>
-                        <div className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold truncate">
+                        <div className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 font-semibold truncate">
                           {preset.organizationId}
                         </div>
                       </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 group-hover:text-red-600 transition-all shrink-0" />
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 group-hover:text-emerald-600 transition-all shrink-0" />
                     </button>
                   ))}
                 </div>
@@ -996,19 +996,19 @@ export default function SwasthyaLandingPage({
           3. THE PROBLEM BENTO GRID: WHY RURAL FOLLOW-UP CARE FAILS
       =================================================================== */}
       <section
-        className={`py-16 sm:py-20 border-y ${
+        className={`py-14 sm:py-18 border-y ${
           darkMode ? "bg-slate-900/40 border-white/10" : "bg-slate-50/70 border-slate-200/80"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-red-600">
+          <div className="text-center max-w-3xl mx-auto mb-10">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">
               THE FRONTLINE CARE CRISIS
             </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1">
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1 text-slate-900 dark:text-white">
               {t.problemHeading}
             </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
               {t.problemSub}
             </p>
           </div>
@@ -1016,66 +1016,66 @@ export default function SwasthyaLandingPage({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Problem 01 */}
             <div
-              className={`p-7 rounded-3xl border transition-all ${
+              className={`p-6 sm:p-7 rounded-3xl border transition-all ${
                 darkMode
-                  ? "bg-slate-900 border-white/10 hover:border-red-500/40"
-                  : "bg-white border-slate-200 hover:border-red-300 shadow-sm"
+                  ? "bg-slate-900 border-white/10 hover:border-slate-700"
+                  : "bg-white border-slate-200 hover:border-slate-300 shadow-xs"
               }`}
             >
-              <div className="w-12 h-12 rounded-2xl bg-red-500/10 text-red-600 flex items-center justify-center font-extrabold text-lg mb-5">
+              <div className="w-11 h-11 rounded-2xl bg-rose-500/10 text-rose-700 dark:text-rose-400 flex items-center justify-center font-extrabold text-base mb-4">
                 01
               </div>
-              <h3 className="text-lg font-bold mb-2">
+              <h3 className="text-base sm:text-lg font-bold mb-2 text-slate-900 dark:text-white">
                 Silent Deterioration After Missed Visits
               </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                 Rural patients miss follow-up visits due to river crossings, transport costs, and lost daily wages. When contact breaks down, manageable conditions turn into acute emergencies unnoticed.
               </p>
-              <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/5 font-mono text-xs text-red-600 font-semibold">
+              <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/5 font-mono text-xs text-rose-700 dark:text-rose-400 font-semibold">
                 Result: Preventable ICU admissions
               </div>
             </div>
 
             {/* Problem 02 */}
             <div
-              className={`p-7 rounded-3xl border transition-all ${
+              className={`p-6 sm:p-7 rounded-3xl border transition-all ${
                 darkMode
-                  ? "bg-slate-900 border-white/10 hover:border-red-500/40"
-                  : "bg-white border-slate-200 hover:border-red-300 shadow-sm"
+                  ? "bg-slate-900 border-white/10 hover:border-slate-700"
+                  : "bg-white border-slate-200 hover:border-slate-300 shadow-xs"
               }`}
             >
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-extrabold text-lg mb-5">
+              <div className="w-11 h-11 rounded-2xl bg-amber-500/10 text-amber-700 dark:text-amber-400 flex items-center justify-center font-extrabold text-base mb-4">
                 02
               </div>
-              <h3 className="text-lg font-bold mb-2">
+              <h3 className="text-base sm:text-lg font-bold mb-2 text-slate-900 dark:text-white">
                 Fragmented Registers Hide Rising Trends
               </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                 A 3-visit rising blood pressure trajectory looks like a routine absence in paper registers. The isolated visits fail to connect, concealing imminent eclampsia or stroke until it is too late.
               </p>
-              <div className="mt-4 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 font-mono text-xs font-bold text-red-700 dark:text-red-300">
+              <div className="mt-4 p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/40 font-mono text-xs font-bold text-amber-800 dark:text-amber-300">
                 148 → 156 → 163 mmHg (+28 pts)
               </div>
             </div>
 
             {/* Problem 03 */}
             <div
-              className={`p-7 rounded-3xl border transition-all ${
+              className={`p-6 sm:p-7 rounded-3xl border transition-all ${
                 darkMode
-                  ? "bg-slate-900 border-white/10 hover:border-emerald-500/40"
-                  : "bg-white border-slate-200 hover:border-emerald-300 shadow-sm"
+                  ? "bg-slate-900 border-white/10 hover:border-slate-700"
+                  : "bg-white border-slate-200 hover:border-slate-300 shadow-xs"
               }`}
             >
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-extrabold text-lg mb-5">
+              <div className="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-extrabold text-base mb-4">
                 03
               </div>
-              <h3 className="text-lg font-bold mb-2">
+              <h3 className="text-base sm:text-lg font-bold mb-2 text-slate-900 dark:text-white">
                 Bulk Reminders Overwhelm Local PHCs
               </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                 Automated reminders sent in uncoordinated blasts cause morning crowds at small 30-slot village clinics—overwhelming the lone Medical Officer and displacing regular walk-in villagers.
               </p>
-              <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/5 font-mono text-xs text-emerald-600 font-bold">
+              <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/5 font-mono text-xs text-emerald-700 dark:text-emerald-400 font-bold">
                 SwasthyaSense: 10 Walk-In Slots 100% Free
               </div>
             </div>
@@ -1086,18 +1086,18 @@ export default function SwasthyaLandingPage({
       {/* ===================================================================
           4. INTERACTIVE 4-STAGE CLINICAL PIPELINE
       =================================================================== */}
-      <section id="how-it-works" className="py-16 sm:py-24">
+      <section id="how-it-works" className="py-14 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
             <div>
-              <span className="text-xs font-extrabold uppercase tracking-widest text-red-600">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-teal-700 dark:text-teal-400">
                 HOW IT WORKS
               </span>
-              <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1">
+              <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1 text-slate-900 dark:text-white">
                 The 4-Stage Clinical Coordination Pipeline
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-md">
               From the rural home check-in to regional hospital bypass—explore each deterministic stage below.
             </p>
           </div>
@@ -1112,17 +1112,17 @@ export default function SwasthyaLandingPage({
                   key={step.step}
                   type="button"
                   onClick={() => setActivePipelineStep(idx)}
-                  className={`p-5 rounded-2xl border text-left transition-all cursor-pointer ${
+                  className={`p-4 sm:p-5 rounded-2xl border text-left transition-all cursor-pointer ${
                     isActive
                       ? darkMode
-                        ? "bg-slate-900 border-red-500 shadow-lg shadow-red-500/10 ring-1 ring-red-500/50"
-                        : "bg-white border-red-500 shadow-md ring-1 ring-red-500/20"
+                        ? "bg-slate-900 border-emerald-500 shadow-md ring-1 ring-emerald-500/50"
+                        : "bg-white border-emerald-600 shadow-sm ring-1 ring-emerald-600/20"
                       : darkMode
                       ? "bg-slate-950/60 border-white/5 hover:border-white/20"
                       : "bg-slate-50 border-slate-200/80 hover:border-slate-300"
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-2.5">
                     <span className="font-mono text-xs font-extrabold text-slate-400">
                       STEP {step.step}
                     </span>
@@ -1132,8 +1132,8 @@ export default function SwasthyaLandingPage({
                       {step.tag}
                     </span>
                   </div>
-                  <h3 className="font-bold text-sm sm:text-base mb-1">{step.title}</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
+                  <h3 className="font-bold text-sm sm:text-base mb-1 text-slate-900 dark:text-white">{step.title}</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
                     {step.summary}
                   </p>
                 </button>
@@ -1143,20 +1143,20 @@ export default function SwasthyaLandingPage({
 
           {/* Detailed Pipeline Stage Visualizer */}
           <div
-            className={`p-6 sm:p-9 rounded-3xl border transition-all ${
+            className={`p-6 sm:p-8 rounded-3xl border transition-all ${
               darkMode
                 ? "bg-slate-900/80 border-white/10"
-                : "bg-white border-slate-200/90 shadow-lg shadow-slate-900/5"
+                : "bg-white border-slate-200 shadow-sm"
             }`}
           >
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-6 space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-red-500/10 text-red-600 border border-red-500/20">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20">
                   <span>STAGE {PIPELINE_STEPS[activePipelineStep].step}</span>
                   <span>•</span>
                   <span>{PIPELINE_STEPS[activePipelineStep].tag}</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
                   {PIPELINE_STEPS[activePipelineStep].title}
                 </h3>
                 <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -1274,207 +1274,211 @@ export default function SwasthyaLandingPage({
       </section>
 
       {/* ===================================================================
-          5. SIGNATURE 3D PATIENT JOURNEY (OBSIDIAN MEDTECH CANVAS)
+          5. SIGNATURE 3D PATIENT JOURNEY (INTEGRATED MEDTECH CONSOLE)
       =================================================================== */}
       <section
         id="patient-journey-3d"
         ref={journeySectionRef}
-        className="py-16 sm:py-24 bg-[#0A0E1A] text-white border-y border-slate-800 relative overflow-hidden"
+        className={`py-14 sm:py-20 border-y transition-colors ${
+          darkMode ? "bg-[#080C16] border-slate-800" : "bg-slate-100/70 border-slate-200/80"
+        }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
-            <div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/20 text-red-400 font-mono text-xs font-bold uppercase tracking-wider mb-2 border border-red-500/30">
-                <Compass className="w-3.5 h-3.5 text-red-500" />
-                SCROLL-DRIVEN 3D SPATIAL TELEMETRY
-              </span>
-              <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-                3D Patient Journey: From Silent Risk to Rescue
-              </h2>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl bg-slate-900 border border-slate-800 text-white p-6 sm:p-9 shadow-2xl overflow-hidden relative">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4 relative z-10">
+              <div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-xs font-bold uppercase tracking-wider mb-2 border border-emerald-500/30">
+                  <Compass className="w-3.5 h-3.5 text-emerald-400" />
+                  SCROLL-DRIVEN 3D SPATIAL TELEMETRY
+                </span>
+                <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
+                  3D Patient Journey: From Silent Risk to Rescue
+                </h2>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setAutoPlayJourney((prev) => !prev)}
+                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold flex items-center gap-2 cursor-pointer transition-colors"
+              >
+                {autoPlayJourney ? (
+                  <>
+                    <Pause className="w-3.5 h-3.5 text-emerald-400" /> Auto-Scrub Active
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-3.5 h-3.5 text-teal-400" /> Resume Auto-Scrub
+                  </>
+                )}
+              </button>
             </div>
 
-            <button
-              type="button"
-              onClick={() => setAutoPlayJourney((prev) => !prev)}
-              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-bold flex items-center gap-2 cursor-pointer transition-colors"
-            >
-              {autoPlayJourney ? (
-                <>
-                  <Pause className="w-3.5 h-3.5 text-emerald-400" /> Auto-Scrub Active
-                </>
-              ) : (
-                <>
-                  <Play className="w-3.5 h-3.5 text-red-400" /> Resume Auto-Scrub
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* 5 Beat Selector Pills */}
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-8">
-            {JOURNEY_BEATS.map((beat, idx) => (
-              <button
-                key={beat.id}
-                type="button"
-                onClick={() => {
-                  setAutoPlayJourney(false);
-                  setJourneyBeat(idx);
-                }}
-                className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
-                  journeyBeat === idx
-                    ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/30"
-                    : "bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700"
-                }`}
-              >
-                <div className="font-mono text-[10px] font-extrabold uppercase opacity-80">
-                  {beat.label}
-                </div>
-                <div className="font-bold text-xs truncate mt-0.5">{beat.title}</div>
-              </button>
-            ))}
-          </div>
-
-          {/* 3D Isometric Telemetry Stage Container */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Visual Isometric Canvas */}
-            <div
-              className="lg:col-span-7 relative rounded-3xl border border-slate-800 bg-[#070B14] p-6 sm:p-10 min-h-[380px] flex items-center justify-center overflow-hidden"
-              style={{ perspective: "1000px" }}
-            >
-              <div
-                className="relative w-full max-w-lg transition-transform duration-700 ease-out"
-                style={{
-                  transformStyle: "preserve-3d",
-                  transform: `rotateX(18deg) rotateY(${journeyBeat * 3 - 6}deg)`,
-                }}
-              >
-                {/* Floating Metric Badges */}
-                <div className="flex justify-between items-center mb-5 font-mono text-xs">
-                  <span className="px-3 py-1 rounded-xl bg-red-950/80 border border-red-500/60 text-red-300 font-bold">
-                    ● PT-MAT-2001 BP: 148 → 156 → 163
-                  </span>
-                  <span className="px-3 py-1 rounded-xl bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 font-bold">
-                    ⚡ QuickSort: ~242µs
-                  </span>
-                </div>
-
-                {/* Beat 02 QuickSort Laser Line */}
-                {journeyBeat === 1 && (
-                  <div className="mb-4 p-2.5 rounded-xl bg-red-600/20 border-2 border-dashed border-red-500 text-center font-mono text-xs font-bold text-red-300 animate-pulse">
-                    ═══ QUICKSORT PIVOT = 100 SPLIT (UPPER RED vs LOWER GREEN) ═══
-                  </div>
-                )}
-
-                {/* Beat 03 30-Slot Bar */}
-                {journeyBeat === 2 && (
-                  <div className="mb-4 p-3 rounded-xl bg-slate-900 border border-emerald-500 space-y-1.5">
-                    <div className="flex justify-between text-xs font-mono">
-                      <span className="text-amber-400">15 Follow-Up</span>
-                      <span className="text-red-400">5 Critical</span>
-                      <span className="text-emerald-400 font-bold">10 Walk-In (100% Free)</span>
-                    </div>
-                    <div className="h-5 rounded-lg overflow-hidden flex font-mono text-[9px] font-bold">
-                      <div className="w-1/2 bg-amber-500 text-slate-950 flex items-center justify-center">15 SYS</div>
-                      <div className="w-1/6 bg-red-600 text-white flex items-center justify-center">5 CRIT</div>
-                      <div className="w-1/3 bg-emerald-500 text-slate-950 flex items-center justify-center animate-pulse">10 WALK-IN</div>
-                    </div>
-                  </div>
-                )}
-
-                {/* 5 Hexagon Clinic Nodes Grid */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div
-                    className={`p-3.5 rounded-2xl border transition-all ${
-                      journeyBeat === 3
-                        ? "bg-red-950/80 border-red-500"
-                        : "bg-slate-900/90 border-slate-800"
-                    }`}
-                  >
-                    <div className="text-[10px] font-mono font-bold text-red-400">HEX-0 BOKO</div>
-                    <div className="font-bold text-xs mt-0.5">Boko Central PHC</div>
-                    <div className="text-[10px] text-emerald-400 mt-1 font-mono">10 Walk-In Free</div>
-                  </div>
-
-                  <div
-                    className={`p-3.5 rounded-2xl border transition-all ${
-                      journeyBeat === 3
-                        ? "bg-amber-950/80 border-amber-500"
-                        : "bg-slate-900/90 border-slate-800"
-                    }`}
-                  >
-                    <div className="text-[10px] font-mono font-bold text-slate-300">HEX-1 CHHAY</div>
-                    <div className="font-bold text-xs mt-0.5">Chhaygaon North</div>
-                    <div className="text-[10px] text-emerald-400 mt-1 font-mono">10 Walk-In Free</div>
-                  </div>
-
-                  <div
-                    className={`p-3.5 rounded-2xl border transition-all ${
-                      journeyBeat === 3
-                        ? "bg-emerald-950/90 border-emerald-400 ring-2 ring-emerald-500/50 scale-105"
-                        : "bg-slate-900/90 border-slate-800"
-                    }`}
-                  >
-                    <div className="text-[10px] font-mono font-bold text-emerald-400">HEX-2 RANI</div>
-                    <div className="font-bold text-xs mt-0.5">Rani East PHC</div>
-                    <div className="text-[10px] text-emerald-300 mt-1 font-mono">
-                      {journeyBeat === 3 ? "⚡ Locked 31st Pt" : "Ring-1 Standby"}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Tertiary Care 108 Emergency Route */}
-                <div
-                  className={`mt-3 p-3.5 rounded-2xl border transition-all flex items-center justify-between ${
-                    journeyBeat === 4
-                      ? "bg-red-950 border-red-400 ring-2 ring-red-500/50 scale-105"
-                      : "bg-slate-900/90 border-slate-800"
+            {/* 5 Beat Selector Pills */}
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-8 relative z-10">
+              {JOURNEY_BEATS.map((beat, idx) => (
+                <button
+                  key={beat.id}
+                  type="button"
+                  onClick={() => {
+                    setAutoPlayJourney(false);
+                    setJourneyBeat(idx);
+                  }}
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                    journeyBeat === idx
+                      ? "bg-emerald-600 border-emerald-500 text-white shadow-md shadow-emerald-600/30"
+                      : "bg-slate-950/70 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700"
                   }`}
                 >
-                  <div className="flex items-center gap-2">
-                    <Ambulance className="w-4 h-4 text-red-500" />
-                    <div>
-                      <div className="font-bold text-xs">HEX-4 • GMCH & BBCI Tertiary Hub</div>
-                      <div className="text-[10px] text-red-400 font-mono">24×7 ICU / Oncology Route</div>
-                    </div>
+                  <div className="font-mono text-[10px] font-extrabold uppercase opacity-80">
+                    {beat.label}
                   </div>
-                  <span className="px-2 py-0.5 rounded bg-red-600 text-white font-mono text-[10px] font-bold">
-                    108 DISPATCH
-                  </span>
-                </div>
-              </div>
+                  <div className="font-bold text-xs truncate mt-0.5">{beat.title}</div>
+                </button>
+              ))}
             </div>
 
-            {/* Narrative Info Card */}
-            <div className="lg:col-span-5 space-y-5">
-              <div className="p-7 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-4 shadow-xl">
-                <span className="px-3 py-1 rounded-full bg-red-500/20 text-red-400 font-mono text-xs font-bold border border-red-500/30">
-                  {currentBeat.label}
-                </span>
-                <h3 className="text-xl sm:text-2xl font-extrabold">{currentBeat.title}</h3>
-                <p className="text-sm text-slate-300 leading-relaxed">
-                  {currentBeat.description}
-                </p>
-                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-emerald-400 font-bold">
-                  {currentBeat.metric}
+            {/* 3D Isometric Telemetry Stage Container */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+              {/* Visual Isometric Canvas */}
+              <div
+                className="lg:col-span-7 relative rounded-2xl border border-slate-800 bg-[#070B14] p-5 sm:p-8 min-h-[360px] flex items-center justify-center overflow-hidden"
+                style={{ perspective: "1000px" }}
+              >
+                <div
+                  className="relative w-full max-w-lg transition-transform duration-700 ease-out"
+                  style={{
+                    transformStyle: "preserve-3d",
+                    transform: `rotateX(18deg) rotateY(${journeyBeat * 3 - 6}deg)`,
+                  }}
+                >
+                  {/* Floating Metric Badges */}
+                  <div className="flex justify-between items-center mb-5 font-mono text-xs">
+                    <span className="px-3 py-1 rounded-xl bg-rose-950/80 border border-rose-500/60 text-rose-300 font-bold">
+                      ● PT-MAT-2001 BP: 148 → 156 → 163
+                    </span>
+                    <span className="px-3 py-1 rounded-xl bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 font-bold">
+                      ⚡ QuickSort: ~242µs
+                    </span>
+                  </div>
+
+                  {/* Beat 02 QuickSort Laser Line */}
+                  {journeyBeat === 1 && (
+                    <div className="mb-4 p-2.5 rounded-xl bg-rose-600/20 border-2 border-dashed border-rose-500 text-center font-mono text-xs font-bold text-rose-300 animate-pulse">
+                      ═══ QUICKSORT PIVOT = 100 SPLIT (UPPER RED vs LOWER GREEN) ═══
+                    </div>
+                  )}
+
+                  {/* Beat 03 30-Slot Bar */}
+                  {journeyBeat === 2 && (
+                    <div className="mb-4 p-3 rounded-xl bg-slate-900 border border-emerald-500 space-y-1.5">
+                      <div className="flex justify-between text-xs font-mono">
+                        <span className="text-amber-400">15 Follow-Up</span>
+                        <span className="text-rose-400">5 Critical</span>
+                        <span className="text-emerald-400 font-bold">10 Walk-In (100% Free)</span>
+                      </div>
+                      <div className="h-5 rounded-lg overflow-hidden flex font-mono text-[9px] font-bold">
+                        <div className="w-1/2 bg-amber-500 text-slate-950 flex items-center justify-center">15 SYS</div>
+                        <div className="w-1/6 bg-rose-600 text-white flex items-center justify-center">5 CRIT</div>
+                        <div className="w-1/3 bg-emerald-500 text-slate-950 flex items-center justify-center animate-pulse">10 WALK-IN</div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 5 Hexagon Clinic Nodes Grid */}
+                  <div className="grid grid-cols-3 gap-3">
+                    <div
+                      className={`p-3.5 rounded-2xl border transition-all ${
+                        journeyBeat === 3
+                          ? "bg-rose-950/80 border-rose-500"
+                          : "bg-slate-900/90 border-slate-800"
+                      }`}
+                    >
+                      <div className="text-[10px] font-mono font-bold text-rose-400">HEX-0 BOKO</div>
+                      <div className="font-bold text-xs mt-0.5">Boko Central PHC</div>
+                      <div className="text-[10px] text-emerald-400 mt-1 font-mono">10 Walk-In Free</div>
+                    </div>
+
+                    <div
+                      className={`p-3.5 rounded-2xl border transition-all ${
+                        journeyBeat === 3
+                          ? "bg-amber-950/80 border-amber-500"
+                          : "bg-slate-900/90 border-slate-800"
+                      }`}
+                    >
+                      <div className="text-[10px] font-mono font-bold text-slate-300">HEX-1 CHHAY</div>
+                      <div className="font-bold text-xs mt-0.5">Chhaygaon North</div>
+                      <div className="text-[10px] text-emerald-400 mt-1 font-mono">10 Walk-In Free</div>
+                    </div>
+
+                    <div
+                      className={`p-3.5 rounded-2xl border transition-all ${
+                        journeyBeat === 3
+                          ? "bg-emerald-950/90 border-emerald-400 ring-2 ring-emerald-500/50 scale-105"
+                          : "bg-slate-900/90 border-slate-800"
+                      }`}
+                    >
+                      <div className="text-[10px] font-mono font-bold text-emerald-400">HEX-2 RANI</div>
+                      <div className="font-bold text-xs mt-0.5">Rani East PHC</div>
+                      <div className="text-[10px] text-emerald-300 mt-1 font-mono">
+                        {journeyBeat === 3 ? "⚡ Locked 31st Pt" : "Ring-1 Standby"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tertiary Care 108 Emergency Route */}
+                  <div
+                    className={`mt-3 p-3.5 rounded-2xl border transition-all flex items-center justify-between ${
+                      journeyBeat === 4
+                        ? "bg-rose-950 border-rose-400 ring-2 ring-rose-500/50 scale-105"
+                        : "bg-slate-900/90 border-slate-800"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Ambulance className="w-4 h-4 text-rose-400" />
+                      <div>
+                        <div className="font-bold text-xs">HEX-4 • GMCH &amp; BBCI Tertiary Hub</div>
+                        <div className="text-[10px] text-rose-300 font-mono">24×7 ICU / Oncology Route</div>
+                      </div>
+                    </div>
+                    <span className="px-2 py-0.5 rounded bg-rose-600 text-white font-mono text-[10px] font-bold">
+                      108 DISPATCH
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setJourneyBeat((prev) => (prev - 1 + 5) % 5)}
-                    className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold cursor-pointer"
-                  >
-                    ← Previous
-                  </button>
-                  <span className="font-mono text-xs text-slate-400">
-                    Beat {journeyBeat + 1} / 5
+              </div>
+
+              {/* Narrative Info Card */}
+              <div className="lg:col-span-5 space-y-4">
+                <div className="p-6 sm:p-7 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3.5 shadow-xl">
+                  <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-xs font-bold border border-emerald-500/30">
+                    {currentBeat.label}
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => setJourneyBeat((prev) => (prev + 1) % 5)}
-                    className="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-xs font-bold text-white cursor-pointer shadow-md shadow-red-600/30"
-                  >
-                    Next Beat →
-                  </button>
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-white">{currentBeat.title}</h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    {currentBeat.description}
+                  </p>
+                  <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-emerald-400 font-bold">
+                    {currentBeat.metric}
+                  </div>
+                  <div className="flex items-center justify-between pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setJourneyBeat((prev) => (prev - 1 + 5) % 5)}
+                      className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold cursor-pointer text-slate-200"
+                    >
+                      ← Previous
+                    </button>
+                    <span className="font-mono text-xs text-slate-400">
+                      Beat {journeyBeat + 1} / 5
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setJourneyBeat((prev) => (prev + 1) % 5)}
+                      className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-xs font-bold text-white cursor-pointer shadow-md shadow-emerald-600/30"
+                    >
+                      Next Beat →
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1488,10 +1492,10 @@ export default function SwasthyaLandingPage({
       <section id="hexagon-mesh" className="py-16 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-3xl mx-auto">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-red-600">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-teal-700 dark:text-teal-400">
               ARCHITECTURAL EXCELLENCE
             </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1">
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1 text-slate-900 dark:text-white">
               Five Resilient Pillars of SwasthyaSense
             </h2>
           </div>
@@ -1500,55 +1504,55 @@ export default function SwasthyaLandingPage({
             {/* Pillar 01: Multi-Tenant RLS */}
             <div
               className={`p-7 rounded-3xl border ${
-                darkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200 shadow-sm"
+                darkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200 shadow-xs"
               }`}
             >
               <div className="flex items-center justify-between mb-4">
-                <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 font-mono text-xs font-bold border border-red-500/20">
+                <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300 font-mono text-xs font-bold border border-slate-200 dark:border-slate-700">
                   PILLAR 01 • MULTI-TENANT RLS
                 </span>
-                <Lock className="w-5 h-5 text-red-600" />
+                <Lock className="w-5 h-5 text-slate-700 dark:text-slate-300" />
               </div>
-              <h3 className="text-xl font-bold mb-2">
+              <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">
                 Multi-Organization Isolation & Frontline Collaboration
               </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                 Organizations like Sevak Health Foundation, Boko Central PHC, and Chhaygaon North sign in independently. Frontline workers collaborate internally across their 15-worker teams, while cross-organization reads are blocked with <code>HTTP 403 Not your organization</code> and logged.
               </p>
               <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 font-mono text-xs space-y-1.5 border border-slate-200 dark:border-slate-800">
-                <div className="text-emerald-600 dark:text-emerald-400 font-bold">✓ ORG-SEVAK: 260 Patients (58 Assigned to Rina Devi)</div>
-                <div className="text-emerald-600 dark:text-emerald-400 font-bold">✓ ORG-BOKO: Isolated Boko PHC Clinic Queue</div>
-                <div className="text-red-600 dark:text-red-400 font-bold">✗ Cross-Tenant Breach: Blocked with HTTP 403 & SHA-256 Logged</div>
+                <div className="text-emerald-700 dark:text-emerald-400 font-bold">✓ ORG-SEVAK: 260 Patients (58 Assigned to Rina Devi)</div>
+                <div className="text-emerald-700 dark:text-emerald-400 font-bold">✓ ORG-BOKO: Isolated Boko PHC Clinic Queue</div>
+                <div className="text-rose-700 dark:text-rose-400 font-bold">✗ Cross-Tenant Breach: Blocked with HTTP 403 &amp; SHA-256 Logged</div>
               </div>
             </div>
 
             {/* Pillar 03: 30-Slot Clinic Matrix Simulator */}
             <div
               className={`p-7 rounded-3xl border ${
-                darkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200 shadow-sm"
+                darkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200 shadow-xs"
               }`}
             >
               <div className="flex items-center justify-between mb-4">
-                <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono text-xs font-bold border border-emerald-500/20">
+                <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-mono text-xs font-bold border border-emerald-500/20">
                   PILLAR 03 • 30-SLOT CAPACITY MATRIX
                 </span>
                 <Users className="w-5 h-5 text-emerald-600" />
               </div>
-              <h3 className="text-xl font-bold mb-2">
+              <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">
                 Closed-Loop Slot Reclamation Simulator
               </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                 Every village clinic isolates 30 daily slots into 15 Follow-Up, 5 Critical, and 10 Protected Walk-In. Test the live slot reclamation loop below:
               </p>
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3 font-mono text-xs">
                 <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-bold">
+                  <div className="p-2 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-bold">
                     {simFollowUpUsed}/15 Follow-Up
                   </div>
-                  <div className="p-2 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 font-bold">
+                  <div className="p-2 rounded-lg bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 font-bold">
                     {simCriticalUsed}/5 Critical
                   </div>
-                  <div className="p-2 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 font-bold">
+                  <div className="p-2 rounded-lg bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 font-bold">
                     10/10 Walk-In Free
                   </div>
                 </div>
@@ -1556,7 +1560,7 @@ export default function SwasthyaLandingPage({
                   <button
                     type="button"
                     onClick={() => setSimFollowUpUsed((v) => Math.min(15, v + 1))}
-                    className="flex-1 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold cursor-pointer transition-colors"
+                    className="flex-1 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold cursor-pointer transition-colors"
                   >
                     + Book Follow-Up
                   </button>
@@ -1568,7 +1572,7 @@ export default function SwasthyaLandingPage({
                     }}
                     className="flex-1 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold cursor-pointer transition-colors"
                   >
-                    ✓ Clear & Free Slot
+                    ✓ Clear &amp; Free Slot
                   </button>
                 </div>
               </div>
@@ -1691,17 +1695,17 @@ export default function SwasthyaLandingPage({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-xs">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center text-white font-bold">
+                <div className="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold">
                   S
                 </div>
                 <span className="font-extrabold text-white text-base">
-                  Swasthya<span className="text-red-500">Sense</span>
+                  Swasthya<span className="text-emerald-400">Sense</span>
                 </span>
               </div>
               <p className="text-slate-400 leading-relaxed">
                 Non-diagnostic early-warning and hexagonal clinic load-balancing platform for rural frontline health teams.
               </p>
-              <div className="text-[11px] text-red-300 font-semibold p-2 rounded-lg bg-red-950/60 border border-red-800/50">
+              <div className="text-[11px] text-amber-300 font-semibold p-2 rounded-lg bg-amber-950/40 border border-amber-800/40">
                 DECISION-SUPPORT ONLY • NOT A DIAGNOSTIC DEVICE
               </div>
             </div>
@@ -1720,7 +1724,7 @@ export default function SwasthyaLandingPage({
               <div>DPDP Act 2023 Consent Revocation</div>
               <div>AES-256-GCM Phone Encryption</div>
               <div>SHA-256 Cryptographic Audit Ledger</div>
-              <div>NEWS2 & MEOWS Maternal Guidelines</div>
+              <div>NEWS2 &amp; MEOWS Maternal Guidelines</div>
               <div>PostgreSQL Row-Level Security</div>
             </div>
 
@@ -1732,7 +1736,7 @@ export default function SwasthyaLandingPage({
                   setAuthTab("signin");
                   setLoginModalOpen(true);
                 }}
-                className="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
               >
                 <KeyRound className="w-3.5 h-3.5" />
                 Organization Sign-In
@@ -1768,13 +1772,13 @@ export default function SwasthyaLandingPage({
             {/* Header */}
             <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-red-600 text-white flex items-center justify-center shadow-md shadow-red-600/30">
-                  <KeyRound className="w-4 h-4" />
+                <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-xs">
+                  <KeyRound className="w-4 h-4 text-emerald-400" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-base">Organization Portal Sign-In</h3>
+                  <h3 className="font-bold text-base text-slate-900 dark:text-white">Organization Portal Sign-In</h3>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    Postgres Row-Level Security & Scrypt Password Verification
+                    Postgres Row-Level Security &amp; Scrypt Password Verification
                   </p>
                 </div>
               </div>
@@ -1797,7 +1801,7 @@ export default function SwasthyaLandingPage({
                 }}
                 className={`pb-2.5 px-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
                   authTab === "signin"
-                    ? "border-red-600 text-red-600"
+                    ? "border-emerald-600 text-emerald-700 dark:text-emerald-400"
                     : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -1811,7 +1815,7 @@ export default function SwasthyaLandingPage({
                 }}
                 className={`pb-2.5 px-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
                   authTab === "onboard"
-                    ? "border-emerald-600 text-emerald-600"
+                    ? "border-emerald-600 text-emerald-700 dark:text-emerald-400"
                     : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -1839,7 +1843,7 @@ export default function SwasthyaLandingPage({
                         }}
                         className={`p-2 rounded-xl border text-left text-xs transition-all cursor-pointer ${
                           orgIdInput === p.organizationId && userIdInput === p.userId
-                            ? "bg-red-500/10 border-red-500 text-red-600"
+                            ? "bg-emerald-500/10 border-emerald-500 text-emerald-700 dark:text-emerald-300"
                             : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800"
                         }`}
                       >
@@ -1857,7 +1861,7 @@ export default function SwasthyaLandingPage({
                     value={orgIdInput}
                     onChange={(e) => setOrgIdInput(e.target.value)}
                     placeholder="e.g. ORG-BOKO"
-                    className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                    className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
                       darkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-300"
                     }`}
                   />
@@ -1871,7 +1875,7 @@ export default function SwasthyaLandingPage({
                       value={userIdInput}
                       onChange={(e) => setUserIdInput(e.target.value)}
                       placeholder="e.g. doc.boko01"
-                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
                         darkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-300"
                       }`}
                     />
@@ -1885,7 +1889,7 @@ export default function SwasthyaLandingPage({
                         value={passwordInput}
                         onChange={(e) => setPasswordInput(e.target.value)}
                         placeholder="••••••••"
-                        className={`w-full pl-3.5 pr-10 py-2.5 rounded-xl border text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                        className={`w-full pl-3.5 pr-10 py-2.5 rounded-xl border text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
                           darkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-300"
                         }`}
                       />
@@ -1901,7 +1905,7 @@ export default function SwasthyaLandingPage({
                 </div>
 
                 {authError && (
-                  <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 text-xs font-bold flex items-center gap-2">
+                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-bold flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 shrink-0" />
                     <span>{authError}</span>
                   </div>
@@ -1910,7 +1914,7 @@ export default function SwasthyaLandingPage({
                 <button
                   type="submit"
                   disabled={authLoading}
-                  className="w-full py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                  className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer transition-all"
                 >
                   {authLoading ? (
                     <>
@@ -1918,7 +1922,7 @@ export default function SwasthyaLandingPage({
                     </>
                   ) : (
                     <>
-                      <Lock className="w-4 h-4" /> Sign In & Launch Portal
+                      <Lock className="w-4 h-4" /> Sign In &amp; Launch Portal
                     </>
                   )}
                 </button>
