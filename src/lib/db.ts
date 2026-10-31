@@ -1631,7 +1631,11 @@ async function ensurePostgresEngineSynced(state: SwasthyaDatabaseState) {
 }
 
 export function getDbState(): SwasthyaDatabaseState {
-  if (!globalForDb.swasthyaState) {
+  if (
+    !globalForDb.swasthyaState ||
+    !Array.isArray(globalForDb.swasthyaState.organizations) ||
+    !globalForDb.swasthyaState.organizations[0]?.shortName
+  ) {
     globalForDb.swasthyaState = buildSeededDatabaseState();
     void ensurePostgresEngineSynced(globalForDb.swasthyaState);
   }
